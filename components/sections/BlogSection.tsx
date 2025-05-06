@@ -227,7 +227,7 @@ export default function BlogSection() {
                   </div>
                   <div className="flex items-center text-sm text-muted-foreground">
                     <Eye className="h-4 w-4 mr-1" />
-                    <span>{Math.floor(Math.random() * 1000) + 100} views</span>
+                    <span>305 views</span> {/* Replace with a static value */}
                   </div>
                 </div>
               </div>

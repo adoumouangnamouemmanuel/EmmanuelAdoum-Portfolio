@@ -58,7 +58,7 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
         >
           <motion.div variants={itemVariants} className="space-y-4">
-            <h3 className="text-xl font-bold gradient-text">DevPortfolio</h3>
+            <h3 className="text-xl font-bold gradient-text">Emmanuel Adoum</h3>
             <p className="text-muted-foreground text-sm">
               Building beautiful, interactive, and high-performance web
               applications with modern technologies and best practices.
