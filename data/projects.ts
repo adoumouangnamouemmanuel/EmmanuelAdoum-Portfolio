@@ -1,6 +1,6 @@
 export const projects = [
   {
-    title: "Tchad Education Project",
+    title: "Tchad Education System",
     description:
       "An educational technology initiative aimed at digitizing school management and learning systems across Chad. The platform supports schools, teachers, and students through enrollment, grade tracking, and communication tools.",
     image: "/images/projects/logo.png",
@@ -27,7 +27,7 @@ export const projects = [
     category: "EdTech",
     client: "Ministry of Education - Chad",
     date: "2025-05-06",
-    slug: "tchad-education-project",
+    slug: "tchad-education-system",
     challenges: [
       "Unstable internet connectivity in rural areas",
       "Limited access to digital devices in some schools",
@@ -128,41 +128,6 @@ export const projects = [
     ],
   },
   {
-    title: "Task Management App",
-    description:
-      "A collaborative task management application with real-time updates, drag-and-drop functionality, and team collaboration features.",
-    image: "/placeholder.svg?height=600&width=800",
-    technologies: [
-      "React",
-      "Node.js",
-      "Express",
-      "MongoDB",
-      "Socket.io",
-      "Redux",
-    ],
-    github: "https://github.com",
-    demo: "https://example.com",
-    featured: true,
-  },
-  {
-    title: "Finance Dashboard",
-    description:
-      "An interactive dashboard for tracking personal finances, with data visualization, budget planning, and expense categorization.",
-    image: "/placeholder.svg?height=600&width=800",
-    technologies: [
-      "React",
-      "D3.js",
-      "Firebase",
-      "Material UI",
-      "Redux",
-      "Chart.js",
-    ],
-    github: "https://github.com",
-    demo: "https://example.com",
-    featured: false,
-    slug: "task-management-app",
-  },
-  {
     title: "Social Media Platform",
     description:
       "A social networking platform with user profiles, posts, comments, likes, and real-time notifications.",
@@ -179,41 +144,5 @@ export const projects = [
     demo: "https://example.com",
     featured: false,
     slug: "finance-dashboard",
-  },
-  {
-    title: "AI Content Generator",
-    description:
-      "An AI-powered application that generates blog posts, social media content, and marketing copy based on user prompts.",
-    image: "/placeholder.svg?height=600&width=800",
-    technologies: [
-      "React",
-      "Node.js",
-      "OpenAI API",
-      "MongoDB",
-      "Express",
-      "Chakra UI",
-    ],
-    github: "https://github.com",
-    demo: "https://example.com",
-    featured: true,
-    slug: "ai-content-generator",
-  },
-  {
-    title: "Real Estate Marketplace",
-    description:
-      "A platform for buying, selling, and renting properties with advanced search, filtering, and virtual tours.",
-    image: "/placeholder.svg?height=600&width=800",
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind CSS",
-      "Prisma",
-      "PostgreSQL",
-      "Google Maps API",
-    ],
-    github: "https://github.com",
-    demo: "https://example.com",
-    featured: false,
-    slug: "real-estate-marketplace",
   },
 ];
