@@ -336,7 +336,7 @@ export default function HeroSection() {
                     whileHover={{ scale: 1.1, rotate: 5 }}
                   >
                     <Image
-                      src="/emma.png"
+                      src="/images/emma-head.png"
                       alt="Developer portrait"
                       width={128}
                       height={128}
