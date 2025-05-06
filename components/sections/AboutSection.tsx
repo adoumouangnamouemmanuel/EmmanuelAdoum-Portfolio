@@ -46,10 +46,12 @@ export default function AboutSection() {
   };
 
   const skills = [
+    "Artificial Intelligence",
     "Responsive Web Design",
     "Frontend Development",
     "Backend Development",
     "Database Management",
+    "Deep Learning",
     "API Development",
     "UI/UX Design",
     "Performance Optimization",
@@ -78,7 +80,7 @@ export default function AboutSection() {
             >
               <div className="relative rounded-2xl overflow-hidden shadow-2xl group h-[200px] w-[200px] md:h-[500px] md:w-[500px] lg:h-[600px] lg:w-[600px]">
                 <Image
-                  src="/emma.png"
+                  src="/images/emma-hero.png"
                   alt="Developer portrait"
                   width={600}
                   height={600}
@@ -284,7 +286,7 @@ export default function AboutSection() {
                   Key Skills
                 </h3>
                 <ul className="space-y-2">
-                  {skills.slice(0, 4).map((skill, index) => (
+                  {skills.slice(0, 5).map((skill, index) => (
                     <motion.li
                       key={index}
                       className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm"
@@ -320,7 +322,7 @@ export default function AboutSection() {
                   Expertise
                 </h3>
                 <ul className="space-y-2">
-                  {skills.slice(4).map((skill, index) => (
+                  {skills.slice(5).map((skill, index) => (
                     <motion.li
                       key={index}
                       className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm"
