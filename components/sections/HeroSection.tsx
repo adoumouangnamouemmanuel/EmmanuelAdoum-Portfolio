@@ -136,11 +136,11 @@ export default function HeroSection() {
 
   // Calculate mouse parallax for decorative elements
   const calculateMouseParallax = (depth = 10) => {
-    if (typeof window === "undefined") return { x: 0, y: 0 }; // Return default values during SSR
+  if (typeof window === "undefined") return { x: 0, y: 0 }; // Return default values during SSR
 
-    const x = (mousePosition.x - window.innerWidth / 2) / depth;
-    const y = (mousePosition.y - window.innerHeight / 2) / depth;
-    return { x, y };
+  const x = (mousePosition.x - window.innerWidth / 2) / depth;
+  const y = (mousePosition.y - window.innerHeight / 2) / depth;
+  return { x, y };
   };
 
   return (
