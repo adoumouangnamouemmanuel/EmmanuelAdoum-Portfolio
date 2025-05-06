@@ -61,12 +61,12 @@ export default function ProjectDetailPage() {
   );
   const [relatedProjects, setRelatedProjects] = useState<Project[]>([]);
   const [copied, setCopied] = useState(false);
-    const [activeTab, setActiveTab] = useState("overview");
-    const [expandedImage, setExpandedImage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("overview");
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
-    const toggleImageExpansion = (image: string) => {
-      setExpandedImage((prev) => (prev === image ? null : image));
-    };
+  const toggleImageExpansion = (image: string) => {
+    setExpandedImage((prev) => (prev === image ? null : image));
+  };
 
   useEffect(() => {
     // If project doesn't exist, redirect to projects page
@@ -818,7 +818,7 @@ export default function ProjectDetailPage() {
                   </h3>
                   <div className="flex space-x-2">
                     <motion.a
-                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                      href={`https://x.com/AdoumOuangnamou/intent/tweet?url=${encodeURIComponent(
                         typeof window !== "undefined"
                           ? window.location.href
                           : ""

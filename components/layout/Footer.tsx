@@ -1,19 +1,19 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   Github,
-  Linkedin,
-  Twitter,
-  Mail,
-  Phone,
-  MapPin,
   Heart,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -65,7 +65,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-3">
               <motion.a
-                href="https://github.com"
+                href="https://github.com/adoumouangnamouemmanuel"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
@@ -76,7 +76,7 @@ export default function Footer() {
                 <span className="sr-only">GitHub</span>
               </motion.a>
               <motion.a
-                href="https://twitter.com"
+                href="https://x.com/AdoumOuangnamou"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
@@ -87,7 +87,7 @@ export default function Footer() {
                 <span className="sr-only">Twitter</span>
               </motion.a>
               <motion.a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
@@ -129,10 +129,10 @@ export default function Footer() {
               <li className="flex items-start">
                 <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3" />
                 <a
-                  href="mailto:hello@example.com"
+                  href="mailto:emmanuel.adoum@ashesi.edu.gh"
                   className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  hello@example.com
+                  emmanuel.adoum@ashesi.edu.gh
                 </a>
               </li>
               <li className="flex items-start">
@@ -141,13 +141,13 @@ export default function Footer() {
                   href="tel:+11234567890"
                   className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  +1 (123) 456-7890
+                  +233 50 367 3195
                 </a>
               </li>
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3" />
                 <span className="text-muted-foreground">
-                  New York, NY, United States
+                  1 University Avenue, Berekuso
                 </span>
               </li>
             </ul>

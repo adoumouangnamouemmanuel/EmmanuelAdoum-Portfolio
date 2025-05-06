@@ -184,7 +184,7 @@ export default function BlogPostPage() {
                 )}
               </motion.button>
               <motion.a
-                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                href={`https://x.com/AdoumOuangnamou/intent/tweet?url=${encodeURIComponent(
                   typeof window !== "undefined" ? window.location.href : ""
                 )}&text=${encodeURIComponent(post.title)}`}
                 target="_blank"
@@ -370,7 +370,7 @@ export default function BlogPostPage() {
                       </svg>
                     </motion.a>
                     <motion.a
-                      href="https://twitter.com"
+                      href="https://x.com/AdoumOuangnamou"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -387,7 +387,7 @@ export default function BlogPostPage() {
                       </svg>
                     </motion.a>
                     <motion.a
-                      href="https://linkedin.com"
+                      href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -543,7 +543,7 @@ export default function BlogPostPage() {
                   <h3 className="text-lg font-semibold mb-4">Share</h3>
                   <div className="flex space-x-2">
                     <motion.a
-                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                      href={`https://x.com/AdoumOuangnamou/intent/tweet?url=${encodeURIComponent(
                         typeof window !== "undefined"
                           ? window.location.href
                           : ""

@@ -8,7 +8,7 @@
   </p>
   
   <p>
-    <a href="https://twitter.com/adoumouangnamou"><img src="https://img.shields.io/twitter/follow/adoumouangnamou?logo=twitter&style=for-the-badge" alt="Twitter Follow" /></a>
+    <a href="https://x.com/AdoumOuangnamou/adoumouangnamou"><img src="https://img.shields.io/twitter/follow/adoumouangnamou?logo=twitter&style=for-the-badge" alt="Twitter Follow" /></a>
     <a href="https://github.com/adoumouangnamouemmanuel"><img src="https://img.shields.io/github/followers/adoumouangnamouemmanuel?logo=github&style=for-the-badge" alt="GitHub followers" /></a>
   </p>
 </div>
@@ -63,7 +63,6 @@
     <li>📜 Machine Learning Specialization - Coursera</li>
   </ul>
 </details>
-
 
 <div align="center">
 <table>
@@ -157,15 +156,13 @@
   <img src="https://github-readme-activity-graph.vercel.app/graph?username=adoumouangnamouemmanuel&theme=tokyo-night&hide_border=true&bg_color=0D1117" alt="Emmanuel's Activity Graph"/>
 </div>
 
-
-
 ## <img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="30"> Connect with me
 
 <div align="center">
-  <a href="https://linkedin.com/in/ouang-namou-emmanuel-adoum" target="_blank">
+  <a href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum/in/ouang-namou-emmanuel-adoum" target="_blank">
     <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
   </a>
-  <a href="https://twitter.com/adoumouangnamou" target="_blank">
+  <a href="https://x.com/AdoumOuangnamou/adoumouangnamou" target="_blank">
     <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"/>
   </a>
   <a href="https://github.com/adoumouangnamouemmanuel" target="_blank">
@@ -192,7 +189,9 @@
 </div>
 
 ## <img src="https://media.giphy.com/media/ZCN6F3FAkwsyOGU2RS/giphy.gif" width="30"> Latest Blog Posts
+
 <!-- BLOG-POST-LIST:START -->
+
 - [How to Build a Neural Network from Scratch](https://emmanueladoum.me/neural-network-from-scratch)
 - [The Future of Web Development: What to Expect in 2023](https://emmanueladoum.me/future-web-dev-2023)
 - [Optimizing React Applications for Performance](https://emmanueladoum.me/react-performance)
@@ -235,10 +234,10 @@
   <img src="https://img.shields.io/badge/Made%20with%20%E2%9D%A4%EF%B8%8F%20by-Emmanuel%20Adoum-6366F1" alt="Made with love" />
 </div>
 
-<!-- 
+<!--
   Note: To create the GitHub Snake Animation, you'll need to set up a GitHub Action.
   Create a .github/workflows/snake.yml file with the appropriate configuration.
-  
+
   For the blog post list, you can use a GitHub Action to automatically update your README with your latest blog posts.
   Check out: https://github.com/gautamkrishnar/blog-post-workflow
 -->
