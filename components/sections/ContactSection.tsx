@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import {
   AlertCircle,
   CheckCircle2,
@@ -224,10 +225,10 @@ export default function ContactSection() {
                           Email
                         </h4>
                         <a
-                          href="mailto:hello@example.com"
+                          href="mailto:hello@emmanuel.adoum@ashesi.edu.gh"
                           className="hover:text-blue-200 transition-colors"
                         >
-                          hello@example.com
+                          emmanuel.adoum@ashesi.edu.gh
                         </a>
                       </div>
                     </motion.div>
@@ -252,7 +253,7 @@ export default function ContactSection() {
                           href="tel:+11234567890"
                           className="hover:text-blue-200 transition-colors"
                         >
-                          +1 (123) 456-7890
+                          +233 50 367 3195
                         </a>
                       </div>
                     </motion.div>
@@ -273,7 +274,7 @@ export default function ContactSection() {
                         <h4 className="font-medium text-sm text-white/70 mb-1">
                           Location
                         </h4>
-                        <p>New York, NY, United States</p>
+                        <p>1 University Avenue Berekuso</p>
                       </div>
                     </motion.div>
                   </div>
@@ -282,7 +283,7 @@ export default function ContactSection() {
                     <h4 className="font-medium mb-4">Connect with me</h4>
                     <div className="flex space-x-4">
                       <motion.a
-                        href="https://github.com"
+                        href="https://github.com/adoumouangnamouemmanuel"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
@@ -302,8 +303,26 @@ export default function ContactSection() {
                           />
                         </svg>
                       </motion.a>
+
                       <motion.a
-                        href="https://twitter.com"
+                        href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
+                        whileHover={{ y: -3 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                      </motion.a>
+                      <motion.a
+                        href="https://x.com/AdoumOuangnamou"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
@@ -320,21 +339,20 @@ export default function ContactSection() {
                         </svg>
                       </motion.a>
                       <motion.a
-                        href="https://linkedin.com"
+                        href="https://www.facebook.com/adoumouangnamouemmanuel"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
                         whileHover={{ y: -3 }}
                         whileTap={{ scale: 0.95 }}
                       >
-                        <svg
+                        <Image
+                          src="/images/logos/2023_Facebook_icon.svg"
+                          alt="Facebook"
+                          width={50}
+                          height={50}
                           className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
+                        />
                       </motion.a>
                     </div>
                   </div>
