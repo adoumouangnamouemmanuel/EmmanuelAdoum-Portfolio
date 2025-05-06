@@ -9,16 +9,10 @@ import {
   useTransform,
 } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  Download,
-  Github,
-  Linkedin,
-  Twitter,
-} from "lucide-react";
+import { ArrowRight, Download, Github, Linkedin } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { Canvas, useFrame} from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Sphere, MeshDistortMaterial, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -88,6 +82,7 @@ export default function HeroSection() {
   const isInView = useInView(ref, { once: true });
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const { scrollY } = useScroll();
+  const [isMounted, setIsMounted] = useState(false);
 
   // Parallax effects
   const y1 = useTransform(scrollY, [0, 500], [0, -100]);
@@ -101,6 +96,8 @@ export default function HeroSection() {
   }, [controls, isInView]);
 
   useEffect(() => {
+    setIsMounted(true);
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -136,11 +133,11 @@ export default function HeroSection() {
 
   // Calculate mouse parallax for decorative elements
   const calculateMouseParallax = (depth = 10) => {
-  if (typeof window === "undefined") return { x: 0, y: 0 }; // Return default values during SSR
+    if (!isMounted) return { x: 0, y: 0 }; // Return default values during SSR and initial render
 
-  const x = (mousePosition.x - window.innerWidth / 2) / depth;
-  const y = (mousePosition.y - window.innerHeight / 2) / depth;
-  return { x, y };
+    const x = (mousePosition.x - window.innerWidth / 2) / depth;
+    const y = (mousePosition.y - window.innerHeight / 2) / depth;
+    return { x, y };
   };
 
   return (
@@ -151,23 +148,25 @@ export default function HeroSection() {
       {/* Background elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-white dark:from-gray-900/50 dark:to-gray-950 -z-10" />
 
-      <motion.div className="absolute inset-0 -z-5" style={{ opacity }}>
-        <motion.div
-          className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse-slow"
-          style={{
-            x: calculateMouseParallax(20).x,
-            y: calculateMouseParallax(20).y,
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-pulse-slow"
-          style={{
-            animationDelay: "1s",
-            x: calculateMouseParallax(30).x,
-            y: calculateMouseParallax(30).y,
-          }}
-        />
-      </motion.div>
+      {isMounted && (
+        <motion.div className="absolute inset-0 -z-5" style={{ opacity }}>
+          <motion.div
+            className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl animate-pulse-slow"
+            style={{
+              x: calculateMouseParallax(20).x,
+              y: calculateMouseParallax(20).y,
+            }}
+          />
+          <motion.div
+            className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-pulse-slow"
+            style={{
+              animationDelay: "1s",
+              x: calculateMouseParallax(30).x,
+              y: calculateMouseParallax(30).y,
+            }}
+          />
+        </motion.div>
+      )}
 
       <div className="section-container grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <motion.div
@@ -253,32 +252,37 @@ export default function HeroSection() {
             variants={itemVariants}
             className="mt-8 flex items-center gap-4"
           >
-            <motion.div
-              whileHover={{ scale: 1.2, rotate: 5 }}
-              whileTap={{ scale: 0.9 }}
-              variants={itemVariants}
-              className="mt-8 flex items-center gap-4"
-            >
-              <Link
-                href="https://github.com/adoumouangnamouemmanuel"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+            <div className="flex items-center gap-4">
+              <motion.div
+                whileHover={{ scale: 1.2, rotate: 5 }}
+                whileTap={{ scale: 0.9 }}
               >
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
-              </Link>
+                <Link
+                  href="https://github.com/adoumouangnamouemmanuel"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+                >
+                  <Github className="h-5 w-5" />
+                  <span className="sr-only">GitHub</span>
+                </Link>
+              </motion.div>
 
-              <Link
-                href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+              <motion.div
+                whileHover={{ scale: 1.2, rotate: -5 }}
+                whileTap={{ scale: 0.9 }}
               >
-                <Linkedin className="h-5 w-5" />
-                <span className="sr-only">LinkedIn</span>
-              </Link>
-            </motion.div>
+                <Link
+                  href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-secondary hover:bg-secondary/80 transition-colors"
+                >
+                  <Linkedin className="h-5 w-5" />
+                  <span className="sr-only">LinkedIn</span>
+                </Link>
+              </motion.div>
+            </div>
 
             <div className="h-6 border-l border-gray-300 dark:border-gray-700 mx-2"></div>
 
@@ -286,7 +290,7 @@ export default function HeroSection() {
               className="text-sm text-muted-foreground flex items-center"
               animate={{
                 scale: [1, 1.05, 1],
-                transition: { repeat: Infinity, duration: 2 },
+                transition: { repeat: Number.POSITIVE_INFINITY, duration: 2 },
               }}
             >
               <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
@@ -370,7 +374,7 @@ export default function HeroSection() {
                       "TypeScript",
                       "Node.js",
                       "Tailwind",
-                      "Pyton",
+                      "Python",
                       "PyTorch",
                       "Machine Learning",
                       "Matlab",
@@ -418,57 +422,61 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Floating elements */}
-          <motion.div
-            className="absolute -top-6 -right-6 w-12 h-12 bg-yellow-400 rounded-lg shadow-lg"
-            animate={{
-              y: [0, -10, 0],
-              rotate: [0, 5, 0],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 3,
-              delay: 0.5,
-            }}
-            style={{
-              x: calculateMouseParallax(10).x,
-              y: calculateMouseParallax(10).y,
-            }}
-          />
+          {/* Floating elements - Only render on client side */}
+          {isMounted && (
+            <>
+              <motion.div
+                className="absolute -top-6 -right-6 w-12 h-12 bg-yellow-400 rounded-lg shadow-lg"
+                animate={{
+                  y: [0, -10, 0],
+                  rotate: [0, 5, 0],
+                }}
+                transition={{
+                  repeat: Number.POSITIVE_INFINITY,
+                  duration: 3,
+                  delay: 0.5,
+                }}
+                style={{
+                  x: calculateMouseParallax(10).x,
+                  y: calculateMouseParallax(10).y,
+                }}
+              />
 
-          <motion.div
-            className="absolute -bottom-8 -left-8 w-16 h-16 bg-blue-500 rounded-full shadow-lg"
-            animate={{
-              y: [0, -15, 0],
-              rotate: [0, -5, 0],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 4,
-              delay: 1.2,
-            }}
-            style={{
-              x: calculateMouseParallax(15).x,
-              y: calculateMouseParallax(15).y,
-            }}
-          />
+              <motion.div
+                className="absolute -bottom-8 -left-8 w-16 h-16 bg-blue-500 rounded-full shadow-lg"
+                animate={{
+                  y: [0, -15, 0],
+                  rotate: [0, -5, 0],
+                }}
+                transition={{
+                  repeat: Number.POSITIVE_INFINITY,
+                  duration: 4,
+                  delay: 1.2,
+                }}
+                style={{
+                  x: calculateMouseParallax(15).x,
+                  y: calculateMouseParallax(15).y,
+                }}
+              />
 
-          <motion.div
-            className="absolute top-1/2 -right-4 w-8 h-8 bg-purple-500 rounded-lg shadow-lg"
-            animate={{
-              y: [0, -8, 0],
-              rotate: [0, 10, 0],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 2.5,
-              delay: 0.8,
-            }}
-            style={{
-              x: calculateMouseParallax(5).x,
-              y: calculateMouseParallax(5).y,
-            }}
-          />
+              <motion.div
+                className="absolute top-1/2 -right-4 w-8 h-8 bg-purple-500 rounded-lg shadow-lg"
+                animate={{
+                  y: [0, -8, 0],
+                  rotate: [0, 10, 0],
+                }}
+                transition={{
+                  repeat: Number.POSITIVE_INFINITY,
+                  duration: 2.5,
+                  delay: 0.8,
+                }}
+                style={{
+                  x: calculateMouseParallax(5).x,
+                  y: calculateMouseParallax(5).y,
+                }}
+              />
+            </>
+          )}
         </motion.div>
       </div>
     </section>

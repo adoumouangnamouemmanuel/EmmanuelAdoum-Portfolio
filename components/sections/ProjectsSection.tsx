@@ -1,27 +1,33 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { projects as rawProjects } from "@/data/projects";
 import {
+  AnimatePresence,
   motion,
   useInView,
-  AnimatePresence,
   useScroll,
   useTransform,
 } from "framer-motion";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bookmark,
+  Code,
+  ExternalLink,
+  Eye,
+  Github,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  ExternalLink,
-  Github,
-  ArrowRight,
-  ArrowLeft,
-  Code,
-  Eye,
-  Bookmark,
-} from "lucide-react";
-import { projects } from "@/data/projects";
+import { useRef, useState } from "react";
+
+// Add slugs dynamically to the projects array
+const projects = rawProjects.map((project) => ({
+  ...project,
+  slug: project.title.toLowerCase().replace(/\s+/g, "-"), // Generate slug dynamically
+}));
 
 export default function ProjectsSection() {
   const ref = useRef(null);
@@ -479,11 +485,13 @@ export default function ProjectsSection() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setActiveProject(index)}
                       className="group"
+                      asChild
                     >
-                      Details
-                      <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                      <Link href={`/projects/${project.slug}`}>
+                        Details
+                        <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                      </Link>
                     </Button>
                   </motion.div>
                 </div>
