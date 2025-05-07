@@ -63,7 +63,7 @@ export default function AboutSection() {
       id="about"
       className="py-24 bg-gradient-to-b from-white to-blue-50 dark:from-gray-950 dark:to-gray-900 overflow-hidden"
     >
-      <div className="section-container">
+      <div className="section-container px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
           initial="hidden"
@@ -72,13 +72,13 @@ export default function AboutSection() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
         >
           {/* Left side with image - keeping this untouched as requested */}
-          <div className="relative">
+          <div className="relative mx-auto lg:mx-0">
             <motion.div
               variants={itemVariants}
               className="relative z-10"
               style={{ y, rotate }}
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group h-[200px] w-[200px] md:h-[500px] md:w-[500px] lg:h-[600px] lg:w-[600px]">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl group h-[200px] w-[200px] sm:h-[300px] sm:w-[300px] md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px] xl:h-[600px] xl:w-[600px]">
                 <Image
                   src="/images/emma-hero.png"
                   alt="Developer portrait"
@@ -100,7 +100,7 @@ export default function AboutSection() {
 
               {/* Experience badge */}
               <motion.div
-                className="absolute -top-6 -right-6 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg"
+                className="absolute -top-6 -right-6 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm sm:text-base"
                 initial={{ scale: 0, rotate: -10 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ delay: 0.5, type: "spring" }}
@@ -111,7 +111,7 @@ export default function AboutSection() {
 
               {/* Floating card */}
               <motion.div
-                className="absolute -bottom-8 -left-8 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl max-w-[200px]"
+                className="absolute -bottom-8 -left-8 bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg shadow-xl max-w-[150px] sm:max-w-[200px]"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
@@ -122,9 +122,9 @@ export default function AboutSection() {
                 }}
               >
                 <div className="flex items-start space-x-2">
-                  <span className="text-4xl">🚀</span>
+                  <span className="text-3xl sm:text-4xl">🚀</span>
                   <div>
-                    <h4 className="font-bold text-sm">
+                    <h4 className="font-bold text-xs sm:text-sm">
                       Passionate about creating
                     </h4>
                     <p className="text-xs text-muted-foreground">
@@ -137,7 +137,7 @@ export default function AboutSection() {
 
             {/* Decorative elements */}
             <motion.div
-              className="absolute -bottom-12 -right-12 w-64 h-64 bg-blue-400/10 rounded-full -z-10 blur-3xl"
+              className="absolute -bottom-12 -right-12 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400/10 rounded-full -z-10 blur-3xl"
               style={{ x, scale }}
               animate={{
                 scale: [1, 1.1, 1],
@@ -150,7 +150,7 @@ export default function AboutSection() {
             />
 
             <motion.div
-              className="absolute -top-12 -left-12 w-48 h-48 bg-purple-500/10 rounded-full -z-10 blur-3xl"
+              className="absolute -top-12 -left-12 w-36 sm:w-48 h-36 sm:h-48 bg-purple-500/10 rounded-full -z-10 blur-3xl"
               style={{ x: useTransform(scrollYProgress, [0, 1], [0, 50]) }}
               animate={{
                 scale: [1, 1.2, 1],
@@ -171,8 +171,8 @@ export default function AboutSection() {
             className="relative"
           >
             {/* Subtle background elements */}
-            <div className="absolute -z-10 top-1/4 right-0 w-64 h-64 bg-blue-100/30 dark:bg-blue-900/10 rounded-full blur-3xl" />
-            <div className="absolute -z-10 bottom-0 left-1/4 w-48 h-48 bg-purple-100/30 dark:bg-purple-900/10 rounded-full blur-3xl" />
+            <div className="absolute -z-10 top-1/4 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-blue-100/30 dark:bg-blue-900/10 rounded-full blur-3xl" />
+            <div className="absolute -z-10 bottom-0 left-1/4 w-36 sm:w-48 h-36 sm:h-48 bg-purple-100/30 dark:bg-purple-900/10 rounded-full blur-3xl" />
 
             <motion.span
               variants={itemVariants}
@@ -192,7 +192,7 @@ export default function AboutSection() {
 
             <motion.h2
               variants={itemVariants}
-              className="text-3xl md:text-4xl font-bold mb-6"
+              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6"
               whileHover={{ scale: 1.01 }}
             >
               Passionate Developer with a{" "}
@@ -213,9 +213,9 @@ export default function AboutSection() {
 
             <motion.div
               variants={itemVariants}
-              className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-lg p-6 border border-blue-100/50 dark:border-blue-900/50 shadow-sm mb-6"
+              className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-blue-100/50 dark:border-blue-900/50 shadow-sm mb-6"
             >
-              <motion.p className="text-muted-foreground mb-4 leading-relaxed">
+              <motion.p className="text-muted-foreground mb-4 leading-relaxed text-sm sm:text-base">
                 <motion.span
                   className="text-blue-600 dark:text-blue-400 font-medium"
                   initial={{ opacity: 0, y: 5 }}
@@ -230,7 +230,7 @@ export default function AboutSection() {
                 sustainability.
               </motion.p>
 
-              <motion.p className="text-muted-foreground leading-relaxed">
+              <motion.p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
                 A strong leader, Emmanuel combines{" "}
                 <motion.span
                   className="relative inline-block"
@@ -269,12 +269,12 @@ export default function AboutSection() {
             {/* Skills section - enhanced with animation and styling */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-2 gap-4 mb-8"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8"
             >
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold mb-2 flex items-center">
+              <div className="space-y-2 sm:space-y-3">
+                <h3 className="text-base sm:text-lg font-semibold mb-2 flex items-center">
                   <motion.span
-                    className="w-6 h-0.5 bg-blue-600 inline-block mr-2"
+                    className="w-4 sm:w-6 h-0.5 bg-blue-600 inline-block mr-2"
                     animate={{
                       width: ["24px", "12px", "24px"],
                     }}
@@ -289,7 +289,7 @@ export default function AboutSection() {
                   {skills.slice(0, 5).map((skill, index) => (
                     <motion.li
                       key={index}
-                      className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm"
+                      className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-1.5 sm:p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm text-xs sm:text-sm"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.5 + index * 0.1 }}
@@ -299,17 +299,17 @@ export default function AboutSection() {
                         borderColor: "rgba(59, 130, 246, 0.3)",
                       }}
                     >
-                      <CheckCircle2 className="h-4 w-4 text-blue-600 mr-2 flex-shrink-0" />
+                      <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 mr-1.5 sm:mr-2 flex-shrink-0" />
                       <span>{skill}</span>
                     </motion.li>
                   ))}
                 </ul>
               </div>
 
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold mb-2 flex items-center">
+              <div className="space-y-2 sm:space-y-3">
+                <h3 className="text-base sm:text-lg font-semibold mb-2 flex items-center">
                   <motion.span
-                    className="w-6 h-0.5 bg-blue-600 inline-block mr-2"
+                    className="w-4 sm:w-6 h-0.5 bg-blue-600 inline-block mr-2"
                     animate={{
                       width: ["24px", "12px", "24px"],
                     }}
@@ -325,7 +325,7 @@ export default function AboutSection() {
                   {skills.slice(5).map((skill, index) => (
                     <motion.li
                       key={index}
-                      className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm"
+                      className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-1.5 sm:p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm text-xs sm:text-sm"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.9 + index * 0.1 }}
@@ -335,7 +335,7 @@ export default function AboutSection() {
                         borderColor: "rgba(59, 130, 246, 0.3)",
                       }}
                     >
-                      <CheckCircle2 className="h-4 w-4 text-blue-600 mr-2 flex-shrink-0" />
+                      <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 mr-1.5 sm:mr-2 flex-shrink-0" />
                       <span>{skill}</span>
                     </motion.li>
                   ))}
@@ -358,12 +358,12 @@ export default function AboutSection() {
             >
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all group relative overflow-hidden"
+                className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all group relative overflow-hidden text-sm sm:text-base w-full sm:w-auto"
                 asChild
               >
                 <Link href="#projects">
                   <span className="relative z-10">View My Work</span>
-                  <ArrowRight className="relative z-10 ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="relative z-10 ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
                   <motion.span
                     className="absolute inset-0 bg-blue-700"
                     initial={{ x: "-100%" }}
