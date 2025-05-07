@@ -78,7 +78,7 @@ export default function AboutSection() {
               className="relative z-10"
               style={{ y, rotate }}
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group h-[200px] w-[200px] sm:h-[300px] sm:w-[300px] md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px] xl:h-[600px] xl:w-[600px]">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl group  w-[300px] sm:h-[300px] sm:w-[300px] md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px] xl:h-[600px] xl:w-[600px]">
                 <Image
                   src="/images/emma-hero.png"
                   alt="Developer portrait"
