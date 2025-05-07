@@ -1,22 +1,26 @@
 "use client";
 
+import { motion } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
 import {
   ArrowRight,
   Github,
-  Heart,
   Linkedin,
-  Mail,
-  MapPin,
-  Phone,
   Twitter,
+  Mail,
+  Phone,
+  MapPin,
+  Heart,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
-import Link from "next/link";
+import { useState } from "react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [expandedSection, setExpandedSection] = useState<string | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -40,6 +44,14 @@ export default function Footer() {
     },
   };
 
+  const toggleSection = (section: string) => {
+    if (expandedSection === section) {
+      setExpandedSection(null);
+    } else {
+      setExpandedSection(section);
+    }
+  };
+
   return (
     <footer className="bg-gray-50 dark:bg-gray-900 pt-16 pb-8 relative overflow-hidden">
       {/* Background elements */}
@@ -50,12 +62,13 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Desktop Footer - Unchanged */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
+          className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
         >
           <motion.div variants={itemVariants} className="space-y-4">
             <h3 className="text-xl font-bold gradient-text">Emmanuel Adoum</h3>
@@ -65,7 +78,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-3">
               <motion.a
-                href="https://github.com/adoumouangnamouemmanuel"
+                href="https://github.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
@@ -76,7 +89,7 @@ export default function Footer() {
                 <span className="sr-only">GitHub</span>
               </motion.a>
               <motion.a
-                href="https://x.com/AdoumOuangnamou"
+                href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
@@ -87,7 +100,7 @@ export default function Footer() {
                 <span className="sr-only">Twitter</span>
               </motion.a>
               <motion.a
-                href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum"
+                href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
@@ -129,10 +142,10 @@ export default function Footer() {
               <li className="flex items-start">
                 <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3" />
                 <a
-                  href="mailto:emmanuel.adoum@ashesi.edu.gh"
+                  href="mailto:hello@example.com"
                   className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  emmanuel.adoum@ashesi.edu.gh
+                  hello@example.com
                 </a>
               </li>
               <li className="flex items-start">
@@ -174,6 +187,185 @@ export default function Footer() {
           </motion.div>
         </motion.div>
 
+        {/* Mobile Footer - Optimized */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
+          className="md:hidden space-y-8 mb-8"
+        >
+          {/* Main Info */}
+          <motion.div variants={itemVariants} className="space-y-4">
+            <h3 className="text-xl font-bold gradient-text text-center">
+              Emmanuel Adoum
+            </h3>
+            <p className="text-muted-foreground text-sm text-center">
+              Building beautiful, interactive, and high-performance web
+              applications with modern technologies and best practices.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <motion.a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
+                whileHover={{ y: -3, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Github className="h-5 w-5" />
+                <span className="sr-only">GitHub</span>
+              </motion.a>
+              <motion.a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
+                whileHover={{ y: -3, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Twitter className="h-5 w-5 text-blue-400" />
+                <span className="sr-only">Twitter</span>
+              </motion.a>
+              <motion.a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-full bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-colors"
+                whileHover={{ y: -3, scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <Linkedin className="h-5 w-5 text-blue-600" />
+                <span className="sr-only">LinkedIn</span>
+              </motion.a>
+            </div>
+          </motion.div>
+
+          {/* Newsletter - Always visible on mobile */}
+          <motion.div variants={itemVariants} className="space-y-4 px-4">
+            <h3 className="text-lg font-semibold text-center">Newsletter</h3>
+            <p className="text-muted-foreground text-sm text-center">
+              Subscribe to receive updates on new projects and blog posts.
+            </p>
+            <div className="flex space-x-2">
+              <Input
+                type="email"
+                placeholder="Your email"
+                className="shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              />
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 shadow-md"
+                size="sm"
+              >
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Collapsible sections for mobile */}
+          <div className="space-y-2 border-t border-gray-200 dark:border-gray-800 pt-4">
+            {/* Quick Links - Collapsible */}
+            <div className="border-b border-gray-200 dark:border-gray-800 pb-2">
+              <button
+                onClick={() => toggleSection("quickLinks")}
+                className="w-full flex justify-between items-center py-2 px-1"
+              >
+                <span className="font-semibold">Quick Links</span>
+                {expandedSection === "quickLinks" ? (
+                  <ChevronUp className="h-4 w-4 text-gray-500" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                )}
+              </button>
+
+              {expandedSection === "quickLinks" && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="py-2 px-4"
+                >
+                  <ul className="space-y-2">
+                    {[
+                      "Home",
+                      "About",
+                      "Skills",
+                      "Projects",
+                      "Blog",
+                      "Contact",
+                    ].map((item, index) => (
+                      <li key={index} className="py-1">
+                        <Link
+                          href={
+                            item === "Home" ? "/" : `/#${item.toLowerCase()}`
+                          }
+                          className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center"
+                        >
+                          <ArrowRight className="h-3 w-3 mr-2" />
+                          {item}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Contact Info - Collapsible */}
+            <div className="border-b border-gray-200 dark:border-gray-800 pb-2">
+              <button
+                onClick={() => toggleSection("contactInfo")}
+                className="w-full flex justify-between items-center py-2 px-1"
+              >
+                <span className="font-semibold">Contact Info</span>
+                {expandedSection === "contactInfo" ? (
+                  <ChevronUp className="h-4 w-4 text-gray-500" />
+                ) : (
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                )}
+              </button>
+
+              {expandedSection === "contactInfo" && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="py-2 px-4"
+                >
+                  <ul className="space-y-3">
+                    <li className="flex items-start">
+                      <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3" />
+                      <a
+                        href="mailto:hello@example.com"
+                        className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        hello@example.com
+                      </a>
+                    </li>
+                    <li className="flex items-start">
+                      <Phone className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3" />
+                      <a
+                        href="tel:+11234567890"
+                        className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        +233 50 367 3195
+                      </a>
+                    </li>
+                    <li className="flex items-start">
+                      <MapPin className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 mr-3" />
+                      <span className="text-muted-foreground">
+                        1 University Avenue, Berekuso
+                      </span>
+                    </li>
+                  </ul>
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -181,13 +373,16 @@ export default function Footer() {
           transition={{ delay: 0.5 }}
           className="border-t border-gray-200 dark:border-gray-800 pt-8 text-center"
         >
-          <p className="text-muted-foreground text-sm flex items-center justify-center">
-            © {currentYear} DevPortfolio. All rights reserved. Made with
-            <Heart
-              className="h-4 w-4 text-red-500 mx-1 inline-block"
-              fill="currentColor"
-            />
-            using Next.js and Tailwind CSS.
+          <p className="text-muted-foreground text-sm flex items-center justify-center flex-wrap">
+            <span>© {currentYear} DevPortfolio. All rights reserved.</span>
+            <span className="flex items-center mx-1">
+              Made with
+              <Heart
+                className="h-4 w-4 text-red-500 mx-1 inline-block"
+                fill="currentColor"
+              />
+              using Next.js
+            </span>
           </p>
         </motion.div>
       </div>

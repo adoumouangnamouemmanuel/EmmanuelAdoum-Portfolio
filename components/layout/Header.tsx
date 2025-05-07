@@ -10,8 +10,8 @@ import {
 } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme/mode-toggle";
-import { Menu, X, ChevronRight, Home } from "lucide-react";
-import {useIsMobile} from "@/hooks/use-mobile";
+import { Menu, X, ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -89,6 +89,18 @@ export default function Header() {
     };
   }, []);
 
+  // Prevent body scrolling when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
+
   const logoVariants = {
     initial: { opacity: 0, scale: 0.8 },
     animate: {
@@ -120,10 +132,11 @@ export default function Header() {
     },
   };
 
+  // Updated mobile menu variants to slide from right
   const mobileMenuVariants = {
     closed: {
+      x: "100%",
       opacity: 0,
-      height: 0,
       transition: {
         duration: 0.3,
         when: "afterChildren",
@@ -132,8 +145,8 @@ export default function Header() {
       },
     },
     open: {
+      x: "0%",
       opacity: 1,
-      height: "auto",
       transition: {
         duration: 0.3,
         when: "beforeChildren",
@@ -144,8 +157,24 @@ export default function Header() {
   };
 
   const mobileItemVariants = {
-    closed: { opacity: 0, x: -20 },
+    closed: { opacity: 0, x: 20 }, // Changed to slide from right
     open: { opacity: 1, x: 0 },
+  };
+
+  // Backdrop variants for the semi-transparent overlay
+  const backdropVariants = {
+    closed: {
+      opacity: 0,
+      transition: {
+        duration: 0.3,
+      },
+    },
+    open: {
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+      },
+    },
   };
 
   return (
@@ -322,61 +351,96 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Redesigned to slide from right */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            variants={mobileMenuVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="md:hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg"
-          >
-            <div className="px-4 py-3 space-y-1 max-h-[80vh] overflow-y-auto">
-              {navItems.map((item, i) => (
-                <motion.div
-                  key={item.name}
-                  variants={mobileItemVariants}
-                  custom={i}
-                  className="overflow-hidden"
+          <>
+            {/* Semi-transparent backdrop */}
+            <motion.div
+              variants={backdropVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              className="md:hidden fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-40"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
+            {/* Sliding menu panel */}
+            <motion.div
+              variants={mobileMenuVariants}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              className="md:hidden fixed top-0 right-0 bottom-0 w-[75%] max-w-xs bg-white dark:bg-gray-900 shadow-xl z-50 flex flex-col"
+              style={{ height: "100vh" }} // Ensure full viewport height
+            >
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <span className="font-bold text-lg">Menu</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Link
-                    href={item.href}
-                    className={`flex items-center justify-between py-3 px-4 text-base font-medium rounded-lg ${
-                      activeSection === item.href.substring(1) &&
-                      item.href.startsWith("#")
-                        ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                        : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                    }`}
-                    onClick={(e) => {
-                      if (item.href.startsWith("#")) {
-                        e.preventDefault();
-                        document.querySelector(item.href)?.scrollIntoView({
-                          behavior: "smooth",
-                        });
-                        setActiveSection(item.href.substring(1));
-                        setMobileMenuOpen(false);
-                      } else {
-                        setMobileMenuOpen(false);
-                      }
-                    }}
+                  <X size={20} />
+                </Button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto py-2">
+                {navItems.map((item, i) => (
+                  <motion.div
+                    key={item.name}
+                    variants={mobileItemVariants}
+                    custom={i}
+                    className="block"
                   >
-                    <span>{item.name}</span>
-                    <motion.div
-                      whileHover={{ x: 5 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 10,
+                    <Link
+                      href={item.href}
+                      className={`flex items-center justify-between py-3 px-4 mx-2 my-1 text-base font-medium rounded-lg ${
+                        activeSection === item.href.substring(1) &&
+                        item.href.startsWith("#")
+                          ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                          : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                      onClick={(e) => {
+                        if (item.href.startsWith("#")) {
+                          e.preventDefault();
+                          document.querySelector(item.href)?.scrollIntoView({
+                            behavior: "smooth",
+                          });
+                          setActiveSection(item.href.substring(1));
+                          setMobileMenuOpen(false);
+                        } else {
+                          setMobileMenuOpen(false);
+                        }
                       }}
                     >
-                      <ChevronRight className="h-4 w-4" />
-                    </motion.div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+                      <span>{item.name}</span>
+                      <motion.div
+                        whileHover={{ x: 5 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
+                          damping: 10,
+                        }}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                <Button
+                  variant="outline"
+                  className="w-full justify-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Close Menu
+                </Button>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
