@@ -2,6 +2,7 @@
 
 import type React from "react";
 
+import { useToast } from "@/components/ui/ToastProvider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
 import { ArrowLeft, Github, Mail } from "lucide-react";
 import { signIn } from "next-auth/react";
@@ -29,39 +29,34 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      console.log("Attempting to sign in with credentials:", { email });
-
       const result = await signIn("credentials", {
         redirect: false,
         email,
         password,
       });
 
-      console.log("Sign in result:", result);
-
       if (result?.error) {
         toast({
           title: "Error",
-          description:
-            "Invalid email or password. Try admin@example.com / password",
+          description: "Invalid email or password. Please try again.",
           variant: "destructive",
         });
       } else {
         toast({
           title: "Success",
           description: "Successfully logged in!",
-          variant: "default", // You can customize the variant if needed
+          variant: "default",
         });
         router.push(callbackUrl);
       }
     } catch (error) {
-      console.error("Login error:", error);
       toast({
         title: "Error",
         description: "Something went wrong. Please try again.",
@@ -75,10 +70,8 @@ export default function LoginPage() {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      console.log("Attempting to sign in with Google");
       await signIn("google", { callbackUrl });
     } catch (error) {
-      console.error("Google sign in error:", error);
       toast({
         title: "Error",
         description: "Failed to sign in with Google. Please try again.",
@@ -91,10 +84,8 @@ export default function LoginPage() {
   const handleGithubSignIn = async () => {
     setIsLoading(true);
     try {
-      console.log("Attempting to sign in with GitHub");
       await signIn("github", { callbackUrl });
     } catch (error) {
-      console.error("GitHub sign in error:", error);
       toast({
         title: "Error",
         description: "Failed to sign in with GitHub. Please try again.",

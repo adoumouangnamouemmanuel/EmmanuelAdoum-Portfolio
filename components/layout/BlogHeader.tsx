@@ -171,7 +171,7 @@ export default function Header() {
                     onSelect={(event) => {
                       event.preventDefault();
                       signOut({
-                        callbackUrl: "/",
+                        callbackUrl: "/blog",
                       });
                     }}
                   >
