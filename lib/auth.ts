@@ -1,5 +1,6 @@
 import { app } from "@/lib/firebase"; // Ensure this points to your Firebase initialization file
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -18,6 +19,9 @@ declare module "next-auth" {
 
   interface User {
     id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
     role?: string;
   }
 }
@@ -25,6 +29,9 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
     role?: string;
   }
 }
@@ -51,6 +58,7 @@ export const authOptions: NextAuthOptions = {
           console.log("Attempting to authenticate:", credentials.email);
 
           const auth = getAuth(app);
+          const db = getFirestore(app);
 
           // Authenticate the user with Firebase
           const userCredential = await signInWithEmailAndPassword(
@@ -61,13 +69,19 @@ export const authOptions: NextAuthOptions = {
 
           const user = userCredential.user;
 
+          // Fetch user data from Firestore
+          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const userData = userDoc.data();
+
+          console.log("Firestore user data:", userData);
+
           // Return user object to be stored in the session
           return {
             id: user.uid,
-            name: user.displayName || "User",
+            name: userData?.name || user.displayName || user.email?.split('@')[0] || "User",
             email: user.email,
-            image: user.photoURL,
-            role: "user", // Default role, you can customize this
+            image: userData?.image || user.photoURL,
+            role: userData?.role || "user",
           };
         } catch (error: any) {
           console.error("Auth error:", error);
@@ -85,23 +99,43 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
   },
   callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === "google") {
+        try {
+          const db = getFirestore(app);
+          const userDoc = await getDoc(doc(db, "users", user.id));
+          const userData = userDoc.data();
+          
+          if (userData) {
+            user.name = userData.name;
+            user.image = userData.image;
+            user.role = userData.role;
+          }
+        } catch (error) {
+          console.error("Error fetching user data during Google sign in:", error);
+        }
+      }
+      return true;
+    },
     async session({ session, token }) {
       console.log("Session callback:", { session, token });
       if (token) {
-        session.user.id = token.id as string;
-        session.user.role = (token.role as string) || "user";
-        // Preserve the name from the token
-        session.user.name = token.name as string;
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.image;
+        session.user.role = token.role || "user";
       }
       return session;
     },
-    async jwt({ token, user }) {
-      console.log("JWT callback:", { token, user });
+    async jwt({ token, user, account }) {
+      console.log("JWT callback:", { token, user, account });
       if (user) {
         token.id = user.id;
-        token.role = user.role || "user";
-        // Preserve the name from the user object
         token.name = user.name;
+        token.email = user.email;
+        token.image = user.image;
+        token.role = user.role || "user";
       }
       return token;
     },

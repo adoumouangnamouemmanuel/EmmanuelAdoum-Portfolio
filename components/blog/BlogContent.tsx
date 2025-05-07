@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import { useEffect, useRef } from "react"
 
 interface BlogContentProps {
   content: string
@@ -25,6 +25,8 @@ export default function BlogContent({ content }: BlogContentProps) {
 
           heading.id = id
         }
+        // Add scroll margin to account for fixed header
+        heading.style.scrollMarginTop = "6rem"
       })
     }
   }, [content])
