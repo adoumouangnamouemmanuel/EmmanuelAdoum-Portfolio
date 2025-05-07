@@ -2,11 +2,9 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { blogPosts } from "@/data/blog";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
-  Bookmark,
   Calendar,
   Check,
   ChevronRight,
@@ -14,52 +12,182 @@ import {
   Copy,
   Facebook,
   Linkedin,
-  MessageSquare,
   Tag,
-  ThumbsUp,
   Twitter,
+  Edit,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// Define the BlogPost type
+type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  date: string;
+  readTime: number;
+  categories: string[];
+  author: {
+    name: string;
+    avatar: string;
+    bio?: string;
+    social?: {
+      github?: string;
+      twitter?: string;
+      linkedin?: string;
+    };
+  };
+  views: number;
+};
+
 export default function BlogPostPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
-  const [post, setPost] = useState(
-    blogPosts.find((post) => post.slug === slug)
-  );
-  const [relatedPosts, setRelatedPosts] = useState<typeof blogPosts>([]);
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // If post doesn't exist, redirect to blog page
-    if (!post) {
-      router.push("/blog");
-      return;
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+
+        // First, try to get the post from localStorage
+        const localPosts = JSON.parse(
+          localStorage.getItem("blogPosts") || "[]"
+        );
+        const localPost = localPosts.find((p: BlogPost) => p.slug === slug);
+
+        if (localPost) {
+          // If found in localStorage, use it
+          setPost(localPost);
+
+          // Find related posts with similar categories from localStorage and imported data
+          const related = localPosts
+            .filter(
+              (p: BlogPost) =>
+                p.slug !== slug &&
+                p.categories.some((cat) => localPost.categories.includes(cat))
+            )
+            .slice(0, 3);
+
+          setRelatedPosts(related);
+          setLoading(false);
+          return;
+        }
+
+        // If not in localStorage, try the API
+        try {
+          const response = await fetch(`/api/blog/${slug}`);
+
+          if (response.ok) {
+            const data = await response.json();
+            setPost(data);
+
+            // Fetch related posts
+            const relatedResponse = await fetch(
+              `/api/blog/related?slug=${slug}&categories=${data.categories.join(
+                ","
+              )}`
+            );
+            if (relatedResponse.ok) {
+              const relatedData = await relatedResponse.json();
+              setRelatedPosts(relatedData);
+            }
+            setLoading(false);
+            return;
+          }
+        } catch (apiError) {
+          console.error("API error, falling back to imported data:", apiError);
+        }
+
+        // If API fails, fall back to imported data
+        const module = await import("@/data/blog");
+        const foundPost = module.blogPosts.find((p) => p.slug === slug);
+
+        if (foundPost) {
+          setPost(foundPost);
+          // Find related posts with similar categories
+          const related = module.blogPosts
+            .filter(
+              (p) =>
+                p.slug !== slug &&
+                p.categories.some((cat) => foundPost.categories.includes(cat))
+            )
+            .slice(0, 3);
+          setRelatedPosts(related);
+        } else {
+          router.push("/blog");
+        }
+      } catch (error) {
+        console.error("Error fetching blog post:", error);
+        router.push("/blog");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (slug) {
+      fetchPost();
     }
-
-    // Find related posts with similar categories
-    const related = blogPosts
-      .filter(
-        (p) =>
-          p.slug !== slug &&
-          p.categories.some((cat) => post.categories.includes(cat))
-      )
-      .slice(0, 3);
-
-    setRelatedPosts(related);
-  }, [post, router, slug]);
-
-  if (!post) return null;
+  }, [slug, router]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // Increment view count for posts in localStorage
+  useEffect(() => {
+    if (post && !loading) {
+      try {
+        const localPosts = JSON.parse(
+          localStorage.getItem("blogPosts") || "[]"
+        );
+        const postIndex = localPosts.findIndex(
+          (p: BlogPost) => p.slug === slug
+        );
+
+        if (postIndex !== -1) {
+          // Increment views for localStorage posts
+          localPosts[postIndex].views = (localPosts[postIndex].views || 0) + 1;
+          localStorage.setItem("blogPosts", JSON.stringify(localPosts));
+        }
+      } catch (error) {
+        console.error("Error updating view count:", error);
+      }
+    }
+  }, [post, loading, slug]);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen">
+        <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="animate-pulse">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-8"></div>
+              <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-6"></div>
+              <div className="flex justify-center space-x-6 mb-8">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
+              </div>
+              <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl mb-8"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  if (!post) return null;
 
   return (
     <main className="min-h-screen">
@@ -88,6 +216,26 @@ export default function BlogPostPage() {
                 <Link href="/blog">
                   <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
                   Back to Blog
+                </Link>
+              </Button>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                className="shadow-md group"
+                asChild
+              >
+                <Link href={`/blog/edit/${slug}`}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  Edit Post
                 </Link>
               </Button>
             </motion.div>
@@ -155,15 +303,17 @@ export default function BlogPostPage() {
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 dark:bg-gray-700">
                 <Image
-                  src="/placeholder.svg?height=40&width=40"
-                  alt="Author"
+                  src={
+                    post.author.avatar || "/placeholder.svg?height=40&width=40"
+                  }
+                  alt={post.author.name}
                   width={40}
                   height={40}
                   className="object-cover"
                 />
               </div>
               <div>
-                <div className="font-medium">Emmanuel Adoum</div>
+                <div className="font-medium">{post.author.name}</div>
                 <div className="text-xs text-muted-foreground">
                   Web Developer
                 </div>
@@ -184,7 +334,7 @@ export default function BlogPostPage() {
                 )}
               </motion.button>
               <motion.a
-                href={`https://x.com/AdoumOuangnamou/intent/tweet?url=${encodeURIComponent(
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
                   typeof window !== "undefined" ? window.location.href : ""
                 )}&text=${encodeURIComponent(post.title)}`}
                 target="_blank"
@@ -234,95 +384,8 @@ export default function BlogPostPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className="bg-white dark:bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg prose dark:prose-invert prose-blue max-w-none"
-              >
-                <p className="lead">{post.excerpt}</p>
-
-                <h2>Introduction</h2>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                  euismod, nisl vel ultricies lacinia, nisl nisl aliquam nisl,
-                  eu aliquam nisl nisl sit amet nisl. Sed euismod, nisl vel
-                  ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl
-                  nisl sit amet nisl.
-                </p>
-
-                <p>
-                  Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam
-                  nisl, eu aliquam nisl nisl sit amet nisl. Sed euismod, nisl
-                  vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl
-                  nisl sit amet nisl.
-                </p>
-
-                <h2>Main Content</h2>
-                <p>
-                  Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam
-                  nisl, eu aliquam nisl nisl sit amet nisl. Sed euismod, nisl
-                  vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl
-                  nisl sit amet nisl.
-                </p>
-
-                <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg my-6 border-l-4 border-blue-500">
-                  <p className="m-0 text-sm">
-                    <strong>Pro tip:</strong> Sed euismod, nisl vel ultricies
-                    lacinia, nisl nisl aliquam nisl, eu aliquam nisl nisl sit
-                    amet nisl.
-                  </p>
-                </div>
-
-                <h3>Subsection</h3>
-                <p>
-                  Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam
-                  nisl, eu aliquam nisl nisl sit amet nisl. Sed euismod, nisl
-                  vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl
-                  nisl sit amet nisl.
-                </p>
-
-                <pre className="bg-gray-100 dark:bg-gray-900 p-4 rounded-lg overflow-x-auto">
-                  <code>
-                    {`function example() {
-  console.log("Hello, world!");
-  return true;
-}`}
-                  </code>
-                </pre>
-
-                <h2>Conclusion</h2>
-                <p>
-                  Sed euismod, nisl vel ultricies lacinia, nisl nisl aliquam
-                  nisl, eu aliquam nisl nisl sit amet nisl. Sed euismod, nisl
-                  vel ultricies lacinia, nisl nisl aliquam nisl, eu aliquam nisl
-                  nisl sit amet nisl.
-                </p>
-
-                <div className="flex items-center justify-between mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-4">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="flex items-center space-x-1 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      <ThumbsUp className="h-5 w-5" />
-                      <span>42 Likes</span>
-                    </motion.button>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="flex items-center space-x-1 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      <MessageSquare className="h-5 w-5" />
-                      <span>12 Comments</span>
-                    </motion.button>
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="flex items-center space-x-1 text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                  >
-                    <Bookmark className="h-5 w-5" />
-                    <span>Save</span>
-                  </motion.button>
-                </div>
-              </motion.article>
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
 
               {/* Author bio */}
               <motion.div
@@ -333,76 +396,84 @@ export default function BlogPostPage() {
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
                   <Image
-                    src="/placeholder.svg?height=80&width=80"
-                    alt="Author"
+                    src={
+                      post.author.avatar ||
+                      "/placeholder.svg?height=80&width=80"
+                    }
+                    alt={post.author.name}
                     width={80}
                     height={80}
                     className="object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">Emmanuel Adoum</h3>
+                  <h3 className="text-xl font-bold mb-2">{post.author.name}</h3>
                   <p className="text-muted-foreground mb-4">
-                    Web developer with over 5 years of experience specializing
-                    in frontend technologies. Passionate about creating
-                    beautiful and functional user experiences.
+                    {post.author.bio ||
+                      "Web developer with over 5 years of experience specializing in frontend technologies. Passionate about creating beautiful and functional user experiences."}
                   </p>
                   <div className="flex space-x-3">
-                    <motion.a
-                      href="https://github.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <svg
-                        className="h-5 w-5"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
+                    {post.author.social?.github && (
+                      <motion.a
+                        href={post.author.social.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        whileHover={{ y: -3, scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </motion.a>
-                    <motion.a
-                      href="https://x.com/AdoumOuangnamou"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <svg
-                        className="h-5 w-5 text-blue-400"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
+                        <svg
+                          className="h-5 w-5"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </motion.a>
+                    )}
+                    {post.author.social?.twitter && (
+                      <motion.a
+                        href={post.author.social.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        whileHover={{ y: -3, scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                       >
-                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                      </svg>
-                    </motion.a>
-                    <motion.a
-                      href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <svg
-                        className="h-5 w-5 text-blue-600"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
+                        <svg
+                          className="h-5 w-5 text-blue-400"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                        </svg>
+                      </motion.a>
+                    )}
+                    {post.author.social?.linkedin && (
+                      <motion.a
+                        href={post.author.social.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        whileHover={{ y: -3, scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                       >
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                      </svg>
-                    </motion.a>
+                        <svg
+                          className="h-5 w-5 text-blue-600"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                        </svg>
+                      </motion.a>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -437,7 +508,8 @@ export default function BlogPostPage() {
                           <Image
                             src={
                               relatedPost.coverImage ||
-                              "/placeholder.svg?height=144&width=288"
+                              "/placeholder.svg?height=144&width=288" ||
+                              "/placeholder.svg"
                             }
                             alt={relatedPost.title}
                             fill
@@ -543,7 +615,7 @@ export default function BlogPostPage() {
                   <h3 className="text-lg font-semibold mb-4">Share</h3>
                   <div className="flex space-x-2">
                     <motion.a
-                      href={`https://x.com/AdoumOuangnamou/intent/tweet?url=${encodeURIComponent(
+                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
                         typeof window !== "undefined"
                           ? window.location.href
                           : ""

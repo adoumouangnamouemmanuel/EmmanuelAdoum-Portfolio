@@ -3,7 +3,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { blogPosts } from "@/data/blog";
 import { motion, useInView } from "framer-motion";
 import {
   ArrowLeft,
@@ -15,21 +14,106 @@ import {
   Search,
   Share2,
   Tag,
+  Plus,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+// Define the BlogPost type
+type BlogPost = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  date: string;
+  readTime: number;
+  categories: string[];
+  author: {
+    name: string;
+    avatar: string;
+    bio?: string;
+    social?: {
+      github?: string;
+      twitter?: string;
+      linkedin?: string;
+    };
+  };
+  views: number;
+};
 
 export default function BlogPage() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [allCategories, setAllCategories] = useState<string[]>([]);
+  // Add a new state for pagination on mobile
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = { mobile: 4, desktop: 10 }; // 4 posts per page on mobile, 10 on desktop
+  const isMobile = useIsMobile();
 
-  // Extract all unique categories
-  const allCategories = Array.from(
-    new Set(blogPosts.flatMap((post) => post.categories))
-  );
+  // Modify the fetchBlogPosts function to better handle API failures
+  const fetchBlogPosts = async () => {
+    try {
+      setLoading(true);
+
+      // Try to fetch from API, but handle errors gracefully
+      try {
+        const response = await fetch("/api/blog");
+
+        // Check if response is OK before trying to parse JSON
+        if (response.ok) {
+          const data = await response.json();
+
+          // Validate that data is an array before using it
+          if (data && Array.isArray(data) && data.length > 0) {
+            setBlogPosts(data);
+
+            // Extract all unique categories
+            const categories = Array.from(
+              new Set(data.flatMap((post: BlogPost) => post.categories))
+            );
+            setAllCategories(categories);
+            setLoading(false);
+            return; // Exit early if successful
+          }
+        }
+        // If we get here, we'll fall back to local data without throwing an error
+        console.log("API response not valid, falling back to local data");
+      } catch (apiError) {
+        console.error(
+          "Error fetching from API, falling back to local data:",
+          apiError
+        );
+        // Continue to fallback data
+      }
+
+      // Fallback to local data
+      const module = await import("@/data/blog");
+      setBlogPosts(module.blogPosts);
+      setAllCategories(
+        Array.from(new Set(module.blogPosts.flatMap((post) => post.categories)))
+      );
+    } catch (error) {
+      console.error("Error loading blog posts:", error);
+      // Set empty data as last resort
+      setBlogPosts([]);
+      setAllCategories([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch blog posts from your API
+    fetchBlogPosts();
+  }, []);
 
   // Filter posts based on search and category
   const filteredPosts = blogPosts.filter((post) => {
@@ -43,6 +127,30 @@ export default function BlogPage() {
 
     return matchesSearch && matchesCategory;
   });
+
+  // Modify the filtered posts logic to handle pagination
+  const paginatedPosts = filteredPosts.slice(
+    (currentPage - 1) * (isMobile ? postsPerPage.mobile : postsPerPage.desktop),
+    currentPage * (isMobile ? postsPerPage.mobile : postsPerPage.desktop)
+  );
+
+  // Add a function to handle page changes
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+    // Scroll to top of posts section
+    if (typeof window !== "undefined") {
+      window.scrollTo({
+        top: document.getElementById("blog-posts")?.offsetTop || 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Calculate total pages
+  const totalPages = Math.ceil(
+    filteredPosts.length /
+      (isMobile ? postsPerPage.mobile : postsPerPage.desktop)
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -96,6 +204,21 @@ export default function BlogPage() {
                 </Link>
               </Button>
             </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button variant="default" size="sm" className="shadow-md" asChild>
+                <Link href="/blog/create">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Post
+                </Link>
+              </Button>
+            </motion.div>
           </div>
 
           <div className="text-center max-w-3xl mx-auto">
@@ -121,7 +244,7 @@ export default function BlogPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative max-w-xl mx-auto"
+              className="relative max-w-xl mx-auto mb-8 lg:mb-16"
             >
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
@@ -138,9 +261,35 @@ export default function BlogPage() {
 
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Mobile Categories as Tags */}
+          <div className="lg:hidden mb-4">
+            <h3 className="text-lg font-semibold mb-2">Categories</h3>
+            <div className="flex flex-wrap gap-2">
+              <Badge
+                variant={selectedCategory === null ? "default" : "secondary"}
+                className="cursor-pointer"
+                onClick={() => setSelectedCategory(null)}
+              >
+                All Categories
+              </Badge>
+              {allCategories.map((category, index) => (
+                <Badge
+                  key={index}
+                  variant={
+                    selectedCategory === category ? "default" : "secondary"
+                  }
+                  className="cursor-pointer"
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
+            {/* Sidebar - Only visible on desktop */}
+            <div className="hidden lg:block lg:col-span-1">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -235,8 +384,11 @@ export default function BlogPage() {
                 variants={containerVariants}
               >
                 {filteredPosts.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {filteredPosts.map((post, index) => (
+                  <div
+                    id="blog-posts"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6"
+                  >
+                    {paginatedPosts.map((post, index) => (
                       <motion.article
                         key={index}
                         variants={itemVariants}
@@ -251,11 +403,12 @@ export default function BlogPage() {
                         className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-gray-100 dark:border-gray-700 group"
                       >
                         <Link href={`/blog/${post.slug}`} className="block">
-                          <div className="relative h-44 overflow-hidden">
+                          <div className="relative h-36 lg:h-44 overflow-hidden">
                             <Image
                               src={
                                 post.coverImage ||
-                                "/placeholder.svg?height=400&width=600"
+                                "/placeholder.svg?height=400&width=600" ||
+                                "/placeholder.svg"
                               }
                               alt={post.title}
                               fill
@@ -271,8 +424,8 @@ export default function BlogPage() {
                           </div>
                         </Link>
 
-                        <div className="p-5">
-                          <div className="flex flex-wrap gap-2 mb-3">
+                        <div className="p-4 lg:p-5">
+                          <div className="flex flex-wrap gap-2 mb-2 lg:mb-3">
                             {post.categories
                               .slice(0, 2)
                               .map((category, catIndex) => (
@@ -285,7 +438,7 @@ export default function BlogPage() {
                                 >
                                   <Badge
                                     variant="secondary"
-                                    className="shadow-sm flex items-center gap-1 cursor-pointer"
+                                    className="shadow-sm flex items-center gap-1 cursor-pointer text-xs"
                                     onClick={() =>
                                       setSelectedCategory(category)
                                     }
@@ -296,7 +449,7 @@ export default function BlogPage() {
                                 </motion.div>
                               ))}
                             {post.categories.length > 2 && (
-                              <Badge variant="outline">
+                              <Badge variant="outline" className="text-xs">
                                 +{post.categories.length - 2}
                               </Badge>
                             )}
@@ -306,12 +459,12 @@ export default function BlogPage() {
                             href={`/blog/${post.slug}`}
                             className="block group"
                           >
-                            <h3 className="text-lg font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            <h3 className="text-base lg:text-lg font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                               {post.title}
                             </h3>
                           </Link>
 
-                          <p className="text-muted-foreground mb-4 line-clamp-2 text-sm">
+                          <p className="text-muted-foreground mb-3 lg:mb-4 line-clamp-2 text-xs lg:text-sm">
                             {post.excerpt}
                           </p>
 
@@ -337,7 +490,7 @@ export default function BlogPage() {
                             >
                               <Link
                                 href={`/blog/${post.slug}`}
-                                className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center"
+                                className="text-blue-600 dark:text-blue-400 text-xs lg:text-sm font-medium hover:underline flex items-center"
                               >
                                 Read more
                                 <ChevronRight className="ml-1 h-3 w-3" />
@@ -346,19 +499,22 @@ export default function BlogPage() {
                           </div>
 
                           {/* Author and actions */}
-                          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                          <div className="flex items-center justify-between mt-3 lg:mt-4 pt-3 lg:pt-4 border-t border-gray-100 dark:border-gray-700">
                             <div className="flex items-center">
-                              <div className="w-7 h-7 rounded-full overflow-hidden mr-2 bg-gray-200 dark:bg-gray-700">
+                              <div className="w-6 h-6 lg:w-7 lg:h-7 rounded-full overflow-hidden mr-2 bg-gray-200 dark:bg-gray-700">
                                 <Image
-                                  src="/placeholder.svg?height=28&width=28"
-                                  alt="Author"
+                                  src={
+                                    post.author.avatar ||
+                                    "/placeholder.svg?height=28&width=28"
+                                  }
+                                  alt={post.author.name}
                                   width={28}
                                   height={28}
                                   className="object-cover"
                                 />
                               </div>
                               <span className="text-xs text-muted-foreground">
-                                Emmanuel Adoum
+                                {post.author.name}
                               </span>
                             </div>
                             <div className="flex space-x-2">
@@ -379,7 +535,8 @@ export default function BlogPage() {
                               <div className="flex items-center text-xs text-muted-foreground">
                                 <Eye className="h-3 w-3 mr-1" />
                                 <span>
-                                  {Math.floor(Math.random() * 1000) + 100}
+                                  {post.views ||
+                                    Math.floor(Math.random() * 1000) + 100}
                                 </span>
                               </div>
                             </div>
@@ -416,26 +573,33 @@ export default function BlogPage() {
                 {filteredPosts.length > 0 && (
                   <motion.div
                     variants={itemVariants}
-                    className="flex justify-center mt-12"
+                    className="flex justify-center mt-8 lg:mt-12"
                   >
                     <div className="flex space-x-2">
-                      <Button variant="outline" size="sm" disabled>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
                         Previous
                       </Button>
+
+                      {/* Current page indicator */}
                       <Button
                         variant="outline"
                         size="sm"
                         className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
                       >
-                        1
+                        {currentPage} of {totalPages}
                       </Button>
-                      <Button variant="outline" size="sm">
-                        2
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        3
-                      </Button>
-                      <Button variant="outline" size="sm">
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                      >
                         Next
                       </Button>
                     </div>
