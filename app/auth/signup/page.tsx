@@ -122,7 +122,7 @@ export default function SignupPage() {
     setIsLoading(true);
     try {
       console.log("Attempting to sign in with Google");
-      await signIn("google", { callbackUrl: "/" });
+      await signIn("google", { callbackUrl: "/blog" });
     } catch (error) {
       console.error("Google sign in error:", error);
       toast({
@@ -138,7 +138,7 @@ export default function SignupPage() {
     setIsLoading(true);
     try {
       console.log("Attempting to sign in with GitHub");
-      await signIn("github", { callbackUrl: "/" });
+      await signIn("github", { callbackUrl: "/blog" });
     } catch (error) {
       console.error("GitHub sign in error:", error);
       toast({
