@@ -1,44 +1,45 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { posts, users, comments } from "@/lib/firebase/fallback-data";
+import { postModel, userModel } from "@/lib/firebase/models";
+import { getServerSession } from "next-auth";
+import { type NextRequest, NextResponse } from "next/server";
 
-// GET /api/posts/[slug] - Get a post by slug
+// GET /api/posts/[slug] - Get a single post
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = context.params;
 
-    // For local testing, use fallback data
-    const post = posts.find((p) => p.slug === slug);
-
+    // Find the post
+    const post = await postModel.findBySlug(slug);
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Add author information
-    const author = users.find((u) => u.id === post.authorId);
+    // Get author details
+    let author = null;
+    if (post.authorId) {
+      author = await userModel.findById(post.authorId);
+    }
 
-    // Count comments and likes
-    const postComments = comments.filter((c) => c.postId === post.id);
-    const likesCount = Math.floor(Math.random() * 10); // Mock likes count
-
-    const postWithDetails = {
+    // Format the response
+    const response = {
       ...post,
-      author: {
-        id: author?.id || "",
-        name: author?.name || "Unknown",
-        image: author?.image || null,
-      },
-      _count: {
-        comments: postComments.length,
-        likes: likesCount,
-      },
+      author: author ? {
+        id: author.id,
+        name: author.displayName || author.name || 'Unknown',
+        image: author.photoURL || author.image || '/placeholder.svg?height=40&width=40',
+        bio: author.bio || author.description || '',
+        social: {
+          github: author.github || '',
+          twitter: author.twitter || '',
+          linkedin: author.linkedin || '',
+        }
+      } : null
     };
 
-    return NextResponse.json(postWithDetails);
+    return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching post:", error);
     return NextResponse.json(

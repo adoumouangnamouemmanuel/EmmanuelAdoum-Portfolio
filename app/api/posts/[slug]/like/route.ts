@@ -1,52 +1,23 @@
+import { postModel } from "@/lib/firebase/models";
 import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { blogPosts } from "@/data/blog";
 
-// Mock likes storage
-const likes = new Map<string, Set<string>>(); // postId -> Set of userIds
-
-// POST /api/posts/[slug]/like - Like or unlike a post
-export async function POST(
+// GET /api/posts/[slug]/like - Get like status
+export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
-
-    // Check if user is authenticated
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { slug } = params;
-
-    // Find the post
-    const post = blogPosts.find((p) => p.slug === slug);
-
+    const { slug } = context.params;
+    const post = await postModel.findBySlug(slug);
+    
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Get or initialize the set of users who liked this post
-    if (!likes.has(post.id)) {
-      likes.set(post.id, new Set());
-    }
-
-    const postLikes = likes.get(post.id)!;
-
-    // Check if the user has already liked the post
-    if (postLikes.has(session.user.id)) {
-      // Unlike the post
-      postLikes.delete(session.user.id);
-      return NextResponse.json({ liked: false });
-    } else {
-      // Like the post
-      postLikes.add(session.user.id);
-      return NextResponse.json({ liked: true });
-    }
+    const likeCount = await postModel.getLikeCount(post.id);
+    return NextResponse.json({ likeCount });
   } catch (error) {
-    console.error("Error liking/unliking post:", error);
+    console.error("Error getting like count:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
@@ -54,35 +25,32 @@ export async function POST(
   }
 }
 
-// GET /api/posts/[slug]/like - Check if user has liked a post
-export async function GET(
+// POST /api/posts/[slug]/like - Toggle like
+export async function POST(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions);
+    const { slug } = context.params;
+    const { userId } = await req.json();
 
-    // Check if user is authenticated
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!userId) {
+      return NextResponse.json(
+        { error: "User ID is required" },
+        { status: 400 }
+      );
     }
 
-    const { slug } = params;
-
-    // Find the post
-    const post = blogPosts.find((p) => p.slug === slug);
-
+    const post = await postModel.findBySlug(slug);
+    
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Check if the user has liked the post
-    const postLikes = likes.get(post.id);
-    const liked = postLikes ? postLikes.has(session.user.id) : false;
-
-    return NextResponse.json({ liked });
+    const isLiked = await postModel.toggleLike(post.id, userId);
+    return NextResponse.json({ isLiked });
   } catch (error) {
-    console.error("Error checking like status:", error);
+    console.error("Error toggling like:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

@@ -3,6 +3,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { blogPosts } from "@/data/blog";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useInView } from "framer-motion";
 import {
   ArrowLeft,
@@ -11,18 +13,26 @@ import {
   ChevronRight,
   Clock,
   Eye,
+  Plus,
   Search,
   Share2,
   Tag,
-  Plus,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState, useEffect } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { blogPosts } from "@/data/blog";
+import { useEffect, useRef, useState } from "react";
+
+// Add date formatting function
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: '2-digit',
+    month: '2-digit',
+    day: '2-digit'
+  }).replace(/\//g, '-');
+};
 
 // Define the BlogPost type
 type BlogPost = {
@@ -65,35 +75,78 @@ export default function BlogPage() {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    // Load blog posts from local data
-    setBlogPostsData(
-      blogPosts.map((post) => ({
-        id: post.id,
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        content: post.content,
-        coverImage: post.coverImage,
-        date: post.createdAt,
-        readTime: post.readTime,
-        categories: post.categories,
-        views: post.views,
-        author: {
-          name: post.author.name,
-          avatar: post.author.image, // Map 'image' to 'avatar'
-          bio: post.author.bio,
-          social: post.author.social,
-        },
-      }))
-    );
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/posts?published=true');
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts');
+        }
+        const data = await response.json();
+        
+        setBlogPostsData(
+          data.posts.map((post: any) => ({
+            id: post.id,
+            title: post.title,
+            slug: post.slug,
+            excerpt: post.excerpt,
+            content: post.content,
+            coverImage: post.coverImage,
+            date: post.createdAt?.seconds 
+              ? new Date(post.createdAt.seconds * 1000).toISOString()
+              : post.createdAt,
+            readTime: post.readTime || 5, // Default read time if not set
+            categories: post.categories || [],
+            views: post.views || 0,
+            author: {
+              name: post.author?.name || 'Unknown',
+              avatar: post.author?.image || '/placeholder.svg?height=40&width=40',
+              bio: post.author?.bio,
+              social: post.author?.social,
+            },
+          }))
+        );
 
-    // Extract all unique categories
-    const categories = Array.from(
-      new Set(blogPosts.flatMap((post) => post.categories))
-    );
-    setAllCategories(categories);
+        // Extract all unique categories
+        const categories = Array.from(
+          new Set(data.posts.flatMap((post: any) => post.categories || []))
+        ).filter((cat): cat is string => typeof cat === 'string');
+        setAllCategories(categories);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        // Fallback to local data if fetch fails
+        setBlogPostsData(
+          blogPosts.map((post) => ({
+            id: post.id,
+            title: post.title,
+            slug: post.slug,
+            excerpt: post.excerpt,
+            content: post.content,
+            coverImage: post.coverImage,
+            date: post.createdAt,
+            readTime: post.readTime,
+            categories: post.categories,
+            views: post.views,
+            author: {
+              name: post.author.name,
+              avatar: post.author.image,
+              bio: post.author.bio,
+              social: post.author.social,
+            },
+          }))
+        );
 
-    setLoading(false);
+        // Extract all unique categories from fallback data
+        const categories = Array.from(
+          new Set(blogPosts.flatMap((post) => post.categories))
+        );
+        setAllCategories(categories);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
   // Filter posts based on search and category
@@ -455,7 +508,7 @@ export default function BlogPage() {
                             <div className="flex items-center text-xs text-muted-foreground">
                               <div className="flex items-center mr-3">
                                 <Calendar className="h-3 w-3 mr-1 text-blue-600 dark:text-blue-400" />
-                                <span>{post.date}</span>
+                                <span>{formatDate(post.date)}</span>
                               </div>
                               <div className="flex items-center">
                                 <Clock className="h-3 w-3 mr-1 text-blue-600 dark:text-blue-400" />
@@ -519,8 +572,7 @@ export default function BlogPage() {
                               <div className="flex items-center text-xs text-muted-foreground">
                                 <Eye className="h-3 w-3 mr-1" />
                                 <span>
-                                  {post.views ||
-                                    Math.floor(Math.random() * 1000) + 100}
+                                  {post.views}
                                 </span>
                               </div>
                             </div>

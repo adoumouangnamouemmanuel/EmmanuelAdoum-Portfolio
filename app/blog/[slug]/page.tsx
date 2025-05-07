@@ -1,30 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  Calendar,
-  Check,
-  ChevronRight,
-  Clock,
-  Copy,
-  Facebook,
-  Linkedin,
-  Twitter,
-  Edit,
-} from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import TableOfContents from "@/components/blog/TableOfContents";
 import BlogContent from "@/components/blog/BlogContent";
-import ResponsiveImage from "@/components/blog/ResponsiveImage";
 import CommentSection from "@/components/blog/CommentSection";
 import LikeButton from "@/components/blog/LikeButton";
-import { blogPosts } from "@/data/blog";
+import ResponsiveImage from "@/components/blog/ResponsiveImage";
+import TableOfContents from "@/components/blog/TableOfContents";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import {
+    ArrowLeft,
+    Calendar,
+    Check,
+    ChevronRight,
+    Clock,
+    Copy,
+    Edit,
+    Facebook,
+    Linkedin,
+    Twitter,
+} from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // Define the BlogPost type
 type BlogPost = {
@@ -72,36 +71,7 @@ export default function BlogPostPage() {
         setLoading(true);
         setError(null);
 
-        // First try to find the post in our local data
-        const localPost = blogPosts.find((p) => p.slug === slug);
-
-        if (localPost) {
-          const mappedPost: BlogPost = {
-            ...localPost,
-            date: localPost.createdAt || new Date().toISOString(), // Ensure 'date' is provided
-          };
-          setPost(mappedPost);
-
-          // Find related posts with similar categories
-          const related = blogPosts
-            .filter(
-              (p) =>
-                p.slug !== slug &&
-                p.categories.some((cat) => localPost.categories.includes(cat))
-            )
-            .slice(0, 3);
-
-          setRelatedPosts(
-            related.map((post) => ({
-              ...post,
-              date: post.createdAt || new Date().toISOString(), // Ensure 'date' is provided
-            })) as BlogPost[]
-          );
-          setLoading(false);
-          return;
-        }
-
-        // If not found locally, try to fetch from API
+        // Fetch from API
         const response = await fetch(`/api/posts/${slug}`);
 
         if (!response.ok) {
@@ -114,50 +84,62 @@ export default function BlogPostPage() {
         }
 
         const data = await response.json();
-        setPost(data);
+        
+        // Ensure author data is properly structured
+        const postData = {
+          ...data,
+          author: {
+            id: data.author?.id || data.authorId || '',
+            name: data.author?.name || data.author?.displayName || 'Unknown',
+            image: data.author?.image || data.author?.photoURL || '/placeholder.svg?height=40&width=40',
+            bio: data.author?.bio || data.author?.description || '',
+            social: {
+              github: data.author?.social?.github || data.author?.github || '',
+              twitter: data.author?.social?.twitter || data.author?.twitter || '',
+              linkedin: data.author?.social?.linkedin || data.author?.linkedin || '',
+            }
+          }
+        };
+        
+        setPost(postData);
+
+        // Increment view count
+        try {
+          await fetch(`/api/posts/${slug}/views`, {
+            method: 'POST',
+          });
+        } catch (error) {
+          console.error('Error incrementing view count:', error);
+        }
 
         // Fetch related posts
         const relatedResponse = await fetch(
-          `/api/posts?category=${data.categories[0]?.slug || ""}&limit=3`
+          `/api/posts?category=${data.categories[0] || ""}&limit=3`
         );
         if (relatedResponse.ok) {
           const relatedData = await relatedResponse.json();
-          // Filter out the current post
-          const filteredPosts = relatedData.posts.filter(
-            (p: BlogPost) => p.slug !== slug
-          );
+          // Filter out the current post and ensure author data
+          const filteredPosts = relatedData.posts
+            .filter((p: BlogPost) => p.slug !== slug)
+            .map((p: BlogPost) => ({
+              ...p,
+              author: {
+                id: p.author?.id || p.authorId || '',
+                name: p.author?.name || p.author?.displayName || 'Unknown',
+                image: p.author?.image || p.author?.photoURL || '/placeholder.svg?height=40&width=40',
+                bio: p.author?.bio || p.author?.description || '',
+                social: {
+                  github: p.author?.social?.github || p.author?.github || '',
+                  twitter: p.author?.social?.twitter || p.author?.twitter || '',
+                  linkedin: p.author?.social?.linkedin || p.author?.linkedin || '',
+                }
+              }
+            }));
           setRelatedPosts(filteredPosts.slice(0, 3));
         }
       } catch (error) {
         console.error("Error fetching blog post:", error);
         setError("Failed to load blog post");
-
-        // Fallback to local data if API fails
-        const localPost = blogPosts.find((p) => p.slug === slug);
-
-        if (localPost) {
-          setPost({
-            ...localPost,
-            date: localPost.createdAt || new Date().toISOString(),
-          } as BlogPost);
-
-          // Find related posts with similar categories
-          const related = blogPosts
-            .filter(
-              (p) =>
-                p.slug !== slug &&
-                p.categories.some((cat) => localPost.categories.includes(cat))
-            )
-            .slice(0, 3);
-
-          setRelatedPosts(
-            related.map((post) => ({
-              ...post,
-              date: post.createdAt || new Date().toISOString(), // Ensure 'date' is provided
-            })) as BlogPost[]
-          );
-          setError(null);
-        }
       } finally {
         setLoading(false);
       }
@@ -244,6 +226,7 @@ export default function BlogPostPage() {
             </motion.div>
 
             {session?.user &&
+              post?.author?.id &&
               (session.user.id === post.author.id ||
                 session.user.role === "admin") && (
                 <motion.div

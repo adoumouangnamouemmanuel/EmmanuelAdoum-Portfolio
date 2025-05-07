@@ -1,74 +1,53 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { posts, users, comments } from "@/lib/firebase/fallback-data";
+import { postModel, userModel } from "@/lib/firebase/models";
+import { getServerSession } from "next-auth";
+import { type NextRequest, NextResponse } from "next/server";
 
 // GET /api/posts - Get all posts
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const published = searchParams.get("published");
-    const category = searchParams.get("category");
-    const limitParam = searchParams.get("limit");
-    const pageParam = searchParams.get("page");
+    const published = searchParams.get("published") === "true";
+    const category = searchParams.get("category") || undefined;
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const page = parseInt(searchParams.get("page") || "1");
 
-    const limit = limitParam ? Number.parseInt(limitParam) : 10;
-    const page = pageParam ? Number.parseInt(pageParam) : 1;
-
-    // Filter posts based on query parameters
-    let filteredPosts = [...posts];
-
-    if (published !== null) {
-      filteredPosts = filteredPosts.filter(
-        (post) => post.published === (published === "true")
-      );
-    }
-
-    if (category) {
-      filteredPosts = filteredPosts.filter(
-        (post) => post.categories && post.categories.includes(category)
-      );
-    }
-
-    // Sort by createdAt (newest first)
-    filteredPosts.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-
-    // Paginate
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
-
-    // Add author and count information
-    const postsWithDetails = paginatedPosts.map((post) => {
-      const author = users.find((u) => u.id === post.authorId);
-      const postComments = comments.filter((c) => c.postId === post.id);
-      const likesCount = Math.floor(Math.random() * 10); // Mock likes count
-
-      return {
-        ...post,
-        author: {
-          id: author?.id || "",
-          name: author?.name || "Unknown",
-          image: author?.image || null,
-        },
-        _count: {
-          comments: postComments.length,
-          likes: likesCount,
-        },
-      };
+    // Get posts from Firestore
+    const { posts, total } = await postModel.findAll({
+      published,
+      category,
+      limit,
+      page,
     });
 
+    // Get author details for each post
+    const postsWithAuthors = await Promise.all(
+      posts.map(async (post) => {
+        let author = null;
+        if (post.authorId) {
+          author = await userModel.findById(post.authorId);
+        }
+
+        return {
+          ...post,
+          author: author ? {
+            id: author.id,
+            name: author.displayName || author.name || 'Unknown',
+            image: author.photoURL || author.image || '/placeholder.svg?height=40&width=40',
+            bio: author.bio || author.description || '',
+            social: {
+              github: author.github || '',
+              twitter: author.twitter || '',
+              linkedin: author.linkedin || '',
+            }
+          } : null
+        };
+      })
+    );
+
     return NextResponse.json({
-      posts: postsWithDetails,
-      pagination: {
-        total: filteredPosts.length,
-        pages: Math.ceil(filteredPosts.length / limit),
-        page,
-        limit,
-      },
+      posts: postsWithAuthors,
+      total,
     });
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -101,7 +80,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if slug is unique
-    const existingPost = posts.find((p) => p.slug === slug);
+    const existingPost = await postModel.findBySlug(slug);
     if (existingPost) {
       return NextResponse.json(
         { error: "A post with this slug already exists" },
@@ -129,23 +108,19 @@ export async function POST(req: NextRequest) {
       },
     };
 
-    // Add to our mock array
-    posts.push(newPost);
+    // Create post in Firestore
+    await postModel.create(newPost);
 
-    // Get author details
-    const author = users.find((u) => u.id === session.user.id) || {
-      id: session.user.id,
-      name: session.user.name || "Unknown",
-      image: session.user.image || null,
-    };
+    // Get author details from database
+    const author = await userModel.findById(session.user.id);
 
     return NextResponse.json(
       {
         ...newPost,
         author: {
-          id: author.id,
-          name: author.name,
-          image: author.image,
+          id: author?.id || session.user.id,
+          name: author?.name || session.user.name || "Unknown",
+          image: author?.image || session.user.image || null,
         },
       },
       { status: 201 }

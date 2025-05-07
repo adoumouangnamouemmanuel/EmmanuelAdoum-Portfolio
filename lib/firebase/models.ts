@@ -1,24 +1,24 @@
 import {
-  db,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-  Timestamp,
-} from "./firestore";
-import {
+  categories as fallbackCategories,
+  comments as fallbackComments,
   posts as fallbackPosts,
   users as fallbackUsers,
-  comments as fallbackComments,
-  categories as fallbackCategories,
 } from "./fallback-data";
+import {
+  collection,
+  db,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  setDoc,
+  Timestamp,
+  updateDoc,
+  where
+} from "./firestore";
 
 // Helper function to determine if we should use fallback data
 const shouldUseFallback = () => {
@@ -33,13 +33,25 @@ const shouldUseFallback = () => {
 export interface User {
   id: string;
   name?: string | null;
+  displayName?: string | null;
   email: string;
   emailVerified?: string | null;
   image?: string | null;
+  photoURL?: string | null;
+  bio?: string | null;
+  description?: string | null;
   role: string;
   blocked?: boolean;
   createdAt: string;
   updatedAt: string;
+  github?: string;
+  twitter?: string;
+  linkedin?: string;
+  social?: {
+    github?: string;
+    twitter?: string;
+    linkedin?: string;
+  };
 }
 
 // Post model
@@ -307,6 +319,49 @@ export const postModel = {
       updatedAt: Timestamp.now().toDate().toISOString(),
     });
   },
+
+  async getLikeCount(postId: string): Promise<number> {
+    try {
+      const likesRef = collection(db, 'likes');
+      const q = query(likesRef, where('postId', '==', postId));
+      const snapshot = await getDocs(q);
+      return snapshot.size;
+    } catch (error) {
+      console.error('Error getting like count:', error);
+      return 0;
+    }
+  },
+
+  async toggleLike(postId: string, userId: string): Promise<boolean> {
+    try {
+      const likesRef = collection(db, 'likes');
+      const q = query(
+        likesRef,
+        where('postId', '==', postId),
+        where('userId', '==', userId)
+      );
+      const snapshot = await getDocs(q);
+      
+      if (snapshot.empty) {
+        // Add like
+        const likeRef = doc(collection(db, 'likes'));
+        await setDoc(likeRef, {
+          postId,
+          userId,
+          createdAt: Timestamp.now().toDate().toISOString()
+        });
+        return true;
+      } else {
+        // Remove like
+        const likeDoc = snapshot.docs[0];
+        await deleteDoc(doc(db, 'likes', likeDoc.id));
+        return false;
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      throw error;
+    }
+  }
 };
 
 // Comment CRUD operations

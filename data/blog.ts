@@ -1,4 +1,3 @@
-"use client";
 
 // Blog posts data for local development and testing
 export const blogPosts = [

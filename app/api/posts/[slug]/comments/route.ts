@@ -1,7 +1,7 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { blogPosts } from "@/data/blog"; // Ensure this is correctly imported
 import { authOptions } from "@/lib/auth";
-import { blogPosts } from "@/data/blog";
+import { getServerSession } from "next-auth";
+import { type NextRequest, NextResponse } from "next/server";
 
 // Mock comments storage
 const commentsStore: Record<string, any[]> = {};
@@ -9,10 +9,15 @@ const commentsStore: Record<string, any[]> = {};
 // GET /api/posts/[slug]/comments - Get comments for a post
 export async function GET(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = params;
+    const { slug } = await context.params; // Await params
+
+    // Ensure blogPosts is an array
+    if (!Array.isArray(blogPosts)) {
+      throw new Error("blogPosts is not an array");
+    }
 
     // Find the post
     const post = blogPosts.find((p) => p.slug === slug);
@@ -37,7 +42,7 @@ export async function GET(
 // POST /api/posts/[slug]/comments - Create a comment
 export async function POST(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -47,7 +52,7 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { slug } = params;
+    const { slug } = await context.params; // Await params
     const { content, parentId } = await req.json();
 
     // Validate content
@@ -56,6 +61,11 @@ export async function POST(
         { error: "Comment content is required" },
         { status: 400 }
       );
+    }
+
+    // Ensure blogPosts is an array
+    if (!Array.isArray(blogPosts)) {
+      throw new Error("blogPosts is not an array");
     }
 
     // Find the post
