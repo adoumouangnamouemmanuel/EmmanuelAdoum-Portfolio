@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
+import BlogLayout from "@/components/layout/BlogLayout";
 
-// No Footer import - we'll let the main layout handle the footer
-
-export default function BlogLayout({ children }: { children: ReactNode }) {
-  return <>{children}</>;
+export default function Layout({ children }: { children: ReactNode }) {
+  return <BlogLayout>{children}</BlogLayout>;
 }

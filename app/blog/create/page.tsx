@@ -2,6 +2,12 @@
 
 import type React from "react";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { motion } from "framer-motion";
+import { ArrowLeft, Plus, Save, X, Eye, ImageIcon } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,39 +22,11 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { ArrowLeft, Plus, Save, X, Eye, ImageIcon } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
-
-// Define the BlogPost type
-type BlogPost = {
-  id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  content: string;
-  coverImage: string;
-  date: string;
-  readTime: number;
-  categories: string[];
-  author: {
-    name: string;
-    avatar: string;
-    bio?: string;
-    social?: {
-      github?: string;
-      twitter?: string;
-      linkedin?: string;
-    };
-  };
-  views: number;
-};
+import { toast } from "@/components/ui/use-toast";
 
 export default function CreateBlogPost() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
@@ -58,9 +36,46 @@ export default function CreateBlogPost() {
   );
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [preview, setPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login?callbackUrl=/blog/create");
+    }
+  }, [status, router]);
+
+  // Fetch available categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        if (response.ok) {
+          const data = await response.json();
+          setAvailableCategories(data.categories.map((cat: any) => cat.name));
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Fallback categories
+        setAvailableCategories([
+          "Next.js",
+          "React",
+          "JavaScript",
+          "TypeScript",
+          "CSS",
+          "UI/UX",
+          "Web Development",
+          "Backend",
+          "Frontend",
+        ]);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Generate slug from title
   useEffect(() => {
@@ -95,63 +110,83 @@ export default function CreateBlogPost() {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      // Create a new blog post object
-      const newPost: BlogPost = {
-        id: uuidv4(),
+      // Validate required fields
+      if (!title || !slug || !content) {
+        toast({
+          title: "Missing required fields",
+          description: "Please fill in all required fields",
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
+      }
+
+      // Create post data
+      const postData = {
         title,
         slug,
         excerpt,
         content,
         coverImage,
-        date: new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-        readTime: calculateReadTime(content),
-        categories,
-        author: {
-          name: "Emmanuel Adoum",
-          avatar: "/emma.png",
-          bio: "Web developer with over 5 years of experience specializing in frontend technologies.",
-          social: {
-            github: "https://github.com",
-            twitter: "https://twitter.com",
-            linkedin: "https://linkedin.com",
-          },
-        },
-        views: 0,
+        categories: categories.length > 0 ? categories : ["Uncategorized"],
+        published: true,
       };
 
-      // Get existing posts from localStorage or initialize empty array
-      const existingPosts = JSON.parse(
-        localStorage.getItem("blogPosts") || "[]"
-      );
+      // Send to API
+      const response = await fetch("/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
 
-      // Add new post to the array
-      const updatedPosts = [newPost, ...existingPosts];
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Success!",
+          description: "Your post has been published",
+        });
 
-      // Save to localStorage
-      localStorage.setItem("blogPosts", JSON.stringify(updatedPosts));
-
-      setSaveMessage("Blog post saved successfully!");
-
-      // Redirect after a short delay
-      setTimeout(() => {
-        router.push(`/blog/${slug}`);
-      }, 1500);
-    } catch (error) {
+        // Redirect after a short delay
+        setTimeout(() => {
+          router.push(`/blog/${data.slug}`);
+        }, 1000);
+      } else {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to create post");
+      }
+    } catch (error: any) {
       console.error("Error saving blog post:", error);
-      setSaveMessage("Error saving blog post. Please try again.");
+      toast({
+        title: "Error",
+        description:
+          error.message || "Error saving blog post. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
   };
+
+  // Show loading state while checking authentication
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // Don't render the form if not authenticated
+  if (status === "unauthenticated") {
+    return null;
+  }
 
   return (
     <main className="min-h-screen py-16">
@@ -189,11 +224,7 @@ export default function CreateBlogPost() {
               onClick={() => setPreview(!preview)}
             >
               {preview ? "Edit" : "Preview"}
-              {preview ? (
-                <Eye className="ml-2 h-4 w-4" />
-              ) : (
-                <Eye className="ml-2 h-4 w-4" />
-              )}
+              <Eye className="ml-2 h-4 w-4" />
             </Button>
           </motion.div>
         </div>
@@ -288,7 +319,13 @@ export default function CreateBlogPost() {
                         placeholder="Add a category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        list="category-options"
                       />
+                      <datalist id="category-options">
+                        {availableCategories.map((cat) => (
+                          <option key={cat} value={cat} />
+                        ))}
+                      </datalist>
                       <Button
                         type="button"
                         onClick={addCategory}

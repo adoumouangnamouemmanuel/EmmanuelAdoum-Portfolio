@@ -2,25 +2,6 @@
 
 import type React from "react";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { ArrowLeft, Plus, Save, X, Eye, ImageIcon, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +13,27 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { motion } from "framer-motion";
+import { ArrowLeft, Eye, ImageIcon, Plus, Save, Trash2, X } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 // Define the BlogPost type
 type BlogPost = {
@@ -44,18 +46,19 @@ type BlogPost = {
   date: string;
   readTime: number;
   categories: string[];
+  published: boolean;
   author: {
+    id: string;
     name: string;
-    avatar: string;
+    image: string;
   };
-  views: number;
 };
 
 export default function EditBlogPost() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
-
+  const { data: session, status } = useSession();
+  const slug = (params?.slug as string) || "";
   const [title, setTitle] = useState("");
   const [newSlug, setNewSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
@@ -65,62 +68,128 @@ export default function EditBlogPost() {
   );
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
+  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [preview, setPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState("");
-  const [postNotFound, setPostNotFound] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [originalPost, setOriginalPost] = useState<BlogPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login?callbackUrl=/blog/edit/" + slug);
+    }
+  }, [status, router, slug]);
 
   // Load post data on component mount
   useEffect(() => {
-    const loadPost = () => {
+    const fetchPost = async () => {
+      if (status !== "authenticated") return;
+
       try {
-        // Try to get posts from localStorage
-        const posts = JSON.parse(localStorage.getItem("blogPosts") || "[]");
+        setLoading(true);
+        setError(null);
 
-        // Find the post with the matching slug
-        const post = posts.find((p: BlogPost) => p.slug === slug);
+        // Fetch post from API
+        const response = await fetch(`/api/posts/${slug}`);
 
-        if (post) {
-          setOriginalPost(post);
-          setTitle(post.title);
-          setNewSlug(post.slug);
-          setExcerpt(post.excerpt);
-          setContent(post.content);
-          setCoverImage(post.coverImage);
-          setCategories(post.categories);
-        } else {
-          // If post not found in localStorage, try to find it in the imported data
-          import("@/data/blog")
-            .then((module) => {
-              const dataPost = module.blogPosts.find((p) => p.slug === slug);
-
-              if (dataPost) {
-                setOriginalPost(dataPost);
-                setTitle(dataPost.title);
-                setNewSlug(dataPost.slug);
-                setExcerpt(dataPost.excerpt);
-                setContent(dataPost.content);
-                setCoverImage(dataPost.coverImage);
-                setCategories(dataPost.categories);
-              } else {
-                setPostNotFound(true);
-              }
-            })
-            .catch(() => {
-              setPostNotFound(true);
-            });
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError("Post not found");
+            setLoading(false);
+            return;
+          }
+          throw new Error(`Error fetching post: ${response.statusText}`);
         }
+
+        const post = await response.json();
+
+        // Check if user is authorized to edit this post
+        if (
+          post.author.id !== session?.user.id &&
+          session?.user.role !== "admin"
+        ) {
+          setError("You are not authorized to edit this post");
+          setLoading(false);
+          return;
+        }
+
+        setOriginalPost(post);
+        setTitle(post.title);
+        setNewSlug(post.slug);
+        setExcerpt(post.excerpt || "");
+        setContent(post.content);
+        setCoverImage(
+          post.coverImage || "/placeholder.svg?height=600&width=1200"
+        );
+        setCategories(
+          post.categories.map((cat: any) =>
+            typeof cat === "string" ? cat : cat.name
+          )
+        );
       } catch (error) {
         console.error("Error loading blog post:", error);
-        setPostNotFound(true);
+        setError("Failed to load blog post");
+
+        // Fallback to local data in development
+        if (process.env.NODE_ENV === "development") {
+          try {
+            const module = await import("@/data/blog1");
+            const foundPost = module.blogPosts.find((p) => p.slug === slug);
+
+            if (foundPost) {
+              setOriginalPost(foundPost as unknown as BlogPost);
+              setTitle(foundPost.title);
+              setNewSlug(foundPost.slug);
+              setExcerpt(foundPost.excerpt || "");
+              setContent(foundPost.content);
+              setCoverImage(
+                foundPost.coverImage || "/placeholder.svg?height=600&width=1200"
+              );
+              setCategories(foundPost.categories);
+              setError(null);
+            }
+          } catch (fallbackError) {
+            console.error("Fallback data error:", fallbackError);
+          }
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (slug) {
-      loadPost();
+    // Fetch available categories
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        if (response.ok) {
+          const data = await response.json();
+          setAvailableCategories(data.categories.map((cat: any) => cat.name));
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        // Fallback categories
+        setAvailableCategories([
+          "Next.js",
+          "React",
+          "JavaScript",
+          "TypeScript",
+          "CSS",
+          "UI/UX",
+          "Web Development",
+          "Backend",
+          "Frontend",
+        ]);
+      }
+    };
+
+    if (slug && status === "authenticated") {
+      fetchPost();
+      fetchCategories();
     }
-  }, [slug]);
+  }, [slug, status, session, router]);
 
   // Calculate read time based on content length
   const calculateReadTime = (text: string): number => {
@@ -143,107 +212,132 @@ export default function EditBlogPost() {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      if (!originalPost) {
-        throw new Error("Original post not found");
+      // Validate required fields
+      if (!title || !newSlug || !content) {
+        toast({
+          title: "Missing required fields",
+          description: "Please fill in all required fields",
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
       }
 
-      // Create an updated blog post object
-      const updatedPost: BlogPost = {
-        ...originalPost,
+      // Create updated post data
+      const postData = {
         title,
-        slug: newSlug,
+        newSlug: newSlug !== slug ? newSlug : undefined,
         excerpt,
         content,
         coverImage,
-        readTime: calculateReadTime(content),
-        categories,
-        // Keep the original date and views
+        categories: categories.length > 0 ? categories : ["Uncategorized"],
       };
 
-      // Get existing posts from localStorage
-      const existingPosts = JSON.parse(
-        localStorage.getItem("blogPosts") || "[]"
-      );
+      // Send to API
+      const response = await fetch(`/api/posts/${slug}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(postData),
+      });
 
-      // Find if the post already exists in localStorage
-      const postIndex = existingPosts.findIndex(
-        (p: BlogPost) => p.id === originalPost.id
-      );
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Success!",
+          description: "Your post has been updated",
+        });
 
-      let updatedPosts;
-      if (postIndex >= 0) {
-        // Update existing post
-        updatedPosts = [...existingPosts];
-        updatedPosts[postIndex] = updatedPost;
+        // Redirect after a short delay
+        setTimeout(() => {
+          router.push(`/blog/${data.slug}`);
+        }, 1000);
       } else {
-        // Add as a new post (for posts from the data file)
-        updatedPosts = [updatedPost, ...existingPosts];
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update post");
       }
-
-      // Save to localStorage
-      localStorage.setItem("blogPosts", JSON.stringify(updatedPosts));
-
-      setSaveMessage("Blog post updated successfully!");
-
-      // Redirect after a short delay
-      setTimeout(() => {
-        router.push(`/blog/${newSlug}`);
-      }, 1500);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating blog post:", error);
-      setSaveMessage("Error updating blog post. Please try again.");
+      toast({
+        title: "Error",
+        description:
+          error.message || "Error updating blog post. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
   };
 
   // Handle post deletion
-  const handleDelete = () => {
+  const handleDelete = async () => {
     try {
-      if (!originalPost) {
-        throw new Error("Original post not found");
+      setIsDeleting(true);
+
+      const response = await fetch(`/api/posts/${slug}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Success!",
+          description: "Your post has been deleted",
+        });
+
+        // Redirect after a short delay
+        setTimeout(() => {
+          router.push("/blog");
+        }, 1000);
+      } else {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to delete post");
       }
-
-      // Get existing posts from localStorage
-      const existingPosts = JSON.parse(
-        localStorage.getItem("blogPosts") || "[]"
-      );
-
-      // Filter out the post to delete
-      const updatedPosts = existingPosts.filter(
-        (p: BlogPost) => p.id !== originalPost.id
-      );
-
-      // Save to localStorage
-      localStorage.setItem("blogPosts", JSON.stringify(updatedPosts));
-
-      // Redirect to blog list
-      router.push("/blog");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error deleting blog post:", error);
-      setSaveMessage("Error deleting blog post. Please try again.");
+      toast({
+        title: "Error",
+        description:
+          error.message || "Error deleting blog post. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
-  if (postNotFound) {
+  // Show loading state while checking authentication or loading post
+  if (status === "loading" || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  // Show error message
+  if (error) {
     return (
       <main className="min-h-screen py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl font-bold mb-4">Post Not Found</h1>
-          <p className="mb-8">
-            The blog post you're looking for doesn't exist.
-          </p>
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl font-bold mb-4">Error</h1>
+          <p className="mb-8 text-muted-foreground">{error}</p>
           <Button asChild>
             <Link href="/blog">Back to Blog</Link>
           </Button>
         </div>
       </main>
     );
+  }
+
+  // Don't render the form if not authenticated
+  if (status === "unauthenticated") {
+    return null;
   }
 
   return (
@@ -306,8 +400,9 @@ export default function EditBlogPost() {
                   <AlertDialogAction
                     onClick={handleDelete}
                     className="bg-destructive text-destructive-foreground"
+                    disabled={isDeleting}
                   >
-                    Delete
+                    {isDeleting ? "Deleting..." : "Delete"}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -405,7 +500,13 @@ export default function EditBlogPost() {
                         placeholder="Add a category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        list="category-options"
                       />
+                      <datalist id="category-options">
+                        {availableCategories.map((cat) => (
+                          <option key={cat} value={cat} />
+                        ))}
+                      </datalist>
                       <Button
                         type="button"
                         onClick={addCategory}
@@ -455,22 +556,11 @@ export default function EditBlogPost() {
                   <Button
                     variant="outline"
                     type="button"
-                    onClick={() => router.push("/blog")}
+                    onClick={() => router.push(`/blog/${slug}`)}
                   >
                     Cancel
                   </Button>
                   <div className="flex items-center gap-4">
-                    {saveMessage && (
-                      <span
-                        className={
-                          saveMessage.includes("Error")
-                            ? "text-destructive text-sm"
-                            : "text-green-600 dark:text-green-400 text-sm"
-                        }
-                      >
-                        {saveMessage}
-                      </span>
-                    )}
                     <Button type="submit" disabled={isSaving}>
                       {isSaving ? "Saving..." : "Update Post"}
                       <Save className="ml-2 h-4 w-4" />

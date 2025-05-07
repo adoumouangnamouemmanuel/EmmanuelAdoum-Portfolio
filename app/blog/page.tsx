@@ -20,6 +20,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { blogPosts } from "@/data/blog";
 
 // Define the BlogPost type
 type BlogPost = {
@@ -50,73 +53,51 @@ export default function BlogPage() {
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
+  const [blogPostsData, setBlogPostsData] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [allCategories, setAllCategories] = useState<string[]>([]);
   // Add a new state for pagination on mobile
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = { mobile: 4, desktop: 10 }; // 4 posts per page on mobile, 10 on desktop
   const isMobile = useIsMobile();
+  const router = useRouter();
 
-  // Modify the fetchBlogPosts function to better handle API failures
-  const fetchBlogPosts = async () => {
-    try {
-      setLoading(true);
-
-      // Try to fetch from API, but handle errors gracefully
-      try {
-        const response = await fetch("/api/blog");
-
-        // Check if response is OK before trying to parse JSON
-        if (response.ok) {
-          const data = await response.json();
-
-          // Validate that data is an array before using it
-          if (data && Array.isArray(data) && data.length > 0) {
-            setBlogPosts(data);
-
-            // Extract all unique categories
-            const categories = Array.from(
-              new Set(data.flatMap((post: BlogPost) => post.categories))
-            );
-            setAllCategories(categories);
-            setLoading(false);
-            return; // Exit early if successful
-          }
-        }
-        // If we get here, we'll fall back to local data without throwing an error
-        console.log("API response not valid, falling back to local data");
-      } catch (apiError) {
-        console.error(
-          "Error fetching from API, falling back to local data:",
-          apiError
-        );
-        // Continue to fallback data
-      }
-
-      // Fallback to local data
-      const module = await import("@/data/blog");
-      setBlogPosts(module.blogPosts);
-      setAllCategories(
-        Array.from(new Set(module.blogPosts.flatMap((post) => post.categories)))
-      );
-    } catch (error) {
-      console.error("Error loading blog posts:", error);
-      // Set empty data as last resort
-      setBlogPosts([]);
-      setAllCategories([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: session, status } = useSession();
 
   useEffect(() => {
-    // Fetch blog posts from your API
-    fetchBlogPosts();
+    // Load blog posts from local data
+    setBlogPostsData(
+      blogPosts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        content: post.content,
+        coverImage: post.coverImage,
+        date: post.createdAt,
+        readTime: post.readTime,
+        categories: post.categories,
+        views: post.views,
+        author: {
+          name: post.author.name,
+          avatar: post.author.image, // Map 'image' to 'avatar'
+          bio: post.author.bio,
+          social: post.author.social,
+        },
+      }))
+    );
+
+    // Extract all unique categories
+    const categories = Array.from(
+      new Set(blogPosts.flatMap((post) => post.categories))
+    );
+    setAllCategories(categories);
+
+    setLoading(false);
   }, []);
 
   // Filter posts based on search and category
-  const filteredPosts = blogPosts.filter((post) => {
+  const filteredPosts = blogPostsData.filter((post) => {
     const matchesSearch =
       searchQuery === "" ||
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -408,6 +389,8 @@ export default function BlogPage() {
                               src={
                                 post.coverImage ||
                                 "/placeholder.svg?height=400&width=600" ||
+                                "/placeholder.svg" ||
+                                "/placeholder.svg" ||
                                 "/placeholder.svg"
                               }
                               alt={post.title}
@@ -505,7 +488,8 @@ export default function BlogPage() {
                                 <Image
                                   src={
                                     post.author.avatar ||
-                                    "/placeholder.svg?height=28&width=28"
+                                    "/placeholder.svg?height=28&width=28" ||
+                                    "/placeholder.svg"
                                   }
                                   alt={post.author.name}
                                   width={28}

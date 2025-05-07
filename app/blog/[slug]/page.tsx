@@ -1,7 +1,8 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -12,14 +13,18 @@ import {
   Copy,
   Facebook,
   Linkedin,
-  Tag,
   Twitter,
   Edit,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import TableOfContents from "@/components/blog/TableOfContents";
+import BlogContent from "@/components/blog/BlogContent";
+import ResponsiveImage from "@/components/blog/ResponsiveImage";
+import CommentSection from "@/components/blog/CommentSection";
+import LikeButton from "@/components/blog/LikeButton";
+import { blogPosts } from "@/data/blog";
 
 // Define the BlogPost type
 type BlogPost = {
@@ -33,8 +38,9 @@ type BlogPost = {
   readTime: number;
   categories: string[];
   author: {
+    id: string;
     name: string;
-    avatar: string;
+    image: string;
     bio?: string;
     social?: {
       github?: string;
@@ -43,92 +49,115 @@ type BlogPost = {
     };
   };
   views: number;
+  _count?: {
+    comments: number;
+    likes: number;
+  };
 };
 
 export default function BlogPostPage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const { data: session } = useSession();
+  const slug = params?.slug as string || "";
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         setLoading(true);
+        setError(null);
 
-        // First, try to get the post from localStorage
-        const localPosts = JSON.parse(
-          localStorage.getItem("blogPosts") || "[]"
-        );
-        const localPost = localPosts.find((p: BlogPost) => p.slug === slug);
+        // First try to find the post in our local data
+        const localPost = blogPosts.find((p) => p.slug === slug);
 
         if (localPost) {
-          // If found in localStorage, use it
-          setPost(localPost);
+          const mappedPost: BlogPost = {
+            ...localPost,
+            date: localPost.createdAt || new Date().toISOString(), // Ensure 'date' is provided
+          };
+          setPost(mappedPost);
 
-          // Find related posts with similar categories from localStorage and imported data
-          const related = localPosts
+          // Find related posts with similar categories
+          const related = blogPosts
             .filter(
-              (p: BlogPost) =>
+              (p) =>
                 p.slug !== slug &&
                 p.categories.some((cat) => localPost.categories.includes(cat))
             )
             .slice(0, 3);
 
-          setRelatedPosts(related);
+          setRelatedPosts(
+            related.map((post) => ({
+              ...post,
+              date: post.createdAt || new Date().toISOString(), // Ensure 'date' is provided
+            })) as BlogPost[]
+          );
           setLoading(false);
           return;
         }
 
-        // If not in localStorage, try the API
-        try {
-          const response = await fetch(`/api/blog/${slug}`);
+        // If not found locally, try to fetch from API
+        const response = await fetch(`/api/posts/${slug}`);
 
-          if (response.ok) {
-            const data = await response.json();
-            setPost(data);
-
-            // Fetch related posts
-            const relatedResponse = await fetch(
-              `/api/blog/related?slug=${slug}&categories=${data.categories.join(
-                ","
-              )}`
-            );
-            if (relatedResponse.ok) {
-              const relatedData = await relatedResponse.json();
-              setRelatedPosts(relatedData);
-            }
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError("Post not found");
             setLoading(false);
             return;
           }
-        } catch (apiError) {
-          console.error("API error, falling back to imported data:", apiError);
+          throw new Error(`Error fetching post: ${response.statusText}`);
         }
 
-        // If API fails, fall back to imported data
-        const module = await import("@/data/blog");
-        const foundPost = module.blogPosts.find((p) => p.slug === slug);
+        const data = await response.json();
+        setPost(data);
 
-        if (foundPost) {
-          setPost(foundPost);
-          // Find related posts with similar categories
-          const related = module.blogPosts
-            .filter(
-              (p) =>
-                p.slug !== slug &&
-                p.categories.some((cat) => foundPost.categories.includes(cat))
-            )
-            .slice(0, 3);
-          setRelatedPosts(related);
-        } else {
-          router.push("/blog");
+        // Fetch related posts
+        const relatedResponse = await fetch(
+          `/api/posts?category=${data.categories[0]?.slug || ""}&limit=3`
+        );
+        if (relatedResponse.ok) {
+          const relatedData = await relatedResponse.json();
+          // Filter out the current post
+          const filteredPosts = relatedData.posts.filter(
+            (p: BlogPost) => p.slug !== slug
+          );
+          setRelatedPosts(filteredPosts.slice(0, 3));
         }
       } catch (error) {
         console.error("Error fetching blog post:", error);
-        router.push("/blog");
+        setError("Failed to load blog post");
+
+        // Fallback to local data if API fails
+        const localPost = blogPosts.find((p) => p.slug === slug);
+
+        if (localPost) {
+          setPost({
+            ...localPost,
+            date: localPost.createdAt || new Date().toISOString(),
+          } as BlogPost);
+
+          // Find related posts with similar categories
+          const related = blogPosts
+            .filter(
+              (p) =>
+                p.slug !== slug &&
+                p.categories.some((cat) => localPost.categories.includes(cat))
+            )
+            .slice(0, 3);
+
+          setRelatedPosts(
+            related.map((post) => ({
+              ...post,
+              date: post.createdAt || new Date().toISOString(), // Ensure 'date' is provided
+            })) as BlogPost[]
+          );
+          setError(null);
+        }
       } finally {
         setLoading(false);
       }
@@ -137,35 +166,15 @@ export default function BlogPostPage() {
     if (slug) {
       fetchPost();
     }
-  }, [slug, router]);
+  }, [slug]);
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  // Increment view count for posts in localStorage
-  useEffect(() => {
-    if (post && !loading) {
-      try {
-        const localPosts = JSON.parse(
-          localStorage.getItem("blogPosts") || "[]"
-        );
-        const postIndex = localPosts.findIndex(
-          (p: BlogPost) => p.slug === slug
-        );
-
-        if (postIndex !== -1) {
-          // Increment views for localStorage posts
-          localPosts[postIndex].views = (localPosts[postIndex].views || 0) + 1;
-          localStorage.setItem("blogPosts", JSON.stringify(localPosts));
-        }
-      } catch (error) {
-        console.error("Error updating view count:", error);
-      }
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
-  }, [post, loading, slug]);
+  };
 
   if (loading) {
     return (
@@ -183,6 +192,20 @@ export default function BlogPostPage() {
             </div>
           </div>
         </section>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl font-bold mb-4">Error</h1>
+          <p className="mb-8 text-muted-foreground">{error}</p>
+          <Button asChild>
+            <Link href="/blog">Back to Blog</Link>
+          </Button>
+        </div>
       </main>
     );
   }
@@ -220,25 +243,29 @@ export default function BlogPostPage() {
               </Button>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="shadow-md group"
-                asChild
-              >
-                <Link href={`/blog/edit/${slug}`}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit Post
-                </Link>
-              </Button>
-            </motion.div>
+            {session?.user &&
+              (session.user.id === post.author.id ||
+                session.user.role === "admin") && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="shadow-md group"
+                    asChild
+                  >
+                    <Link href={`/blog/edit/${slug}`}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit Post
+                    </Link>
+                  </Button>
+                </motion.div>
+              )}
           </div>
 
           <motion.div
@@ -249,7 +276,6 @@ export default function BlogPostPage() {
           >
             {post.categories.map((category, index) => (
               <Badge key={index} variant="secondary" className="shadow-sm">
-                <Tag className="h-3 w-3 mr-1" />
                 {category}
               </Badge>
             ))}
@@ -284,13 +310,12 @@ export default function BlogPostPage() {
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video"
+            className="mb-8"
           >
-            <Image
+            <ResponsiveImage
               src={post.coverImage || "/placeholder.svg?height=600&width=1200"}
               alt={post.title}
-              fill
-              className="object-cover"
+              priority
             />
           </motion.div>
 
@@ -302,30 +327,32 @@ export default function BlogPostPage() {
           >
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 dark:bg-gray-700">
-                <Image
+                <img
                   src={
-                    post.author.avatar || "/placeholder.svg?height=40&width=40"
+                    post.author.image || "/placeholder.svg?height=40&width=40"
                   }
-                  alt={post.author.name}
-                  width={40}
-                  height={40}
-                  className="object-cover"
+                  alt={post.author.name || "User"}
+                  className="w-full h-full object-cover"
                 />
               </div>
               <div>
                 <div className="font-medium">{post.author.name}</div>
                 <div className="text-xs text-muted-foreground">
-                  Web Developer
+                  {post.author.bio
+                    ? post.author.bio.split(" ").slice(0, 3).join(" ") + "..."
+                    : "Author"}
                 </div>
               </div>
             </div>
 
             <div className="flex space-x-2">
+              <LikeButton postSlug={slug} />
+
               <motion.button
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
                 className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-                onClick={() => copyToClipboard()}
+                onClick={copyToClipboard}
               >
                 {copied ? (
                   <Check className="h-4 w-4" />
@@ -333,6 +360,7 @@ export default function BlogPostPage() {
                   <Copy className="h-4 w-4" />
                 )}
               </motion.button>
+
               <motion.a
                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
                   typeof window !== "undefined" ? window.location.href : ""
@@ -345,6 +373,7 @@ export default function BlogPostPage() {
               >
                 <Twitter className="h-4 w-4" />
               </motion.a>
+
               <motion.a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                   typeof window !== "undefined" ? window.location.href : ""
@@ -357,6 +386,7 @@ export default function BlogPostPage() {
               >
                 <Facebook className="h-4 w-4" />
               </motion.a>
+
               <motion.a
                 href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                   typeof window !== "undefined" ? window.location.href : ""
@@ -379,13 +409,10 @@ export default function BlogPostPage() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Main content */}
             <div className="lg:col-span-3">
-              <motion.article
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg prose dark:prose-invert prose-blue max-w-none"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+              <BlogContent content={post.content} />
+
+              {/* Comments section */}
+              <CommentSection postSlug={slug} />
 
               {/* Author bio */}
               <motion.div
@@ -395,15 +422,12 @@ export default function BlogPostPage() {
                 className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg mt-8 flex flex-col md:flex-row items-center md:items-start gap-6"
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
-                  <Image
+                  <img
                     src={
-                      post.author.avatar ||
-                      "/placeholder.svg?height=80&width=80"
+                      post.author.image || "/placeholder.svg?height=80&width=80"
                     }
                     alt={post.author.name}
-                    width={80}
-                    height={80}
-                    className="object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
@@ -505,15 +529,13 @@ export default function BlogPostPage() {
                           href={`/blog/${relatedPost.slug}`}
                           className="block h-36 relative"
                         >
-                          <Image
+                          <img
                             src={
                               relatedPost.coverImage ||
-                              "/placeholder.svg?height=144&width=288" ||
-                              "/placeholder.svg"
+                              "/placeholder.svg?height=144&width=288"
                             }
                             alt={relatedPost.title}
-                            fill
-                            className="object-cover"
+                            className="w-full h-full object-cover"
                           />
                         </Link>
                         <div className="p-4 flex-1 flex flex-col">
@@ -550,127 +572,7 @@ export default function BlogPostPage() {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg sticky top-24"
-              >
-                <h3 className="text-lg font-semibold mb-4">
-                  Table of Contents
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <li>
-                    <a
-                      href="#introduction"
-                      className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      Introduction
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#main-content"
-                      className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      Main Content
-                    </a>
-                    <ul className="pl-4 mt-2 space-y-2">
-                      <li>
-                        <a
-                          href="#subsection"
-                          className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                        >
-                          Subsection
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <a
-                      href="#conclusion"
-                      className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                    >
-                      Conclusion
-                    </a>
-                  </li>
-                </ul>
-
-                <div className="border-t border-gray-200 dark:border-gray-700 my-6 pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Tags</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {post.categories.map((category, index) => (
-                      <Badge
-                        key={index}
-                        variant="secondary"
-                        className="shadow-sm"
-                      >
-                        {category}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-200 dark:border-gray-700 my-6 pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Share</h3>
-                  <div className="flex space-x-2">
-                    <motion.a
-                      href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                        typeof window !== "undefined"
-                          ? window.location.href
-                          : ""
-                      )}&text=${encodeURIComponent(post.title)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-                    >
-                      <Twitter className="h-5 w-5" />
-                    </motion.a>
-                    <motion.a
-                      href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                        typeof window !== "undefined"
-                          ? window.location.href
-                          : ""
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-                    >
-                      <Facebook className="h-5 w-5" />
-                    </motion.a>
-                    <motion.a
-                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                        typeof window !== "undefined"
-                          ? window.location.href
-                          : ""
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-                    >
-                      <Linkedin className="h-5 w-5" />
-                    </motion.a>
-                    <motion.button
-                      whileHover={{ y: -3, scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-                      onClick={() => copyToClipboard()}
-                    >
-                      {copied ? (
-                        <Check className="h-5 w-5" />
-                      ) : (
-                        <Copy className="h-5 w-5" />
-                      )}
-                    </motion.button>
-                  </div>
-                </div>
-              </motion.div>
+              <TableOfContents />
             </div>
           </div>
         </div>

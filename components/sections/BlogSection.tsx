@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { blogPosts } from "@/data/blog";
+import { blogPosts } from "@/data/blog1";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
