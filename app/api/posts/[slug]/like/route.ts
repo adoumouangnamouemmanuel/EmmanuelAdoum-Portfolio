@@ -4,10 +4,10 @@ import { type NextRequest, NextResponse } from "next/server";
 // GET /api/posts/[slug]/like - Get like status
 export async function GET(
   req: NextRequest,
-  context: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = context.params;
+    const { slug } = await context.params;
     const post = await postModel.findBySlug(slug);
     
     if (!post) {
@@ -28,10 +28,10 @@ export async function GET(
 // POST /api/posts/[slug]/like - Toggle like
 export async function POST(
   req: NextRequest,
-  context: { params: { slug: string } }
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const { slug } = context.params;
+    const { slug } = await context.params;
     const { userId } = await req.json();
 
     if (!userId) {

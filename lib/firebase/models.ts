@@ -1,3 +1,5 @@
+import { adminDb } from "@/lib/firebase/admin";
+import { db } from "@/lib/firebase/firestore";
 import {
   categories as fallbackCategories,
   comments as fallbackComments,
@@ -6,7 +8,6 @@ import {
 } from "./fallback-data";
 import {
   collection,
-  db,
   deleteDoc,
   doc,
   getDoc,
@@ -308,16 +309,21 @@ export const postModel = {
   },
 
   async incrementViews(id: string): Promise<void> {
-    const postRef = doc(db, "posts", id);
-    const postSnap = await getDoc(postRef);
+    try {
+      const postRef = doc(db, "posts", id);
+      const postSnap = await getDoc(postRef);
 
-    if (!postSnap.exists()) return;
+      if (!postSnap.exists()) return;
 
-    const currentViews = postSnap.data().views || 0;
-    await updateDoc(postRef, {
-      views: currentViews + 1,
-      updatedAt: Timestamp.now().toDate().toISOString(),
-    });
+      const currentViews = postSnap.data().views || 0;
+      await updateDoc(postRef, {
+        views: currentViews + 1,
+        updatedAt: Timestamp.now().toDate().toISOString(),
+      });
+    } catch (error) {
+      console.error('Error incrementing views:', error);
+      throw error;
+    }
   },
 
   async getLikeCount(postId: string): Promise<number> {
@@ -369,44 +375,44 @@ export const commentModel = {
   async create(
     commentData: Omit<Comment, "id" | "createdAt" | "updatedAt">
   ): Promise<Comment> {
-    const commentRef = doc(collection(db, "comments"));
-    const now = Timestamp.now();
+    const commentRef = adminDb.collection("comments").doc();
+    const now = new Date().toISOString();
 
     const comment: Omit<Comment, "id"> = {
       ...commentData,
-      createdAt: now.toDate().toISOString(),
-      updatedAt: now.toDate().toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
 
-    await setDoc(commentRef, comment);
+    await commentRef.set(comment);
     return { id: commentRef.id, ...comment };
   },
 
   async findById(id: string): Promise<Comment | null> {
-    const commentRef = doc(db, "comments", id);
-    const commentSnap = await getDoc(commentRef);
+    const commentRef = adminDb.collection("comments").doc(id);
+    const commentSnap = await commentRef.get();
 
-    if (!commentSnap.exists()) return null;
+    if (!commentSnap.exists) return null;
 
     return { id: commentSnap.id, ...commentSnap.data() } as Comment;
   },
 
   async update(id: string, commentData: Partial<Comment>): Promise<Comment> {
-    const commentRef = doc(db, "comments", id);
+    const commentRef = adminDb.collection("comments").doc(id);
     const updateData = {
       ...commentData,
-      updatedAt: Timestamp.now().toDate().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    await updateDoc(commentRef, updateData);
-    const updatedComment = await getDoc(commentRef);
+    await commentRef.update(updateData);
+    const updatedComment = await commentRef.get();
 
     return { id: updatedComment.id, ...updatedComment.data() } as Comment;
   },
 
   async delete(id: string): Promise<void> {
-    const commentRef = doc(db, "comments", id);
-    await deleteDoc(commentRef);
+    const commentRef = adminDb.collection("comments").doc(id);
+    await commentRef.delete();
   },
 
   async findByPostId(postId: string): Promise<Comment[]> {
@@ -415,28 +421,24 @@ export const commentModel = {
       return fallbackComments.filter((comment) => comment.postId === postId);
     }
 
-    const commentsRef = collection(db, "comments");
-    const q = query(
-      commentsRef,
-      where("postId", "==", postId),
-      where("parentId", "==", null),
-      orderBy("createdAt", "desc")
-    );
+    const commentsRef = adminDb.collection("comments");
+    const q = commentsRef
+      .where("postId", "==", postId)
+      .where("parentId", "==", null)
+      .orderBy("createdAt", "desc");
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await q.get();
     const comments = querySnapshot.docs.map(
       (doc) => ({ id: doc.id, ...doc.data() } as Comment)
     );
 
     // Get replies for each comment
     for (const comment of comments) {
-      const repliesQuery = query(
-        commentsRef,
-        where("parentId", "==", comment.id),
-        orderBy("createdAt", "asc")
-      );
+      const repliesQuery = commentsRef
+        .where("parentId", "==", comment.id)
+        .orderBy("createdAt", "asc");
 
-      const repliesSnapshot = await getDocs(repliesQuery);
+      const repliesSnapshot = await repliesQuery.get();
       comment.replies = repliesSnapshot.docs.map(
         (doc) => ({ id: doc.id, ...doc.data() } as Comment)
       );

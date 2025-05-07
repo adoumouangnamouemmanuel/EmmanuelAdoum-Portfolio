@@ -1,39 +1,100 @@
-import { blogPosts } from "@/data/blog"; // Ensure this is correctly imported
 import { authOptions } from "@/lib/auth";
+import { adminDb } from "@/lib/firebase/admin";
+import { postModel } from "@/lib/firebase/models";
 import { getServerSession } from "next-auth";
-import { type NextRequest, NextResponse } from "next/server";
-
-// Mock comments storage
-const commentsStore: Record<string, any[]> = {};
+import { NextResponse } from "next/server";
 
 // GET /api/posts/[slug]/comments - Get comments for a post
 export async function GET(
-  req: NextRequest,
-  context: { params: { slug: string } }
+  request: Request,
+  { params }: { params: { slug: string } }
 ) {
   try {
-    const { slug } = await context.params; // Await params
-
-    // Ensure blogPosts is an array
-    if (!Array.isArray(blogPosts)) {
-      throw new Error("blogPosts is not an array");
-    }
-
-    // Find the post
-    const post = blogPosts.find((p) => p.slug === slug);
-
+    const post = await postModel.findBySlug(params.slug);
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // Get comments for the post
-    const comments = commentsStore[post.id] || [];
+    const commentsSnapshot = await adminDb
+      .collection("comments")
+      .where("postId", "==", post.id)
+      .where("parentId", "==", null)
+      .orderBy("createdAt", "desc")
+      .get();
+
+    const comments = await Promise.all(
+      commentsSnapshot.docs.map(async (doc) => {
+        const comment = { id: doc.id, ...doc.data() };
+        // Get replies for this comment
+        const repliesSnapshot = await adminDb
+          .collection("comments")
+          .where("parentId", "==", doc.id)
+          .orderBy("createdAt", "asc")
+          .get();
+
+        const replies = await Promise.all(
+          repliesSnapshot.docs.map(async (replyDoc) => {
+            const reply = { id: replyDoc.id, ...replyDoc.data() };
+            // Get author details for reply
+            const authorDoc = await adminDb
+              .collection("users")
+              .doc(reply.authorId)
+              .get();
+
+            const author = authorDoc.exists
+              ? {
+                  id: authorDoc.id,
+                  name: authorDoc.data()?.name || "Anonymous",
+                  email: authorDoc.data()?.email,
+                  image: authorDoc.data()?.image || null,
+                }
+              : {
+                  id: reply.authorId,
+                  name: "Anonymous",
+                  email: null,
+                  image: null,
+                };
+
+            return {
+              ...reply,
+              author,
+            };
+          })
+        );
+
+        // Get author details for main comment
+        const authorDoc = await adminDb
+          .collection("users")
+          .doc(comment.authorId)
+          .get();
+
+        const author = authorDoc.exists
+          ? {
+              id: authorDoc.id,
+              name: authorDoc.data()?.name || "Anonymous",
+              email: authorDoc.data()?.email,
+              image: authorDoc.data()?.image || null,
+            }
+          : {
+              id: comment.authorId,
+              name: "Anonymous",
+              email: null,
+              image: null,
+            };
+
+        return {
+          ...comment,
+          author,
+          replies,
+        };
+      })
+    );
 
     return NextResponse.json(comments);
   } catch (error) {
     console.error("Error fetching comments:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Failed to fetch comments" },
       { status: 500 }
     );
   }
@@ -41,45 +102,44 @@ export async function GET(
 
 // POST /api/posts/[slug]/comments - Create a comment
 export async function POST(
-  req: NextRequest,
-  context: { params: { slug: string } }
+  request: Request,
+  { params }: { params: { slug: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
 
-    // Check if user is authenticated
-    if (!session || !session.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
-    const { slug } = await context.params; // Await params
-    const { content, parentId } = await req.json();
+    const { content, parentId } = await request.json();
 
-    // Validate content
-    if (!content || content.trim() === "") {
+    if (!content) {
       return NextResponse.json(
-        { error: "Comment content is required" },
+        { error: "Content is required" },
         { status: 400 }
       );
     }
 
-    // Ensure blogPosts is an array
-    if (!Array.isArray(blogPosts)) {
-      throw new Error("blogPosts is not an array");
-    }
-
-    // Find the post
-    const post = blogPosts.find((p) => p.slug === slug);
-
+    const post = await postModel.findBySlug(params.slug);
     if (!post) {
-      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Post not found" },
+        { status: 404 }
+      );
     }
 
-    // If parentId is provided, check if it exists
+    // If parentId is provided, verify the parent comment exists
     if (parentId) {
-      const comments = commentsStore[post.id] || [];
-      const parentComment = comments.find((c) => c.id === parentId);
-      if (!parentComment) {
+      const parentComment = await adminDb
+        .collection("comments")
+        .doc(parentId)
+        .get();
+
+      if (!parentComment.exists) {
         return NextResponse.json(
           { error: "Parent comment not found" },
           { status: 404 }
@@ -87,48 +147,52 @@ export async function POST(
       }
     }
 
-    // Create the comment
-    const newComment = {
-      id: `comment-${Date.now()}`,
+    const commentRef = adminDb.collection("comments").doc();
+    const now = new Date().toISOString();
+
+    const commentData = {
       content,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      author: {
-        id: session.user.id,
-        name: session.user.name || "Anonymous",
-        image: session.user.image || null,
-      },
+      authorId: session.user.id,
+      postId: post.id,
       parentId: parentId || null,
-      replies: [],
+      createdAt: now,
+      updatedAt: now,
     };
 
-    // Initialize comments array for this post if it doesn't exist
-    if (!commentsStore[post.id]) {
-      commentsStore[post.id] = [];
-    }
+    await commentRef.set(commentData);
 
-    // Add comment to the store
-    if (parentId) {
-      // Add as a reply
-      const parentIndex = commentsStore[post.id].findIndex(
-        (c) => c.id === parentId
-      );
-      if (parentIndex !== -1) {
-        if (!commentsStore[post.id][parentIndex].replies) {
-          commentsStore[post.id][parentIndex].replies = [];
+    // Get the author details
+    const authorDoc = await adminDb
+      .collection("users")
+      .doc(session.user.id)
+      .get();
+
+    const author = authorDoc.exists
+      ? {
+          id: authorDoc.id,
+          name: authorDoc.data()?.name || session.user.name || "Anonymous",
+          email: authorDoc.data()?.email || session.user.email,
+          image: authorDoc.data()?.image || session.user.image || null,
         }
-        commentsStore[post.id][parentIndex].replies.push(newComment);
-      }
-    } else {
-      // Add as a top-level comment
-      commentsStore[post.id].unshift(newComment);
-    }
+      : {
+          id: session.user.id,
+          name: session.user.name || "Anonymous",
+          email: session.user.email,
+          image: session.user.image || null,
+        };
 
-    return NextResponse.json(newComment, { status: 201 });
+    return NextResponse.json(
+      {
+        id: commentRef.id,
+        ...commentData,
+        author,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating comment:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: "Failed to create comment" },
       { status: 500 }
     );
   }

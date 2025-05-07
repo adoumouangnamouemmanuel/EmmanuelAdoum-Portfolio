@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
             id: user.uid,
             name: user.displayName || "User",
             email: user.email,
-            image: null,
+            image: user.photoURL,
             role: "user", // Default role, you can customize this
           };
         } catch (error: any) {
@@ -90,6 +90,8 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
         session.user.role = (token.role as string) || "user";
+        // Preserve the name from the token
+        session.user.name = token.name as string;
       }
       return session;
     },
@@ -98,6 +100,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = user.role || "user";
+        // Preserve the name from the user object
+        token.name = user.name;
       }
       return token;
     },

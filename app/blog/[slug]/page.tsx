@@ -16,6 +16,7 @@ import {
     Clock,
     Copy,
     Edit,
+    Eye,
     Facebook,
     Linkedin,
     Twitter,
@@ -103,13 +104,32 @@ export default function BlogPostPage() {
         
         setPost(postData);
 
-        // Increment view count
-        try {
-          await fetch(`/api/posts/${slug}/views`, {
-            method: 'POST',
-          });
-        } catch (error) {
-          console.error('Error incrementing view count:', error);
+        // Handle view counting
+        const viewKey = `post_${slug}_view`;
+        const lastViewedKey = `post_${slug}_last_viewed`;
+        const now = Date.now();
+        const lastViewed = localStorage.getItem(lastViewedKey);
+        const viewCount = localStorage.getItem(viewKey) || "0";
+        
+        // Only increment view if:
+        // 1. No view count exists
+        // 2. Last view was more than 24 hours ago
+        if (!lastViewed || (now - parseInt(lastViewed)) > 24 * 60 * 60 * 1000) {
+          try {
+            await fetch(`/api/posts/${slug}/views`, {
+              method: 'POST',
+              headers: {
+                'x-view-count': viewCount,
+                'x-last-viewed': lastViewed || '0'
+              }
+            });
+            
+            // Update localStorage
+            localStorage.setItem(viewKey, (parseInt(viewCount) + 1).toString());
+            localStorage.setItem(lastViewedKey, now.toString());
+          } catch (error) {
+            console.error('Error incrementing view count:', error);
+          }
         }
 
         // Fetch related posts
@@ -330,6 +350,19 @@ export default function BlogPostPage() {
 
             <div className="flex space-x-2">
               <LikeButton postSlug={slug} />
+
+              <motion.div
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+              >
+                <div className="flex items-center gap-1">
+                  <Eye className="h-4 w-4" />
+                  {post.views > 0 && (
+                    <span className="text-xs font-medium">{post.views}</span>
+                  )}
+                </div>
+              </motion.div>
 
               <motion.button
                 whileHover={{ y: -2 }}
