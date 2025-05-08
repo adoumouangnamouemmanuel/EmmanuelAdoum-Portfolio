@@ -23,30 +23,28 @@ export default async function ProfilePage() {
   let comments = [];
 
   try {
-    // Get user's posts
+    // Get user's posts without ordering for now
     const postsSnapshot = await adminDb
       .collection("posts")
       .where("authorId", "==", session.user.id)
-      .orderBy("createdAt", "desc")
       .get();
 
     posts = postsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    }));
+    })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-    // Get user's comments
+    // Get user's comments without ordering for now
     const commentsSnapshot = await adminDb
       .collection("comments")
       .where("authorId", "==", session.user.id)
-      .orderBy("createdAt", "desc")
       .limit(5)
       .get();
 
     comments = commentsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    }));
+    })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   } catch (error) {
     console.error("Error fetching user data:", error);
     // Continue rendering the page even if posts/comments fail to load
