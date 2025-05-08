@@ -503,7 +503,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         </form>
       ) : (
         <div className="bg-muted/50 rounded-lg p-4 mb-8 text-center">
-          <p className="mb-2">Sign in to join the conversation</p>
+          <p className="mb-2">Sign in to leave a comment</p>
           <Button asChild>
             <Link href="/auth/login">Sign In</Link>
           </Button>
@@ -618,17 +618,31 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   ) : (
                     <>
                       <p className="text-sm mb-2">{comment.content}</p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
-                        onClick={() =>
-                          setReplyTo(replyTo === comment.id ? null : comment.id)
-                        }
-                      >
-                        <Reply className="h-3 w-3 mr-1" />
-                        Reply
-                      </Button>
+                      {session ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
+                          onClick={() =>
+                            setReplyTo(replyTo === comment.id ? null : comment.id)
+                          }
+                        >
+                          <Reply className="h-3 w-3 mr-1" />
+                          Reply
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
+                          asChild
+                        >
+                          <Link href="/auth/login">
+                            <Reply className="h-3 w-3 mr-1" />
+                            Sign in to reply
+                          </Link>
+                        </Button>
+                      )}
                     </>
                   )}
                 </div>

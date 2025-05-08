@@ -7,10 +7,11 @@ import { NextResponse } from "next/server";
 // GET /api/posts/[slug]/comments - Get comments for a post
 export async function GET(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const post = await postModel.findBySlug(params.slug);
+    const { slug } = await params;
+    const post = await postModel.findBySlug(slug);
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
@@ -100,39 +101,36 @@ export async function GET(
   }
 }
 
-// POST /api/posts/[slug]/comments - Create a comment
+// POST /api/posts/[slug]/comments - Create a new comment
 export async function POST(
   request: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       );
     }
 
+    const { slug } = await params;
     const { content, parentId } = await request.json();
 
-    if (!content) {
+    if (!content?.trim()) {
       return NextResponse.json(
         { error: "Content is required" },
         { status: 400 }
       );
     }
 
-    const post = await postModel.findBySlug(params.slug);
+    const post = await postModel.findBySlug(slug);
     if (!post) {
-      return NextResponse.json(
-        { error: "Post not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    // If parentId is provided, verify the parent comment exists
+    // If this is a reply, verify the parent comment exists
     if (parentId) {
       const parentComment = await adminDb
         .collection("comments")
@@ -148,29 +146,18 @@ export async function POST(
     }
 
     const commentRef = adminDb.collection("comments").doc();
-    const now = new Date().toISOString();
-
     const commentData = {
-      content,
-      authorId: session.user.id,
       postId: post.id,
+      authorId: session.user.id,
+      content: content.trim(),
       parentId: parentId || null,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    try {
-      await commentRef.set(commentData);
-      console.log("Comment created successfully:", commentRef.id);
-    } catch (error) {
-      console.error("Error creating comment in Firestore:", error);
-      return NextResponse.json(
-        { error: "Failed to create comment in database" },
-        { status: 500 }
-      );
-    }
+    await commentRef.set(commentData);
 
-    // Get the author details
+    // Get author details
     const authorDoc = await adminDb
       .collection("users")
       .doc(session.user.id)
