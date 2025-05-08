@@ -9,6 +9,38 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role: string;
+  createdAt: string;
+  bio?: string;
+  github?: string;
+  twitter?: string;
+  linkedin?: string;
+}
+
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  createdAt: string;
+  views?: number;
+  _count?: {
+    comments: number;
+  };
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  postId: string;
+  createdAt: string;
+}
+
 export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
   if (!session?.user) {
@@ -17,10 +49,10 @@ export default async function ProfilePage() {
 
   // Get user data from Firestore
   const userDoc = await adminDb.collection("users").doc(session.user.id).get();
-  const userData = userDoc.exists ? userDoc.data() : null;
+  const userData = userDoc.exists ? (userDoc.data() as User) : null;
 
-  let posts = [];
-  let comments = [];
+  let posts: Post[] = [];
+  let comments: Comment[] = [];
 
   try {
     // Get user's posts without ordering for now
@@ -32,7 +64,7 @@ export default async function ProfilePage() {
     posts = postsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } as Post)).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     // Get user's comments without ordering for now
     const commentsSnapshot = await adminDb
@@ -44,7 +76,7 @@ export default async function ProfilePage() {
     comments = commentsSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    })).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } as Comment)).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   } catch (error) {
     console.error("Error fetching user data:", error);
     // Continue rendering the page even if posts/comments fail to load
@@ -125,7 +157,7 @@ export default async function ProfilePage() {
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    Joined {new Date(userData?.createdAt || session.user.createdAt).toLocaleDateString()}
+                    Joined {new Date(userData?.createdAt || new Date().toISOString()).toLocaleDateString()}
                   </span>
                 </div>
                 <Button asChild className="w-full">
