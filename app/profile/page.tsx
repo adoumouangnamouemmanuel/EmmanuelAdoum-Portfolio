@@ -38,6 +38,19 @@ interface Comment {
   id: string
   content: string
   postId: string
+  postSlug: string
+  postTitle: string
+  createdAt: string
+  parentId?: string | null
+}
+
+interface Reply {
+  id: string
+  content: string
+  postId: string
+  postSlug: string
+  postTitle: string
+  parentId: string
   createdAt: string
 }
 
@@ -53,6 +66,7 @@ export default async function ProfilePage() {
 
   let posts: Post[] = []
   let comments: Comment[] = []
+  let replies: Reply[] = []
 
   try {
     // Get user's posts without ordering for now
@@ -68,22 +82,46 @@ export default async function ProfilePage() {
       )
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-    // Get user's comments without ordering for now
+    // Get all user's comments without filtering by parentId
     const commentsSnapshot = await adminDb
       .collection("comments")
       .where("authorId", "==", session.user.id)
-      .limit(5)
+      .limit(10)
       .get()
 
-    comments = commentsSnapshot.docs
-      .map(
-        (doc) =>
-          ({
-            id: doc.id,
-            ...doc.data(),
-          }) as Comment,
-      )
+    // Get post titles and slugs for comments
+    const postIds = new Set(commentsSnapshot.docs.map(doc => doc.data().postId))
+    const postsMap = new Map()
+    
+    for (const postId of postIds) {
+      const postDoc = await adminDb.collection("posts").doc(postId).get()
+      if (postDoc.exists) {
+        const postData = postDoc.data()
+        postsMap.set(postId, {
+          title: postData?.title || "Untitled Post",
+          slug: postData?.slug || postId
+        })
+      }
+    }
+
+    // Filter comments and replies in memory
+    const allComments = commentsSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      postTitle: postsMap.get(doc.data().postId)?.title || "Untitled Post",
+      postSlug: postsMap.get(doc.data().postId)?.slug || doc.data().postId,
+    })) as (Comment | Reply)[]
+
+    comments = allComments
+      .filter(comment => !comment.parentId)
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 5) as Comment[]
+
+    replies = allComments
+      .filter(comment => comment.parentId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 5) as Reply[]
+
   } catch (error) {
     console.error("Error fetching user data:", error)
     // Continue rendering the page even if posts/comments fail to load
@@ -229,6 +267,12 @@ export default async function ProfilePage() {
                 >
                   Comments
                 </TabsTrigger>
+                <TabsTrigger 
+                  value="replies"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-lg transition-all duration-300"
+                >
+                  Replies
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="posts" className="space-y-4">
@@ -307,7 +351,7 @@ export default async function ProfilePage() {
                       </Button>
                     </CardContent>
                   </Card>
-                ) : (
+                ) :
                   comments.map((comment) => (
                     <Card 
                       key={comment.id} 
@@ -315,7 +359,7 @@ export default async function ProfilePage() {
                     >
                       <CardContent className="p-6">
                         <Link 
-                          href={`/blog/${comment.postId}`} 
+                          href={`/blog/${comment.postSlug}`} 
                           className="block group-hover:translate-x-1 transition-transform duration-300"
                         >
                           <div className="flex items-start gap-3">
@@ -325,6 +369,7 @@ export default async function ProfilePage() {
                               </svg>
                             </div>
                             <div>
+                              <h4 className="text-sm font-medium text-purple-900 dark:text-purple-300 mb-1">{comment.postTitle}</h4>
                               <p className="text-sm mb-2 line-clamp-2">{comment.content}</p>
                               <div className="text-xs text-muted-foreground">
                                 <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-1 rounded-full">
@@ -337,7 +382,59 @@ export default async function ProfilePage() {
                       </CardContent>
                     </Card>
                   ))
-                )}
+                }
+              </TabsContent>
+
+              <TabsContent value="replies" className="space-y-4">
+                {replies.length === 0 ? (
+                  <Card className="border-none shadow-lg overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
+                    <CardContent className="pt-6 flex flex-col items-center justify-center py-12">
+                      <div className="w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                        </svg>
+                      </div>
+                      <p className="text-center text-muted-foreground">No replies yet. Start a conversation!</p>
+                      <Button 
+                        className="mt-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300"
+                        asChild
+                      >
+                        <Link href="/blog">Browse Posts</Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) :
+                  replies.map((reply) => (
+                    <Card 
+                      key={reply.id} 
+                      className="border-none shadow-lg overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group"
+                    >
+                      <CardContent className="p-6">
+                        <Link 
+                          href={`/blog/${reply.postSlug}`} 
+                          className="block group-hover:translate-x-1 transition-transform duration-300"
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="p-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex-shrink-0">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                              </svg>
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-medium text-purple-900 dark:text-purple-300 mb-1">{reply.postTitle}</h4>
+                              <p className="text-sm mb-2 line-clamp-2">{reply.content}</p>
+                              <div className="text-xs text-muted-foreground">
+                                <span className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 px-2 py-1 rounded-full">
+                                  {new Date(reply.createdAt).toLocaleDateString()}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))
+                }
               </TabsContent>
             </Tabs>
           </div>
