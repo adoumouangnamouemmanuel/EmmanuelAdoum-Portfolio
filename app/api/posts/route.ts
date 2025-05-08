@@ -1,4 +1,5 @@
 import { authOptions } from "@/lib/auth";
+import { adminDb } from "@/lib/firebase/admin";
 import { postModel, userModel } from "@/lib/firebase/models";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
@@ -62,35 +63,20 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-
-    // Check if user is authenticated
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
-    const { title, slug, excerpt, content, coverImage, categories, published } =
-      await req.json();
-
-    // Validate required fields
+    const { title, slug, excerpt, content, coverImage, categories, published } = await req.json();
     if (!title || !slug || !content) {
-      return NextResponse.json(
-        { error: "Title, slug, and content are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Title, slug, and content are required" }, { status: 400 });
     }
-
     // Check if slug is unique
-    const existingPost = await postModel.findBySlug(slug);
-    if (existingPost) {
-      return NextResponse.json(
-        { error: "A post with this slug already exists" },
-        { status: 400 }
-      );
+    const existing = await adminDb.collection("posts").where("slug", "==", slug).get();
+    if (!existing.empty) {
+      return NextResponse.json({ error: "A post with this slug already exists" }, { status: 400 });
     }
-
     // Create the post
     const newPost = {
-      id: `post-${Date.now()}`,
       title,
       slug,
       excerpt: excerpt || "",
@@ -102,34 +88,27 @@ export async function POST(req: NextRequest) {
       updatedAt: new Date().toISOString(),
       authorId: session.user.id,
       categories: categories?.length ? categories : ["Uncategorized"],
-      _count: {
-        comments: 0,
-        likes: 0,
-      },
+      _count: { comments: 0, likes: 0 },
     };
-
-    // Create post in Firestore
-    await postModel.create(newPost);
-
-    // Get author details from database
-    const author = await userModel.findById(session.user.id);
-
-    return NextResponse.json(
-      {
-        ...newPost,
-        author: {
-          id: author?.id || session.user.id,
-          name: author?.name || session.user.name || "Unknown",
-          image: author?.image || session.user.image || null,
-        },
-      },
-      { status: 201 }
-    );
+    const docRef = await adminDb.collection("posts").add(newPost);
+    // Get author details
+    const authorDoc = await adminDb.collection("users").doc(session.user.id).get();
+    const author = authorDoc.exists ? {
+      id: authorDoc.id,
+      name: authorDoc.data()?.name || session.user.name || "Unknown",
+      image: authorDoc.data()?.image || session.user.image || null,
+    } : {
+      id: session.user.id,
+      name: session.user.name || "Unknown",
+      image: session.user.image || null,
+    };
+    return NextResponse.json({
+      id: docRef.id,
+      ...newPost,
+      author,
+    }, { status: 201 });
   } catch (error) {
     console.error("Error creating post:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
