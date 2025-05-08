@@ -159,14 +159,6 @@ export default function LoginPage() {
               <motion.div variants={itemVariants}>
                 <CardDescription className="text-center">
                   Sign in to your account to continue
-                  <motion.div
-                    className="mt-2 text-sm text-purple-600 dark:text-purple-400 font-medium"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    For testing, use: admin@example.com / password
-                  </motion.div>
                 </CardDescription>
               </motion.div>
             </CardHeader>
