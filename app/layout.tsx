@@ -1,10 +1,10 @@
 import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/ui/ToastProvider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import type React from "react";
 import "./globals.css";
-import { ToastProvider } from "@/components/ui/ToastProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 

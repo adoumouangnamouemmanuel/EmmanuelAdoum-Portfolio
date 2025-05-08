@@ -9,17 +9,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-    ArrowLeft,
-    Calendar,
-    Check,
-    ChevronRight,
-    Clock,
-    Copy,
+  ArrowLeft,
+  Calendar,
+  Check,
+  ChevronRight,
+  Clock,
+  Copy,
     Edit,
     Eye,
-    Facebook,
-    Linkedin,
-    Twitter,
+  Facebook,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

@@ -7,16 +7,16 @@ import { blogPosts } from "@/data/blog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useInView } from "framer-motion";
 import {
-  ArrowLeft,
-  BookmarkPlus,
-  Calendar,
-  ChevronRight,
-  Clock,
-  Eye,
-  Plus,
-  Search,
-  Share2,
-  Tag,
+    ArrowLeft,
+    BookmarkPlus,
+    Calendar,
+    ChevronRight,
+    Clock,
+    Eye,
+    Plus,
+    Search,
+    Share2,
+    Tag,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -115,34 +115,34 @@ export default function BlogPage() {
       } catch (error) {
         console.error('Error fetching posts:', error);
         // Fallback to local data if fetch fails
-        setBlogPostsData(
-          blogPosts.map((post) => ({
-            id: post.id,
-            title: post.title,
-            slug: post.slug,
-            excerpt: post.excerpt,
-            content: post.content,
-            coverImage: post.coverImage,
-            date: post.createdAt,
-            readTime: post.readTime,
-            categories: post.categories,
-            views: post.views,
-            author: {
-              name: post.author.name,
+    setBlogPostsData(
+      blogPosts.map((post) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        content: post.content,
+        coverImage: post.coverImage,
+        date: post.createdAt,
+        readTime: post.readTime,
+        categories: post.categories,
+        views: post.views,
+        author: {
+          name: post.author.name,
               avatar: post.author.image,
-              bio: post.author.bio,
-              social: post.author.social,
-            },
-          }))
-        );
+          bio: post.author.bio,
+          social: post.author.social,
+        },
+      }))
+    );
 
         // Extract all unique categories from fallback data
-        const categories = Array.from(
-          new Set(blogPosts.flatMap((post) => post.categories))
-        );
-        setAllCategories(categories);
+    const categories = Array.from(
+      new Set(blogPosts.flatMap((post) => post.categories))
+    );
+    setAllCategories(categories);
       } finally {
-        setLoading(false);
+    setLoading(false);
       }
     };
 

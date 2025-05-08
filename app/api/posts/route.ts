@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
           author = await userModel.findById(post.authorId);
         }
 
-        return {
-          ...post,
+      return {
+        ...post,
           author: author ? {
             id: author.id,
             name: author.displayName || author.name || 'Unknown',
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
               linkedin: author.linkedin || '',
             }
           } : null
-        };
+      };
       })
     );
 
