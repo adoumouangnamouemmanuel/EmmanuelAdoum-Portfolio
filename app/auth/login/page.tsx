@@ -8,8 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { motion } from "framer-motion"
-import { ArrowLeft, Github, Loader2, Mail } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import { ArrowLeft, Github, Loader2, Mail, Lock, KeyRound } from 'lucide-react'
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -95,6 +95,29 @@ export default function LoginPage() {
     }
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  }
+
   return (
     <main className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-purple-50 to-white dark:from-gray-900 dark:to-gray-950">
       <div className="w-full max-w-md">
@@ -105,51 +128,51 @@ export default function LoginPage() {
           className="flex justify-start mb-8"
         >
           <motion.div whileHover={{ scale: 1.05, x: -5 }} whileTap={{ scale: 0.95 }}>
-            <Button variant="outline" size="sm" className="shadow-md group bg-white dark:bg-gray-800" asChild>
-              <Link href="/">
+            <Button
+              variant="outline"
+              size="sm"
+              className="shadow-md group bg-white dark:bg-gray-800"
+              asChild
+            >
+              <Link href="/blog">
                 <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
-                Back to Home
+                Back to Blog
               </Link>
             </Button>
           </motion.div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
         >
-          <Card className="border-none shadow-2xl overflow-hidden bg-white dark:bg-gray-900">
+          <Card className="border-none shadow-2xl overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-blue-500/5 pointer-events-none"></div>
+            
             <CardHeader className="space-y-1 pb-2">
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2, type: "spring" }}
-              >
+              <motion.div variants={itemVariants}>
                 <CardTitle className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
                   Welcome Back
                 </CardTitle>
               </motion.div>
-              <CardDescription className="text-center">
-                Sign in to your account to continue
-                <motion.div
-                  className="mt-2 text-sm text-purple-600 dark:text-purple-400 font-medium"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  For testing, use: admin@example.com / password
-                </motion.div>
-              </CardDescription>
+              <motion.div variants={itemVariants}>
+                <CardDescription className="text-center">
+                  Sign in to your account to continue
+                  <motion.div
+                    className="mt-2 text-sm text-purple-600 dark:text-purple-400 font-medium"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    For testing, use: admin@example.com / password
+                  </motion.div>
+                </CardDescription>
+              </motion.div>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <motion.div
-                className="grid grid-cols-2 gap-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
+            
+            <CardContent className="space-y-6">
+              <motion.div className="grid grid-cols-2 gap-4" variants={itemVariants}>
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     variant="outline"
@@ -180,6 +203,7 @@ export default function LoginPage() {
                     <span className="relative z-10">Google</span>
                   </Button>
                 </motion.div>
+                
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
                     variant="outline"
@@ -198,12 +222,7 @@ export default function LoginPage() {
                 </motion.div>
               </motion.div>
 
-              <motion.div
-                className="relative"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
+              <motion.div className="relative" variants={itemVariants}>
                 <div className="absolute inset-0 flex items-center">
                   <Separator className="w-full" />
                 </div>
@@ -215,12 +234,13 @@ export default function LoginPage() {
               <motion.form
                 onSubmit={handleSubmit}
                 className="space-y-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                variants={itemVariants}
               >
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="flex items-center text-sm font-medium">
+                    <Mail className="h-4 w-4 mr-2 text-purple-500 dark:text-purple-400" />
+                    Email
+                  </Label>
                   <Input
                     id="email"
                     type="email"
@@ -231,9 +251,13 @@ export default function LoginPage() {
                     className="border-gray-200 dark:border-gray-700 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500 transition-colors"
                   />
                 </div>
+                
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password" className="flex items-center text-sm font-medium">
+                      <Lock className="h-4 w-4 mr-2 text-purple-500 dark:text-purple-400" />
+                      Password
+                    </Label>
                     <Link
                       href="/auth/forgot-password"
                       className="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
@@ -250,6 +274,7 @@ export default function LoginPage() {
                     className="border-gray-200 dark:border-gray-700 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500 transition-colors"
                   />
                 </div>
+                
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     type="submit"
@@ -263,19 +288,18 @@ export default function LoginPage() {
                       </div>
                     ) : (
                       <>
-                        <Mail className="mr-2 h-4 w-4" /> Sign in with Email
+                        <KeyRound className="mr-2 h-4 w-4" /> Sign in with Email
                       </>
                     )}
                   </Button>
                 </motion.div>
               </motion.form>
             </CardContent>
+            
             <CardFooter className="flex flex-col space-y-4 pb-6">
               <motion.div
                 className="text-center text-sm"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6 }}
+                variants={itemVariants}
               >
                 Don&apos;t have an account?{" "}
                 <Link
@@ -285,11 +309,10 @@ export default function LoginPage() {
                   Sign up
                 </Link>
               </motion.div>
+              
               <motion.div
                 className="text-center text-xs text-muted-foreground"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.7 }}
+                variants={itemVariants}
               >
                 By continuing, you agree to our{" "}
                 <Link href="/terms" className="underline underline-offset-4 hover:text-primary">
@@ -308,3 +331,4 @@ export default function LoginPage() {
     </main>
   )
 }
+
