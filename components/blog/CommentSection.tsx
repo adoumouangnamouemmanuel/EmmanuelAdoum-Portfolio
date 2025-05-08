@@ -505,7 +505,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         <div className="bg-muted/50 rounded-lg p-4 mb-8 text-center">
           <p className="mb-2">Sign in to leave a comment</p>
           <Button asChild>
-            <Link href="/auth/login">Sign In</Link>
+            <Link href="/auth/login">Comment</Link>
           </Button>
         </div>
       )}
