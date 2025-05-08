@@ -52,6 +52,9 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
   const [editingComment, setEditingComment] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
   const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
+  const [editingReply, setEditingReply] = useState<string | null>(null);
+  const [editReplyContent, setEditReplyContent] = useState("");
+  const [replyToDelete, setReplyToDelete] = useState<string | null>(null);
 
   // Fetch comments
   useEffect(() => {
@@ -323,6 +326,128 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
     }
   };
 
+  // Handle edit reply
+  const handleEditReply = async (e: React.FormEvent, commentId: string, replyId: string) => {
+    e.preventDefault();
+
+    if (!session) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to edit replies",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!editReplyContent.trim()) {
+      toast({
+        title: "Empty reply",
+        description: "Please enter some content",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`/api/posts/${postSlug}/comments/${replyId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: editReplyContent }),
+      });
+
+      if (response.ok) {
+        const updatedReply = await response.json();
+        
+        // Update the comments state with the edited reply
+        setComments(comments.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: comment.replies.map(reply => 
+                reply.id === replyId ? { ...updatedReply, author: reply.author } : reply
+              ),
+            };
+          }
+          return comment;
+        }));
+
+        setEditingReply(null);
+        setEditReplyContent("");
+
+        toast({
+          title: "Reply updated",
+          description: "Your reply has been updated successfully",
+        });
+      } else {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update reply");
+      }
+    } catch (error: any) {
+      console.error("Error updating reply:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update reply. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle delete reply
+  const handleDeleteReply = async (commentId: string, replyId: string) => {
+    if (!session) {
+      toast({
+        title: "Authentication required",
+        description: "Please sign in to delete replies",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/posts/${postSlug}/comments/${replyId}`, {
+        method: "DELETE",
+        headers: {
+          "x-confirmation-token": replyId,
+        },
+      });
+
+      if (response.ok) {
+        // Remove the reply from the state
+        setComments(comments.map(comment => {
+          if (comment.id === commentId) {
+            return {
+              ...comment,
+              replies: comment.replies.filter(reply => reply.id !== replyId),
+            };
+          }
+          return comment;
+        }));
+        setReplyToDelete(null);
+
+        toast({
+          title: "Reply deleted",
+          description: "Your reply has been deleted successfully",
+        });
+      } else {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to delete reply");
+      }
+    } catch (error: any) {
+      console.error("Error deleting reply:", error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete reply. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -509,6 +634,102 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                 </div>
               </div>
 
+              {/* Replies */}
+              {comment.replies && comment.replies.length > 0 && (
+                <div className="ml-14 space-y-4">
+                  {comment.replies.map((reply) => (
+                    <div key={reply.id} className="flex gap-4">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={reply.author?.image || ""}
+                          alt={reply.author?.name || "Anonymous"}
+                        />
+                        <AvatarFallback>
+                          {reply.author?.name
+                            ? reply.author.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()
+                            : "A"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <span className="font-medium">
+                              {reply.author?.name || "Anonymous"}
+                            </span>
+                            <span className="text-sm text-muted-foreground ml-2">
+                              {formatDate(reply.createdAt)}
+                            </span>
+                          </div>
+                          {session?.user?.id === reply.authorId && (
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() => {
+                                    setEditingReply(reply.id);
+                                    setEditReplyContent(reply.content);
+                                  }}
+                                >
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => setReplyToDelete(reply.id)}
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          )}
+                        </div>
+
+                        {editingReply === reply.id ? (
+                          <form onSubmit={(e) => handleEditReply(e, comment.id, reply.id)} className="mt-2">
+                            <Textarea
+                              value={editReplyContent}
+                              onChange={(e) => setEditReplyContent(e.target.value)}
+                              className="mb-2 resize-none text-sm"
+                              rows={2}
+                            />
+                            <div className="flex justify-end gap-2">
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setEditingReply(null);
+                                  setEditReplyContent("");
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button type="submit" size="sm" disabled={isLoading}>
+                                {isLoading ? "Saving..." : "Save"}
+                              </Button>
+                            </div>
+                          </form>
+                        ) : (
+                          <p className="text-sm">{reply.content}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               {/* Reply form */}
               {replyTo === comment.id && session && (
                 <form
@@ -541,62 +762,58 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                 </form>
               )}
 
-              {/* Replies */}
-              {comment.replies && comment.replies.length > 0 && (
-                <div className="ml-14 space-y-4 pt-2">
-                  {comment.replies.map((reply) => (
-                    <div key={reply.id} className="flex items-start gap-4">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={reply.author?.image || ""}
-                          alt={reply.author?.name || "User"}
-                        />
-                        <AvatarFallback>
-                          {reply.author?.name
-                            ? reply.author.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                                .toUpperCase()
-                            : "U"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium text-sm">
-                            {reply.author?.name || "Anonymous"}
-                          </h4>
-                          <span className="text-xs text-muted-foreground">
-                            {formatDate(reply.createdAt)}
-                          </span>
-                        </div>
-                        <p className="text-sm">{reply.content}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
               <Separator className="my-6" />
             </div>
           ))
         )}
       </div>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Comment Dialog */}
       <AlertDialog open={!!commentToDelete} onOpenChange={() => setCommentToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>Delete Comment</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your comment.
+              Are you sure you want to delete this comment? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => commentToDelete && handleDeleteComment(commentToDelete)}
-              className="bg-red-600 hover:bg-red-700"
+              onClick={() => {
+                if (commentToDelete) {
+                  handleDeleteComment(commentToDelete);
+                }
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Delete Reply Dialog */}
+      <AlertDialog open={!!replyToDelete} onOpenChange={() => setReplyToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Reply</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this reply? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (replyToDelete) {
+                  const comment = comments.find(c => 
+                    c.replies.some(r => r.id === replyToDelete)
+                  );
+                  if (comment) {
+                    handleDeleteReply(comment.id, replyToDelete);
+                  }
+                }
+              }}
             >
               Delete
             </AlertDialogAction>

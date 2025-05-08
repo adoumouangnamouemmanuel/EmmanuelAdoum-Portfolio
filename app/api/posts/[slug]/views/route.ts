@@ -1,3 +1,4 @@
+import { adminDb } from "@/lib/firebase/admin";
 import { postModel } from "@/lib/firebase/models";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -20,7 +21,10 @@ export async function POST(
 
     // If the view count is 0 or not provided, increment the count
     if (!viewCount || viewCount === "0") {
-      await postModel.incrementViews(post.id);
+      const postRef = adminDb.collection('posts').doc(post.id);
+      await postRef.update({
+        views: adminDb.FieldValue.increment(1)
+      });
     }
 
     return NextResponse.json({ success: true });

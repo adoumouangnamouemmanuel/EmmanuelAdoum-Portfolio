@@ -18,7 +18,7 @@ export async function PATCH(
       );
     }
 
-    const commentId = params.commentId;
+    const { commentId } = params;
     const { content } = await req.json();
 
     if (!content?.trim()) {
@@ -106,7 +106,7 @@ export async function DELETE(
     }
 
     // Verify the confirmation token matches the comment ID
-    const commentId = params.commentId;
+    const { commentId } = params;
     if (confirmationToken !== commentId) {
       return NextResponse.json(
         { error: "Invalid confirmation token" },
