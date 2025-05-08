@@ -159,7 +159,16 @@ export async function POST(
       updatedAt: now,
     };
 
-    await commentRef.set(commentData);
+    try {
+      await commentRef.set(commentData);
+      console.log("Comment created successfully:", commentRef.id);
+    } catch (error) {
+      console.error("Error creating comment in Firestore:", error);
+      return NextResponse.json(
+        { error: "Failed to create comment in database" },
+        { status: 500 }
+      );
+    }
 
     // Get the author details
     const authorDoc = await adminDb

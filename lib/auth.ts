@@ -1,6 +1,6 @@
 import { app } from "@/lib/firebase"; // Ensure this points to your Firebase initialization file
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getFirestore, setDoc } from "firebase/firestore";
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -70,10 +70,26 @@ export const authOptions: NextAuthOptions = {
           const user = userCredential.user;
 
           // Fetch user data from Firestore
-          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const userRef = doc(db, "users", user.uid);
+          const userDoc = await getDoc(userRef);
           const userData = userDoc.data();
 
           console.log("Firestore user data:", userData);
+
+          // If user document doesn't exist or is missing required fields, create/update it
+          if (!userData || !userData.name || !userData.role) {
+            const userUpdate = {
+              name: userData?.name || user.displayName || user.email?.split('@')[0] || "User",
+              email: user.email,
+              image: userData?.image || user.photoURL,
+              role: userData?.role || "user",
+              updatedAt: new Date().toISOString(),
+              ...(userData ? {} : { createdAt: new Date().toISOString() })
+            };
+
+            await setDoc(userRef, userUpdate, { merge: true });
+            console.log("Updated user document in Firestore");
+          }
 
           // Return user object to be stored in the session
           return {
