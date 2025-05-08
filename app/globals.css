@@ -56,6 +56,160 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Editor styles */
+  [contenteditable]:empty:before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground opacity-50;
+  }
+
+  /* Code block syntax highlighting */
+  pre code {
+    @apply block p-4 overflow-x-auto text-sm;
+  }
+
+  .dark pre code {
+    @apply bg-gray-800 text-gray-100;
+  }
+
+  /* List styling */
+  [contenteditable][data-placeholder*="Bullet list"] {
+    @apply list-disc pl-5;
+  }
+
+  [contenteditable][data-placeholder*="Numbered list"] {
+    @apply list-decimal pl-5;
+  }
+
+   /* Editor styles */
+  [contenteditable]:empty:before {
+    content: attr(data-placeholder);
+    @apply text-muted-foreground opacity-50;
+  }
+
+  /* Code block syntax highlighting */
+  pre code {
+    @apply block p-4 overflow-x-auto text-sm;
+  }
+
+  .dark pre code {
+    @apply bg-gray-800 text-gray-100;
+  }
+
+  /* List styling */
+  [contenteditable][data-placeholder*="Bullet list"] {
+    @apply list-disc pl-5;
+  }
+
+  [contenteditable][data-placeholder*="Numbered list"] {
+    @apply list-decimal pl-5;
+  }
+
+  /* Blog content styles */
+  .blog-content h1 {
+    @apply text-3xl font-bold mt-8 mb-4;
+  }
+
+  .blog-content h2 {
+    @apply text-2xl font-bold mt-6 mb-3;
+  }
+
+  .blog-content h3 {
+    @apply text-xl font-bold mt-5 mb-2;
+  }
+
+  .blog-content p {
+    @apply my-4 leading-relaxed;
+  }
+
+  .blog-content ul {
+    @apply list-disc pl-6 my-4;
+  }
+
+  .blog-content ol {
+    @apply list-decimal pl-6 my-4;
+  }
+
+  .blog-content li {
+    @apply mb-1;
+  }
+
+  .blog-content blockquote {
+    @apply pl-4 border-l-4 border-gray-300 dark:border-gray-600 italic my-4;
+  }
+
+  .blog-content pre {
+    @apply rounded-md my-4 overflow-x-auto;
+  }
+
+  .blog-content img {
+    @apply rounded-md my-4 max-w-full h-auto;
+  }
+
+  .blog-content figure {
+    @apply my-6;
+  }
+
+  .blog-content figcaption {
+    @apply text-sm text-center text-muted-foreground mt-2;
+  }
+
+  /* Enhanced formatting styles */
+  .blog-content mark {
+    @apply bg-yellow-100 dark:bg-yellow-900/30 px-1 rounded;
+  }
+
+  .blog-content a {
+    @apply text-violet-600 dark:text-violet-400 hover:underline;
+  }
+
+  /* Animation for editor blocks */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .editor-block-new {
+    animation: fadeIn 0.3s ease-out forwards;
+  }
+
+  /* Improved list rendering */
+  [contenteditable].list-disc li {
+    list-style-type: disc;
+    margin-left: 1.25rem;
+  }
+
+  [contenteditable].list-decimal li {
+    list-style-type: decimal;
+    margin-left: 1.25rem;
+  }
+
+  /* Color picker styles */
+  .color-swatch {
+    @apply w-6 h-6 rounded-full cursor-pointer transition-transform hover:scale-110;
+  }
+
+  /* Highlight styles */
+  .highlight-yellow {
+    @apply bg-yellow-100 dark:bg-yellow-900/30;
+  }
+  .highlight-green {
+    @apply bg-green-100 dark:bg-green-900/30;
+  }
+  .highlight-blue {
+    @apply bg-blue-100 dark:bg-blue-900/30;
+  }
+  .highlight-purple {
+    @apply bg-purple-100 dark:bg-purple-900/30;
+  }
+  .highlight-pink {
+    @apply bg-pink-100 dark:bg-pink-900/30;
+  }
 }
 
 @layer components {
