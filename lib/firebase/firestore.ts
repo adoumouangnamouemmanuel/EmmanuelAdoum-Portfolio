@@ -1,4 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
+import type { Firestore } from "firebase/firestore";
 import {
   getFirestore,
   collection,
@@ -44,7 +45,7 @@ console.log("Initializing Firebase with config:", {
 
 // Initialize Firebase
 let app;
-let db;
+let db: Firestore;
 let auth;
 
 try {

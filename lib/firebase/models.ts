@@ -225,21 +225,23 @@ export const postModel = {
   },
 
   async update(id: string, postData: Partial<Post>): Promise<Post> {
-    const postRef = doc(db, "posts", id);
+    // Use Admin SDK for server-side updates
+    const postRef = adminDb.collection("posts").doc(id);
     const updateData = {
       ...postData,
-      updatedAt: Timestamp.now().toDate().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
-    await updateDoc(postRef, updateData);
-    const updatedPost = await getDoc(postRef);
+    await postRef.update(updateData);
+    const updatedPost = await postRef.get();
 
     return { id: updatedPost.id, ...updatedPost.data() } as Post;
   },
 
   async delete(id: string): Promise<void> {
-    const postRef = doc(db, "posts", id);
-    await deleteDoc(postRef);
+    // Use Admin SDK for server-side deletes
+    const postRef = adminDb.collection("posts").doc(id);
+    await postRef.delete();
   },
 
   async findAll(

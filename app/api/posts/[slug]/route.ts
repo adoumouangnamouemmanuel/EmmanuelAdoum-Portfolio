@@ -52,7 +52,7 @@ export async function GET(
 // PUT /api/posts/[slug] - Update a post
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  context: { params: { slug: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -62,18 +62,14 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { slug } = params;
-    const { title, newSlug, excerpt, content, coverImage, categories } =
-      await req.json();
+    const { slug } = context.params;
+    const { title, newSlug, excerpt, content, coverImage, categories } = await req.json();
 
-    // Find the post in our mock data
-    const postIndex = posts.findIndex((p) => p.slug === slug);
-
-    if (postIndex === -1) {
+    // Find the post by slug
+    const post = await postModel.findBySlug(slug);
+    if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
-
-    const post = posts[postIndex];
 
     // Check if user is the author or an admin
     if (post.authorId !== session.user.id && session.user.role !== "admin") {
@@ -82,7 +78,7 @@ export async function PUT(
 
     // Check if new slug is unique (if changed)
     if (newSlug && newSlug !== slug) {
-      const existingPost = posts.find((p) => p.slug === newSlug);
+      const existingPost = await postModel.findBySlug(newSlug);
       if (existingPost) {
         return NextResponse.json(
           { error: "A post with this slug already exists" },
@@ -91,31 +87,29 @@ export async function PUT(
       }
     }
 
-    // Update the post
-    const updatedPost = {
-      ...post,
+    // Update the post in Firestore
+    const updatedPost = await postModel.update(post.id, {
       title: title || post.title,
       slug: newSlug || post.slug,
       excerpt: excerpt !== undefined ? excerpt : post.excerpt,
       content: content || post.content,
       coverImage: coverImage || post.coverImage,
       categories: categories || post.categories,
-      updatedAt: new Date().toISOString(),
-    };
+    });
 
-    // Replace the post in our mock array
-    posts[postIndex] = updatedPost;
-
-    // Add author information
-    const author = users.find((u) => u.id === updatedPost.authorId);
+    // Get author details
+    let author = null;
+    if (updatedPost.authorId) {
+      author = await userModel.findById(updatedPost.authorId);
+    }
 
     const responsePost = {
       ...updatedPost,
-      author: {
-        id: author?.id || "",
-        name: author?.name || "Unknown",
-        image: author?.image || null,
-      },
+      author: author ? {
+        id: author.id,
+        name: author.displayName || author.name || 'Unknown',
+        image: author.photoURL || author.image || '/placeholder.svg?height=40&width=40',
+      } : null,
     };
 
     return NextResponse.json(responsePost);

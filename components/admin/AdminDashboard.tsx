@@ -103,7 +103,7 @@ export default function AdminDashboard() {
       return
     }
 
-    if (status === "authenticated" && session.user.role !== "admin") {
+    if (status === "authenticated" && session?.user?.role !== "admin") {
       router.push("/")
       return
     }
@@ -127,10 +127,10 @@ export default function AdminDashboard() {
       }
     }
 
-    if (status === "authenticated" && session.user.role === "admin") {
+    if (status === "authenticated" && session?.user?.role === "admin") {
       fetchData()
     }
-  }, [status, session, router])
+  }, [status, session?.user?.role, router])
 
   // Show welcome back toast if returning after 10+ minutes
   useEffect(() => {

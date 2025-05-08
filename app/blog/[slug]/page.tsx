@@ -111,29 +111,14 @@ export default function BlogPostPage() {
         
         setPost(postData);
 
-        // Handle view counting
-        const viewKey = `post_${slug}_view`;
-        const lastViewedKey = `post_${slug}_last_viewed`;
-        const now = Date.now();
-        const lastViewed = localStorage.getItem(lastViewedKey);
-        const viewCount = localStorage.getItem(viewKey) || "0";
-        
-        // Only increment view if:
-        // 1. No view count exists
-        // 2. Last view was more than 24 hours ago
-        if (!lastViewed || (now - parseInt(lastViewed)) > 24 * 60 * 60 * 1000) {
+        // Handle view counting: only increment if not visited before in this browser
+        const viewKey = `post_${slug}_viewed`;
+        if (typeof window !== "undefined" && !localStorage.getItem(viewKey)) {
           try {
             await fetch(`/api/posts/${slug}/views`, {
-              method: 'POST',
-              headers: {
-                'x-view-count': viewCount,
-                'x-last-viewed': lastViewed || '0'
-              }
+              method: 'POST'
             });
-            
-            // Update localStorage
-            localStorage.setItem(viewKey, (parseInt(viewCount) + 1).toString());
-            localStorage.setItem(lastViewedKey, now.toString());
+            localStorage.setItem(viewKey, "1");
           } catch (error) {
             console.error('Error incrementing view count:', error);
           }
