@@ -25,7 +25,7 @@ export default function BlogLayout({ children }: BlogLayoutProps) {
         >
           {children}
         </motion.main>
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </SessionProvider>
   );
