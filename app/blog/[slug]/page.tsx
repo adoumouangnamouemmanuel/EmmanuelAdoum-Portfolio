@@ -15,8 +15,8 @@ import {
   ChevronRight,
   Clock,
   Copy,
-    Edit,
-    Eye,
+  Edit,
+  Eye,
   Facebook,
   Linkedin,
   Twitter,
@@ -37,11 +37,18 @@ type BlogPost = {
   date: string;
   readTime: number;
   categories: string[];
-  author: {
+  authorId?: string;
+  author?: {
     id: string;
     name: string;
     image: string;
     bio?: string;
+    displayName?: string;
+    photoURL?: string;
+    description?: string;
+    github?: string;
+    twitter?: string;
+    linkedin?: string;
     social?: {
       github?: string;
       twitter?: string;
@@ -214,6 +221,15 @@ export default function BlogPostPage() {
 
   if (!post) return null;
 
+  // Ensure author data exists
+  const author = post.author || {
+    id: post.authorId || '',
+    name: 'Unknown Author',
+    image: '/placeholder.svg?height=40&width=40',
+    bio: '',
+    social: {}
+  };
+
   return (
     <main className="min-h-screen">
       {/* Hero section */}
@@ -331,18 +347,16 @@ export default function BlogPostPage() {
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 dark:bg-gray-700">
                 <img
-                  src={
-                    post.author.image || "/placeholder.svg?height=40&width=40"
-                  }
-                  alt={post.author.name || "User"}
+                  src={author.image}
+                  alt={author.name}
                   className="w-full h-full object-cover"
                 />
               </div>
               <div>
-                <div className="font-medium">{post.author.name}</div>
+                <div className="font-medium">{author.name}</div>
                 <div className="text-xs text-muted-foreground">
-                  {post.author.bio
-                    ? post.author.bio.split(" ").slice(0, 3).join(" ") + "..."
+                  {author.bio
+                    ? author.bio.split(" ").slice(0, 3).join(" ") + "..."
                     : "Author"}
                 </div>
               </div>
@@ -439,23 +453,21 @@ export default function BlogPostPage() {
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
                   <img
-                    src={
-                      post.author.image || "/placeholder.svg?height=80&width=80"
-                    }
-                    alt={post.author.name}
+                    src={author.image}
+                    alt={author.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">{post.author.name}</h3>
+                  <h3 className="text-xl font-bold mb-2">{author.name}</h3>
                   <p className="text-muted-foreground mb-4">
-                    {post.author.bio ||
+                    {author.bio ||
                       "Web developer with over 5 years of experience specializing in frontend technologies. Passionate about creating beautiful and functional user experiences."}
                   </p>
                   <div className="flex space-x-3">
-                    {post.author.social?.github && (
+                    {author.social?.github && (
                       <motion.a
-                        href={post.author.social.github}
+                        href={author.social.github}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -476,9 +488,9 @@ export default function BlogPostPage() {
                         </svg>
                       </motion.a>
                     )}
-                    {post.author.social?.twitter && (
+                    {author.social?.twitter && (
                       <motion.a
-                        href={post.author.social.twitter}
+                        href={author.social.twitter}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
@@ -495,9 +507,9 @@ export default function BlogPostPage() {
                         </svg>
                       </motion.a>
                     )}
-                    {post.author.social?.linkedin && (
+                    {author.social?.linkedin && (
                       <motion.a
-                        href={post.author.social.linkedin}
+                        href={author.social.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
