@@ -25,7 +25,7 @@ export async function GET(
 
     const comments = await Promise.all(
       commentsSnapshot.docs.map(async (doc) => {
-        const comment = { id: doc.id, ...doc.data() };
+        const comment = { ...(doc.data() as any), id: doc.id };
         // Get replies for this comment
         const repliesSnapshot = await adminDb
           .collection("comments")
@@ -35,7 +35,7 @@ export async function GET(
 
         const replies = await Promise.all(
           repliesSnapshot.docs.map(async (replyDoc) => {
-            const reply = { id: replyDoc.id, ...replyDoc.data() };
+            const reply = { ...(replyDoc.data() as any), id: replyDoc.id };
             // Get author details for reply
             const authorDoc = await adminDb
               .collection("users")
