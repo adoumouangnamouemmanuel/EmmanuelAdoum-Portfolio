@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
 import {
   AlertDialog,
@@ -11,89 +11,84 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/components/ui/use-toast";
-import { motion } from "framer-motion";
-import { Edit, MoreVertical, Reply, Send, Trash2 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+} from "@/components/ui/alert-dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Separator } from "@/components/ui/separator"
+import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/use-toast"
+import { motion, AnimatePresence } from "framer-motion"
+import { Edit, MoreVertical, Reply, Send, Trash2 } from "lucide-react"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
 type Comment = {
-  id: string;
-  content: string;
-  createdAt: string;
+  id: string
+  content: string
+  createdAt: string
   author: {
-    id: string;
-    name: string;
-    image: string | null;
-  };
-  replies: Comment[];
-};
+    id: string
+    name: string
+    image: string | null
+  }
+  replies: Comment[]
+}
 
 export default function CommentSection({ postSlug }: { postSlug: string }) {
-  const { data: session } = useSession();
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [replyTo, setReplyTo] = useState<string | null>(null);
-  const [replyContent, setReplyContent] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingComments, setIsLoadingComments] = useState(true);
-  const [editingComment, setEditingComment] = useState<string | null>(null);
-  const [editContent, setEditContent] = useState("");
-  const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
-  const [editingReply, setEditingReply] = useState<string | null>(null);
-  const [editReplyContent, setEditReplyContent] = useState("");
-  const [replyToDelete, setReplyToDelete] = useState<string | null>(null);
+  const { data: session } = useSession()
+  const [comments, setComments] = useState<Comment[]>([])
+  const [newComment, setNewComment] = useState("")
+  const [replyTo, setReplyTo] = useState<string | null>(null)
+  const [replyContent, setReplyContent] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingComments, setIsLoadingComments] = useState(true)
+  const [editingComment, setEditingComment] = useState<string | null>(null)
+  const [editContent, setEditContent] = useState("")
+  const [commentToDelete, setCommentToDelete] = useState<string | null>(null)
+  const [editingReply, setEditingReply] = useState<string | null>(null)
+  const [editReplyContent, setEditReplyContent] = useState("")
+  const [replyToDelete, setReplyToDelete] = useState<string | null>(null)
 
   // Fetch comments
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        setIsLoadingComments(true);
-        const response = await fetch(`/api/posts/${postSlug}/comments`);
+        setIsLoadingComments(true)
+        const response = await fetch(`/api/posts/${postSlug}/comments`)
 
         if (response.ok) {
-          const data = await response.json();
-          setComments(data);
+          const data = await response.json()
+          setComments(data)
         } else {
-          console.error("Failed to fetch comments");
+          console.error("Failed to fetch comments")
           // Set empty comments array as fallback
-          setComments([]);
+          setComments([])
         }
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error("Error fetching comments:", error)
         // Set empty comments array as fallback
-        setComments([]);
+        setComments([])
       } finally {
-        setIsLoadingComments(false);
+        setIsLoadingComments(false)
       }
-    };
+    }
 
-    fetchComments();
-  }, [postSlug]);
+    fetchComments()
+  }, [postSlug])
 
   // Submit a new comment
   const handleSubmitComment = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!session) {
       toast({
         title: "Authentication required",
         description: "Please sign in to comment",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     if (!newComment.trim()) {
@@ -101,11 +96,11 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         title: "Empty comment",
         description: "Please enter a comment",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const response = await fetch(`/api/posts/${postSlug}/comments`, {
@@ -114,44 +109,43 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: newComment }),
-      });
+      })
 
       if (response.ok) {
-        const comment = await response.json();
-        setComments([comment, ...comments]);
-        setNewComment("");
+        const comment = await response.json()
+        setComments([comment, ...comments])
+        setNewComment("")
         toast({
           title: "Comment added",
           description: "Your comment has been added successfully",
-        });
+        })
       } else {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to add comment");
+        const error = await response.json()
+        throw new Error(error.error || "Failed to add comment")
       }
     } catch (error: any) {
-      console.error("Error adding comment:", error);
+      console.error("Error adding comment:", error)
       toast({
         title: "Error",
-        description:
-          error.message || "Failed to add comment. Please try again.",
+        description: error.message || "Failed to add comment. Please try again.",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Submit a reply
   const handleSubmitReply = async (e: React.FormEvent, parentId: string) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!session) {
       toast({
         title: "Authentication required",
         description: "Please sign in to reply",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     if (!replyContent.trim()) {
@@ -159,11 +153,11 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         title: "Empty reply",
         description: "Please enter a reply",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const response = await fetch(`/api/posts/${postSlug}/comments`, {
@@ -172,10 +166,10 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: replyContent, parentId }),
-      });
+      })
 
       if (response.ok) {
-        const reply = await response.json();
+        const reply = await response.json()
 
         // Update the comments state with the new reply
         setComments(
@@ -184,46 +178,46 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
               return {
                 ...comment,
                 replies: [...comment.replies, reply],
-              };
+              }
             }
-            return comment;
-          })
-        );
+            return comment
+          }),
+        )
 
-        setReplyContent("");
-        setReplyTo(null);
+        setReplyContent("")
+        setReplyTo(null)
 
         toast({
           title: "Reply added",
           description: "Your reply has been added successfully",
-        });
+        })
       } else {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to add reply");
+        const error = await response.json()
+        throw new Error(error.error || "Failed to add reply")
       }
     } catch (error: any) {
-      console.error("Error adding reply:", error);
+      console.error("Error adding reply:", error)
       toast({
         title: "Error",
         description: error.message || "Failed to add reply. Please try again.",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Handle edit comment
   const handleEditComment = async (e: React.FormEvent, commentId: string) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!session) {
       toast({
         title: "Authentication required",
         description: "Please sign in to edit comments",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     if (!editContent.trim()) {
@@ -231,11 +225,11 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         title: "Empty comment",
         description: "Please enter some content",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const response = await fetch(`/api/posts/${postSlug}/comments/${commentId}`, {
@@ -244,45 +238,47 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: editContent }),
-      });
+      })
 
       if (response.ok) {
-        const updatedComment = await response.json();
-        
-        // Update the comments state with the edited comment while preserving author info
-        setComments(comments.map(comment => {
-          if (comment.id === commentId) {
-            return {
-              ...updatedComment,
-              author: comment.author, // Preserve the existing author information
-              replies: comment.replies, // Preserve the existing replies
-            };
-          }
-          return comment;
-        }));
+        const updatedComment = await response.json()
 
-        setEditingComment(null);
-        setEditContent("");
+        // Update the comments state with the edited comment while preserving author info
+        setComments(
+          comments.map((comment) => {
+            if (comment.id === commentId) {
+              return {
+                ...updatedComment,
+                author: comment.author, // Preserve the existing author information
+                replies: comment.replies, // Preserve the existing replies
+              }
+            }
+            return comment
+          }),
+        )
+
+        setEditingComment(null)
+        setEditContent("")
 
         toast({
           title: "Comment updated",
           description: "Your comment has been updated successfully",
-        });
+        })
       } else {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to update comment");
+        const error = await response.json()
+        throw new Error(error.error || "Failed to update comment")
       }
     } catch (error: any) {
-      console.error("Error updating comment:", error);
+      console.error("Error updating comment:", error)
       toast({
         title: "Error",
         description: error.message || "Failed to update comment. Please try again.",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Handle delete comment
   const handleDeleteComment = async (commentId: string) => {
@@ -291,8 +287,8 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         title: "Authentication required",
         description: "Please sign in to delete comments",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     try {
@@ -301,42 +297,42 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         headers: {
           "x-confirmation-token": commentId,
         },
-      });
+      })
 
       if (response.ok) {
         // Remove the comment from the state
-        setComments(comments.filter(comment => comment.id !== commentId));
-        setCommentToDelete(null);
+        setComments(comments.filter((comment) => comment.id !== commentId))
+        setCommentToDelete(null)
 
         toast({
           title: "Comment deleted",
           description: "Your comment has been deleted successfully",
-        });
+        })
       } else {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to delete comment");
+        const error = await response.json()
+        throw new Error(error.error || "Failed to delete comment")
       }
     } catch (error: any) {
-      console.error("Error deleting comment:", error);
+      console.error("Error deleting comment:", error)
       toast({
         title: "Error",
         description: error.message || "Failed to delete comment. Please try again.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   // Handle edit reply
   const handleEditReply = async (e: React.FormEvent, commentId: string, replyId: string) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!session) {
       toast({
         title: "Authentication required",
         description: "Please sign in to edit replies",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     if (!editReplyContent.trim()) {
@@ -344,11 +340,11 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         title: "Empty reply",
         description: "Please enter some content",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
 
     try {
       const response = await fetch(`/api/posts/${postSlug}/comments/${replyId}`, {
@@ -357,46 +353,48 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ content: editReplyContent }),
-      });
+      })
 
       if (response.ok) {
-        const updatedReply = await response.json();
-        
-        // Update the comments state with the edited reply
-        setComments(comments.map(comment => {
-          if (comment.id === commentId) {
-            return {
-              ...comment,
-              replies: comment.replies.map(reply => 
-                reply.id === replyId ? { ...updatedReply, author: reply.author } : reply
-              ),
-            };
-          }
-          return comment;
-        }));
+        const updatedReply = await response.json()
 
-        setEditingReply(null);
-        setEditReplyContent("");
+        // Update the comments state with the edited reply
+        setComments(
+          comments.map((comment) => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                replies: comment.replies.map((reply) =>
+                  reply.id === replyId ? { ...updatedReply, author: reply.author } : reply,
+                ),
+              }
+            }
+            return comment
+          }),
+        )
+
+        setEditingReply(null)
+        setEditReplyContent("")
 
         toast({
           title: "Reply updated",
           description: "Your reply has been updated successfully",
-        });
+        })
       } else {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to update reply");
+        const error = await response.json()
+        throw new Error(error.error || "Failed to update reply")
       }
     } catch (error: any) {
-      console.error("Error updating reply:", error);
+      console.error("Error updating reply:", error)
       toast({
         title: "Error",
         description: error.message || "Failed to update reply. Please try again.",
         variant: "destructive",
-      });
+      })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   // Handle delete reply
   const handleDeleteReply = async (commentId: string, replyId: string) => {
@@ -405,8 +403,8 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         title: "Authentication required",
         description: "Please sign in to delete replies",
         variant: "destructive",
-      });
-      return;
+      })
+      return
     }
 
     try {
@@ -415,68 +413,104 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         headers: {
           "x-confirmation-token": replyId,
         },
-      });
+      })
 
       if (response.ok) {
         // Remove the reply from the state
-        setComments(comments.map(comment => {
-          if (comment.id === commentId) {
-            return {
-              ...comment,
-              replies: comment.replies.filter(reply => reply.id !== replyId),
-            };
-          }
-          return comment;
-        }));
-        setReplyToDelete(null);
+        setComments(
+          comments.map((comment) => {
+            if (comment.id === commentId) {
+              return {
+                ...comment,
+                replies: comment.replies.filter((reply) => reply.id !== replyId),
+              }
+            }
+            return comment
+          }),
+        )
+        setReplyToDelete(null)
 
         toast({
           title: "Reply deleted",
           description: "Your reply has been deleted successfully",
-        });
+        })
       } else {
-        const error = await response.json();
-        throw new Error(error.error || "Failed to delete reply");
+        const error = await response.json()
+        throw new Error(error.error || "Failed to delete reply")
       }
     } catch (error: any) {
-      console.error("Error deleting reply:", error);
+      console.error("Error deleting reply:", error)
       toast({
         title: "Error",
         description: error.message || "Failed to delete reply. Please try again.",
         variant: "destructive",
-      });
+      })
     }
-  };
+  }
 
   // Format date
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const date = new Date(dateString)
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    });
-  };
+    })
+  }
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10,
+      },
+    },
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-12"
+      className="mt-12 rounded-xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm p-6 border border-gray-100 dark:border-gray-800 shadow-lg"
     >
-      <h3 className="text-2xl font-bold mb-6">Comments</h3>
+      <motion.h3
+        className="text-2xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent inline-block"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        Comments
+      </motion.h3>
 
       {/* Comment form */}
       {session ? (
-        <form onSubmit={handleSubmitComment} className="mb-8">
+        <motion.form
+          onSubmit={handleSubmitComment}
+          className="mb-8 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/50 dark:to-gray-700/50 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <div className="flex items-start gap-4">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={session.user.image || ""}
-                alt={session.user.name || "User"}
-              />
-              <AvatarFallback>
+            <Avatar className="h-12 w-12 border-2 border-white dark:border-gray-800 shadow-md">
+              <AvatarImage src={session.user.image || ""} alt={session.user.name || "User"} />
+              <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
                 {session.user.name
                   ? session.user.name
                       .split(" ")
@@ -488,115 +522,381 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
             </Avatar>
             <div className="flex-1">
               <Textarea
-                placeholder="Add a comment..."
+                placeholder="Share your thoughts..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="mb-2 resize-none"
+                className="mb-3 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg"
                 rows={3}
               />
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Posting..." : "Post Comment"}
-                <Send className="ml-2 h-4 w-4" />
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Posting...
+                    </div>
+                  ) : (
+                    <div className="flex items-center">
+                      <Send className="mr-2 h-4 w-4" />
+                      Post Comment
+                    </div>
+                  )}
+                </Button>
+              </div>
             </div>
           </div>
-        </form>
+        </motion.form>
       ) : (
-        <div className="bg-muted/50 rounded-lg p-4 mb-8 text-center">
-          <p className="mb-2">Sign in to leave a comment</p>
-          <Button asChild>
+        <motion.div
+          className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl p-6 mb-8 text-center border border-gray-100 dark:border-gray-800 shadow-sm"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <p className="mb-4 text-gray-600 dark:text-gray-300">Sign in to join the conversation</p>
+          <Button
+            asChild
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          >
             <Link href="/auth/login">Comment</Link>
           </Button>
-        </div>
+        </motion.div>
       )}
 
       {/* Comments list */}
-      <div className="space-y-6">
+      <motion.div className="space-y-6" variants={containerVariants} initial="hidden" animate="visible">
         {isLoadingComments ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="animate-pulse">
+              <motion.div key={i} className="animate-pulse" variants={itemVariants}>
                 <div className="flex items-start gap-4">
-                  <div className="h-10 w-10 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                   <div className="flex-1">
                     <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
                     <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 rounded mb-4"></div>
                     <div className="h-16 bg-gray-100 dark:bg-gray-800 rounded"></div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <p>No comments yet. Be the first to comment!</p>
-          </div>
+          <motion.div className="text-center py-12 text-muted-foreground" variants={itemVariants}>
+            <div className="w-16 h-16 mx-auto rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-purple-600 dark:text-purple-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                />
+              </svg>
+            </div>
+            <p className="text-lg">No comments yet. Be the first to comment!</p>
+          </motion.div>
         ) : (
-          comments.map((comment) => (
-            <div key={comment.id} className="space-y-4">
-              <div className="flex items-start gap-4">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={comment.author?.image || ""}
-                    alt={comment.author?.name || "User"}
-                  />
-                  <AvatarFallback>
-                    {comment.author?.name
-                      ? comment.author.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()
-                      : "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium">{comment.author?.name || "Anonymous"}</h4>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDate(comment.createdAt)}
-                      </span>
+          <AnimatePresence>
+            {comments.map((comment) => (
+              <motion.div
+                key={comment.id}
+                className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300"
+                variants={itemVariants}
+                layout
+              >
+                <div className="flex items-start gap-4">
+                  <Avatar className="h-12 w-12 border-2 border-white dark:border-gray-800 shadow-md">
+                    <AvatarImage src={comment.author?.image || ""} alt={comment.author?.name || "User"} />
+                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
+                      {comment.author?.name
+                        ? comment.author.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-purple-900 dark:text-purple-300">
+                          {comment.author?.name || "Anonymous"}
+                        </h4>
+                        <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
+                          {formatDate(comment.createdAt)}
+                        </span>
+                      </div>
+                      {session?.user?.id === comment.author?.id && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40 border-purple-100 dark:border-purple-900">
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditingComment(comment.id)
+                                setEditContent(comment.content)
+                              }}
+                              className="flex items-center cursor-pointer"
+                            >
+                              <Edit className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setCommentToDelete(comment.id)}
+                              className="flex items-center cursor-pointer text-red-600 dark:text-red-400"
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
-                    {session?.user?.id === comment.author?.id && (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    {editingComment === comment.id ? (
+                      <motion.form
+                        onSubmit={(e) => handleEditComment(e, comment.id)}
+                        className="mt-2"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                      >
+                        <Textarea
+                          value={editContent}
+                          onChange={(e) => setEditContent(e.target.value)}
+                          className="mb-2 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                          rows={3}
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setEditingComment(null)
+                              setEditContent("")
+                            }}
+                            className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="submit"
+                            size="sm"
+                            disabled={isLoading}
+                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                          >
+                            {isLoading ? "Saving..." : "Save"}
+                          </Button>
+                        </div>
+                      </motion.form>
+                    ) : (
+                      <>
+                        <p className="text-sm mb-3 leading-relaxed">{comment.content}</p>
+                        {session ? (
                           <Button
                             variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
+                            size="sm"
+                            className="h-auto p-0 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:bg-transparent"
+                            onClick={() => setReplyTo(replyTo === comment.id ? null : comment.id)}
                           >
-                            <MoreVertical className="h-4 w-4" />
+                            <Reply className="h-3 w-3 mr-1" />
+                            Reply
                           </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setEditingComment(comment.id);
-                              setEditContent(comment.content);
-                            }}
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto p-0 text-xs text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 hover:bg-transparent"
+                            asChild
                           >
-                            <Edit className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => setCommentToDelete(comment.id)}
-                            className="text-red-600 dark:text-red-400"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                            <Link href="/auth/login">
+                              <Reply className="h-3 w-3 mr-1" />
+                              Sign in to reply
+                            </Link>
+                          </Button>
+                        )}
+                      </>
                     )}
                   </div>
-                  {editingComment === comment.id ? (
-                    <form onSubmit={(e) => handleEditComment(e, comment.id)} className="mt-2">
+                </div>
+
+                {/* Replies */}
+                {comment.replies && comment.replies.length > 0 && (
+                  <motion.div
+                    className="ml-14 space-y-4 pl-4 border-l-2 border-purple-200 dark:border-purple-900"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <AnimatePresence>
+                      {comment.replies.map((reply) => (
+                        <motion.div
+                          key={reply.id}
+                          className="flex gap-4"
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -10 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800 shadow-sm">
+                            <AvatarImage src={reply.author?.image || ""} alt={reply.author?.name || "Anonymous"} />
+                            <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs">
+                              {reply.author?.name
+                                ? reply.author.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")
+                                    .toUpperCase()
+                                : "A"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <span className="font-medium text-sm text-purple-900 dark:text-purple-300">
+                                  {reply.author?.name || "Anonymous"}
+                                </span>
+                                <span className="text-xs ml-2 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
+                                  {formatDate(reply.createdAt)}
+                                </span>
+                              </div>
+                              {session?.user?.id === reply.author.id && (
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-8 w-8 p-0 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                                    >
+                                      <MoreVertical className="h-4 w-4" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent
+                                    align="end"
+                                    className="w-40 border-purple-100 dark:border-purple-900"
+                                  >
+                                    <DropdownMenuItem
+                                      onClick={() => {
+                                        setEditingReply(reply.id)
+                                        setEditReplyContent(reply.content)
+                                      }}
+                                      className="flex items-center cursor-pointer"
+                                    >
+                                      <Edit className="h-4 w-4 mr-2 text-purple-600 dark:text-purple-400" />
+                                      Edit
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                      onClick={() => setReplyToDelete(reply.id)}
+                                      className="flex items-center cursor-pointer text-red-600 dark:text-red-400"
+                                    >
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Delete
+                                    </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              )}
+                            </div>
+
+                            {editingReply === reply.id ? (
+                              <motion.form
+                                onSubmit={(e) => handleEditReply(e, comment.id, reply.id)}
+                                className="mt-2"
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                              >
+                                <Textarea
+                                  value={editReplyContent}
+                                  onChange={(e) => setEditReplyContent(e.target.value)}
+                                  className="mb-2 resize-none text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                  rows={2}
+                                />
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                      setEditingReply(null)
+                                      setEditReplyContent("")
+                                    }}
+                                    className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    type="submit"
+                                    size="sm"
+                                    disabled={isLoading}
+                                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                                  >
+                                    {isLoading ? "Saving..." : "Save"}
+                                  </Button>
+                                </div>
+                              </motion.form>
+                            ) : (
+                              <p className="text-sm mt-1">{reply.content}</p>
+                            )}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </motion.div>
+                )}
+
+                {/* Reply form */}
+                <AnimatePresence>
+                  {replyTo === comment.id && session && (
+                    <motion.form
+                      onSubmit={(e) => handleSubmitReply(e, comment.id)}
+                      className="ml-14 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/50 dark:to-gray-700/50 p-4 rounded-lg border border-gray-100 dark:border-gray-800"
+                      initial={{ opacity: 0, height: 0, y: -20 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
                       <Textarea
-                        value={editContent}
-                        onChange={(e) => setEditContent(e.target.value)}
-                        className="mb-2 resize-none"
-                        rows={3}
+                        placeholder={`Reply to ${comment.author?.name || "Anonymous"}...`}
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        className="mb-2 resize-none text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        rows={2}
                       />
                       <div className="flex justify-end gap-2">
                         <Button
@@ -604,201 +904,82 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           variant="outline"
                           size="sm"
                           onClick={() => {
-                            setEditingComment(null);
-                            setEditContent("");
+                            setReplyTo(null)
+                            setReplyContent("")
                           }}
+                          className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
                         >
                           Cancel
                         </Button>
-                        <Button type="submit" size="sm" disabled={isLoading}>
-                          {isLoading ? "Saving..." : "Save"}
-                        </Button>
-                      </div>
-                    </form>
-                  ) : (
-                    <>
-                      <p className="text-sm mb-2">{comment.content}</p>
-                      {session ? (
                         <Button
-                          variant="ghost"
+                          type="submit"
                           size="sm"
-                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
-                          onClick={() =>
-                            setReplyTo(replyTo === comment.id ? null : comment.id)
-                          }
+                          disabled={isLoading}
+                          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
                         >
-                          <Reply className="h-3 w-3 mr-1" />
-                          Reply
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
-                          asChild
-                        >
-                          <Link href="/auth/login">
-                            <Reply className="h-3 w-3 mr-1" />
-                            Sign in to reply
-                          </Link>
-                        </Button>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-
-              {/* Replies */}
-              {comment.replies && comment.replies.length > 0 && (
-                <div className="ml-14 space-y-4">
-                  {comment.replies.map((reply) => (
-                    <div key={reply.id} className="flex gap-4">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          src={reply.author?.image || ""}
-                          alt={reply.author?.name || "Anonymous"}
-                        />
-                        <AvatarFallback>
-                          {reply.author?.name
-                            ? reply.author.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                                .toUpperCase()
-                            : "A"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <span className="font-medium">
-                              {reply.author?.name || "Anonymous"}
-                            </span>
-                            <span className="text-sm text-muted-foreground ml-2">
-                              {formatDate(reply.createdAt)}
-                            </span>
-                          </div>
-                          {session?.user?.id === reply.author.id && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-8 w-8 p-0"
-                                >
-                                  <MoreVertical className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    setEditingReply(reply.id);
-                                    setEditReplyContent(reply.content);
-                                  }}
-                                >
-                                  <Edit className="h-4 w-4 mr-2" />
-                                  Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => setReplyToDelete(reply.id)}
-                                >
-                                  <Trash2 className="h-4 w-4 mr-2" />
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          )}
-                        </div>
-
-                        {editingReply === reply.id ? (
-                          <form onSubmit={(e) => handleEditReply(e, comment.id, reply.id)} className="mt-2">
-                            <Textarea
-                              value={editReplyContent}
-                              onChange={(e) => setEditReplyContent(e.target.value)}
-                              className="mb-2 resize-none text-sm"
-                              rows={2}
-                            />
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setEditingReply(null);
-                                  setEditReplyContent("");
-                                }}
+                          {isLoading ? (
+                            <div className="flex items-center">
+                              <svg
+                                className="animate-spin -ml-1 mr-1 h-3 w-3 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
                               >
-                                Cancel
-                              </Button>
-                              <Button type="submit" size="sm" disabled={isLoading}>
-                                {isLoading ? "Saving..." : "Save"}
-                              </Button>
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
+                              Posting...
                             </div>
-                          </form>
-                        ) : (
-                          <p className="text-sm">{reply.content}</p>
-                        )}
+                          ) : (
+                            <div className="flex items-center">
+                              <Reply className="mr-1 h-3 w-3" />
+                              Reply
+                            </div>
+                          )}
+                        </Button>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    </motion.form>
+                  )}
+                </AnimatePresence>
 
-              {/* Reply form */}
-              {replyTo === comment.id && session && (
-                <form
-                  onSubmit={(e) => handleSubmitReply(e, comment.id)}
-                  className="ml-14"
-                >
-                  <Textarea
-                    placeholder={`Reply to ${comment.author?.name || "Anonymous"}...`}
-                    value={replyContent}
-                    onChange={(e) => setReplyContent(e.target.value)}
-                    className="mb-2 resize-none text-sm"
-                    rows={2}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setReplyTo(null);
-                        setReplyContent("");
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" size="sm" disabled={isLoading}>
-                      {isLoading ? "Posting..." : "Reply"}
-                    </Button>
-                  </div>
-                </form>
-              )}
-
-              <Separator className="my-6" />
-            </div>
-          ))
+                <Separator className="my-6 bg-gradient-to-r from-transparent via-purple-200 dark:via-purple-900/50 to-transparent" />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
-      </div>
+      </motion.div>
 
       {/* Delete Comment Dialog */}
       <AlertDialog open={!!commentToDelete} onOpenChange={() => setCommentToDelete(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="border-2 border-red-100 dark:border-red-900/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Comment</AlertDialogTitle>
+            <AlertDialogTitle className="text-red-600 dark:text-red-400">Delete Comment</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this comment? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (commentToDelete) {
-                  handleDeleteComment(commentToDelete);
+                  handleDeleteComment(commentToDelete)
                 }
               }}
+              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white transition-all duration-300"
             >
               Delete
             </AlertDialogAction>
@@ -808,26 +989,27 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
 
       {/* Delete Reply Dialog */}
       <AlertDialog open={!!replyToDelete} onOpenChange={() => setReplyToDelete(null)}>
-        <AlertDialogContent>
+        <AlertDialogContent className="border-2 border-red-100 dark:border-red-900/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Reply</AlertDialogTitle>
+            <AlertDialogTitle className="text-red-600 dark:text-red-400">Delete Reply</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this reply? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 if (replyToDelete) {
-                  const comment = comments.find(c => 
-                    c.replies.some(r => r.id === replyToDelete)
-                  );
+                  const comment = comments.find((c) => c.replies.some((r) => r.id === replyToDelete))
                   if (comment) {
-                    handleDeleteReply(comment.id, replyToDelete);
+                    handleDeleteReply(comment.id, replyToDelete)
                   }
                 }
               }}
+              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white transition-all duration-300"
             >
               Delete
             </AlertDialogAction>
@@ -835,5 +1017,5 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         </AlertDialogContent>
       </AlertDialog>
     </motion.div>
-  );
+  )
 }
