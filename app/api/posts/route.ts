@@ -70,15 +70,21 @@ export async function POST(req: NextRequest) {
     if (!title || !slug || !content) {
       return NextResponse.json({ error: "Title, slug, and content are required" }, { status: 400 });
     }
-    // Check if slug is unique
-    const existing = await adminDb.collection("posts").where("slug", "==", slug).get();
-    if (!existing.empty) {
-      return NextResponse.json({ error: "A post with this slug already exists" }, { status: 400 });
+    // Generate a unique slug
+    let baseSlug = slug;
+    let uniqueSlug = baseSlug;
+    let counter = 2;
+    let existing = await adminDb.collection("posts").where("slug", "==", uniqueSlug).get();
+    while (!existing.empty) {
+      uniqueSlug = `${baseSlug}-${counter}`;
+      existing = await adminDb.collection("posts").where("slug", "==", uniqueSlug).get();
+      counter++;
     }
+
     // Create the post
     const newPost = {
       title,
-      slug,
+      slug: uniqueSlug,
       excerpt: excerpt || "",
       content,
       coverImage: coverImage || "/placeholder.svg?height=600&width=1200",
