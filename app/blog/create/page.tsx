@@ -305,9 +305,9 @@ export default function CreateBlogPost() {
                               onChange={(e) => setCoverImage(e.target.value)}
                         required
                       />
-                      <Button type="button" variant="outline" size="icon">
+                      <Button type="button" variant="outline" size="icon" disabled>
                         <ImageIcon className="h-4 w-4" />
-                                  </Button>
+                      </Button>
                           </div>
                         </div>
 

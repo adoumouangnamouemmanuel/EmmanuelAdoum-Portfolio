@@ -12,9 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
 import { motion } from "framer-motion"
-import { ArrowLeft, Camera, Github, Linkedin, Mail, Save, Twitter, User } from 'lucide-react'
+import { ArrowLeft, Camera, Github, Linkedin, Save, Twitter, User } from 'lucide-react'
 import { SessionProvider, useSession } from "next-auth/react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -316,6 +315,7 @@ function SettingsForm({ user }: { user: any }) {
                           accept="image/*" 
                           onChange={handleImageChange} 
                           className="hidden" 
+                          disabled
                         />
                       </div>
                       

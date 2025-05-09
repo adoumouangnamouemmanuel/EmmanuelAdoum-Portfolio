@@ -317,7 +317,7 @@ export default function BlogPostPage() {
             className="mb-8"
           >
             <ResponsiveImage
-              src={post.coverImage || "/placeholder.svg?height=600&width=1200"}
+              src={ "/images/posts/blog.avif"} //post.coverImage ||
               alt={post.title}
               priority
             />

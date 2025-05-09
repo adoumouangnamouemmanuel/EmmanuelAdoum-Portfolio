@@ -127,7 +127,7 @@ export default function AboutPage() {
               className="relative w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-xl"
             >
               <Image
-                src="/placeholder.svg?height=256&width=256"
+                src="/images/emma-head.png"
                 alt="Emmanuel Adoum"
                 fill
                 className="object-cover"
@@ -152,7 +152,7 @@ export default function AboutPage() {
               >
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300">
                   <Code className="mr-1 h-3.5 w-3.5" />
-                  Software Engineer
+                  Software Engineer & AI Engineer
                 </span>
                 <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-300">
                   <MapPin className="mr-1 h-3.5 w-3.5" />
@@ -185,7 +185,11 @@ export default function AboutPage() {
                   variant="outline"
                   className="rounded-full border-violet-200 dark:border-violet-800 hover:bg-violet-50 dark:hover:bg-violet-900/30 text-violet-700 dark:text-violet-300"
                 >
-                  <Link href="#" className="flex items-center">
+                    <Link
+                        href="/resume.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center">
                     <Download className="mr-2 h-4 w-4" />
                     Download CV
                   </Link>
