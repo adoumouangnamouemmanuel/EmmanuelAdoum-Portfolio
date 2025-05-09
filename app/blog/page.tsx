@@ -1,5 +1,6 @@
 "use client";
 
+import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -643,6 +644,7 @@ export default function BlogPage() {
                 )}
               </motion.div>
             </div>
+            <Footer />
           </div>
         </div>
       </section>

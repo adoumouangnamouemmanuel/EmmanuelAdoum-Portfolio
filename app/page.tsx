@@ -25,6 +25,7 @@ export default function Home() {
         <BlogSection />
         <ContactSection />
       </main>
+      <Footer />
     </>
   );
 }

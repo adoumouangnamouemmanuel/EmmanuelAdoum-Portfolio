@@ -216,7 +216,7 @@ export default function BlogPostPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-900">
+    <main className="min-h-screen bg-white dark:bg-gray-900 pb-45 mt-[-20px]">
       {/* Hero section */}
       <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
@@ -419,7 +419,7 @@ export default function BlogPostPage() {
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="py-5">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Main content */}

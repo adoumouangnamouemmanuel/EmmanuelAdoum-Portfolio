@@ -1,4 +1,4 @@
-import Footer from "@/components/layout/Footer";
+// import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import type { Metadata } from "next";
@@ -132,7 +132,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ToastProvider children={children}/>
-          <Footer />
           </ThemeProvider>
           
       </body>
