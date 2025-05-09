@@ -112,19 +112,6 @@ export default function BlogPostPage() {
         
         setPost(postData);
 
-        // Handle view counting: only increment if not visited before in this browser
-        const viewKey = `post_${slug}_viewed`;
-        if (typeof window !== "undefined" && !localStorage.getItem(viewKey)) {
-          try {
-            await fetch(`/api/posts/${slug}/views`, {
-              method: 'POST'
-            });
-            localStorage.setItem(viewKey, "1");
-          } catch (error) {
-            console.error('Error incrementing view count:', error);
-          }
-        }
-
         // Fetch related posts
         const relatedResponse = await fetch(
           `/api/posts?category=${data.categories[0] || ""}&limit=3`
@@ -164,27 +151,21 @@ export default function BlogPostPage() {
   }, [slug]);
 
   useEffect(() => {
-    console.log("View increment effect running. Slug:", slug);
-    if (!slug) return;
-    if (typeof window === "undefined") return;
-    if (viewCounted.current) return;
+    if (!slug || typeof window === "undefined") return;
     
     const viewKey = `post_${slug}_viewed`;
-    if (!localStorage.getItem(viewKey)) {
-      console.log("Calling view increment API for", slug);
+    const hasViewed = localStorage.getItem(viewKey);
+    
+    if (!hasViewed) {
       fetch(`/api/posts/${slug}/views`, { method: 'POST' })
         .then(res => {
           if (res.ok) {
             localStorage.setItem(viewKey, "1");
-            viewCounted.current = true;
           }
         })
         .catch(err => {
           console.error('Error incrementing view count:', err);
         });
-    } else {
-      console.log("View already counted for", slug);
-      viewCounted.current = true;
     }
   }, [slug]);
 

@@ -302,12 +302,12 @@ export default function CreateBlogPost() {
                               id="coverImage"
                               placeholder="/images/posts/blog.avif"
                                 value={coverImage} //coverImage
-                                onChange={(e) => setCoverImage(e.target.value)}
+                              onChange={(e) => setCoverImage(e.target.value)}
                         required
                       />
                       <Button type="button" variant="outline" size="icon" disabled>
                         <ImageIcon className="h-4 w-4" />
-                      </Button>
+                                  </Button>
                           </div>
                         </div>
 

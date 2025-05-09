@@ -27,13 +27,13 @@ export async function GET(req: NextRequest) {
         let author = null;
         if (post.authorId) {
           author = await userModel.findById(post.authorId);
-        }
+    }
         // Count likes
         const likesSnapshot = await adminDb.collection("likes").where("postId", "==", post.id).get();
         // Count comments
         const commentsSnapshot = await adminDb.collection("comments").where("postId", "==", post.id).get();
-        return {
-          ...post,
+      return {
+        ...post,
           author: author ? {
             id: author.id,
             name: author.displayName || author.name || 'Unknown',
@@ -45,11 +45,11 @@ export async function GET(req: NextRequest) {
               linkedin: author.linkedin || '',
             }
           } : null,
-          _count: {
+        _count: {
             likes: likesSnapshot.size,
             comments: commentsSnapshot.size,
           }
-        };
+      };
       })
     );
 
