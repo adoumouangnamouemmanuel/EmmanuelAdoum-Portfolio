@@ -9,7 +9,7 @@ export async function GET(
   context: { params: { slug: string } }
 ) {
   try {
-    const { slug } = context.params;
+    const { slug } = await context.params;
 
     // Find the post
     const post = await postModel.findBySlug(slug);
@@ -62,7 +62,7 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { slug } = context.params;
+    const { slug } = await context.params;
     const { title, newSlug, excerpt, content, coverImage, categories } = await req.json();
 
     // Find the post by slug
@@ -137,22 +137,19 @@ export async function DELETE(
 
     const { slug } = params;
 
-    // Find the post
-    const postIndex = posts.findIndex((p) => p.slug === slug);
-
-    if (postIndex === -1) {
+    // Find the post by slug
+    const post = await postModel.findBySlug(slug);
+    if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
-
-    const post = posts[postIndex];
 
     // Check if user is the author or an admin
     if (post.authorId !== session.user.id && session.user.role !== "admin") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Delete the post from our mock array
-    posts.splice(postIndex, 1);
+    // Delete the post from Firestore
+    await postModel.delete(post.id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

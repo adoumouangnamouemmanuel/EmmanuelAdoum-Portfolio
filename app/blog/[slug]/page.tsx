@@ -24,7 +24,7 @@ import {
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Define the BlogPost type
 type BlogPost = {
@@ -72,6 +72,7 @@ export default function BlogPostPage() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const viewCounted = useRef(false);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -166,18 +167,24 @@ export default function BlogPostPage() {
     console.log("View increment effect running. Slug:", slug);
     if (!slug) return;
     if (typeof window === "undefined") return;
+    if (viewCounted.current) return;
+    
     const viewKey = `post_${slug}_viewed`;
     if (!localStorage.getItem(viewKey)) {
       console.log("Calling view increment API for", slug);
       fetch(`/api/posts/${slug}/views`, { method: 'POST' })
         .then(res => {
-          if (res.ok) localStorage.setItem(viewKey, "1");
+          if (res.ok) {
+            localStorage.setItem(viewKey, "1");
+            viewCounted.current = true;
+          }
         })
         .catch(err => {
           console.error('Error incrementing view count:', err);
         });
     } else {
       console.log("View already counted for", slug);
+      viewCounted.current = true;
     }
   }, [slug]);
 

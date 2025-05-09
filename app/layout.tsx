@@ -114,6 +114,7 @@ export const metadata: Metadata = {
     creator: "@AdoumOuangnamou",
   },
   description: "A professional portfolio showcasing my skills and projects",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
 };
 
 export default function RootLayout({
