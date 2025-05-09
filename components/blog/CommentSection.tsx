@@ -487,10 +487,10 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-12 rounded-xl bg-white/50 dark:bg-gray-900/80 backdrop-blur-sm p-6 border border-gray-100 dark:border-gray-800 shadow-lg"
+      className="mt-12 rounded-xl bg-white/50 dark:bg-gray-900/80 backdrop-blur-sm p-4 sm:p-6 border border-gray-100 dark:border-gray-800 shadow-lg"
     >
       <motion.h3
-        className="text-2xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent inline-block"
+        className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent inline-block"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -502,13 +502,13 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
       {session ? (
         <motion.form
           onSubmit={handleSubmitComment}
-          className="mb-8 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/80 dark:to-gray-700/80 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm"
+          className="mb-6 sm:mb-8 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/80 dark:to-gray-700/80 p-4 sm:p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <div className="flex items-start gap-4">
-            <Avatar className="h-12 w-12 border-2 border-white dark:border-gray-800 shadow-md">
+          <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
+            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 border-white dark:border-gray-800 shadow-md">
               <AvatarImage src={session.user.image || ""} alt={session.user.name || "User"} />
               <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
                 {session.user.name
@@ -561,22 +561,23 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   ) : (
                     <div className="flex items-center">
                       <Send className="mr-2 h-4 w-4" />
-                      Post Comment
+                      <span className="hidden xs:inline">Post Comment</span>
+                      <span className="xs:hidden">Post</span>
                     </div>
                   )}
-              </Button>
+                </Button>
               </div>
             </div>
           </div>
         </motion.form>
       ) : (
         <motion.div
-          className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl p-6 mb-8 text-center border border-gray-100 dark:border-gray-800 shadow-sm"
+          className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl p-4 sm:p-6 mb-6 sm:mb-8 text-center border border-gray-100 dark:border-gray-800 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <p className="mb-4 text-gray-600 dark:text-gray-300">Sign in to join the conversation</p>
+          <p className="mb-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">Sign in to join the conversation</p>
           <Button
             asChild
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
@@ -587,28 +588,28 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
       )}
 
       {/* Comments list */}
-      <motion.div className="space-y-6" variants={containerVariants} initial="hidden" animate="visible">
+      <motion.div className="space-y-4 sm:space-y-6" variants={containerVariants} initial="hidden" animate="visible">
         {isLoadingComments ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
               <motion.div key={i} className="animate-pulse" variants={itemVariants}>
-                <div className="flex items-start gap-4">
-                  <div className="h-12 w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-gray-200 dark:bg-gray-700"></div>
                   <div className="flex-1">
-                    <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
-                    <div className="h-3 w-24 bg-gray-100 dark:bg-gray-800 rounded mb-4"></div>
-                    <div className="h-16 bg-gray-100 dark:bg-gray-800 rounded"></div>
+                    <div className="h-4 w-24 sm:w-32 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                    <div className="h-3 w-16 sm:w-24 bg-gray-100 dark:bg-gray-800 rounded mb-4"></div>
+                    <div className="h-12 sm:h-16 bg-gray-100 dark:bg-gray-800 rounded"></div>
                   </div>
                 </div>
               </motion.div>
             ))}
           </div>
         ) : comments.length === 0 ? (
-          <motion.div className="text-center py-12 text-muted-foreground" variants={itemVariants}>
-            <div className="w-16 h-16 mx-auto rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
+          <motion.div className="text-center py-8 sm:py-12 text-muted-foreground" variants={itemVariants}>
+            <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center mb-4">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-purple-600 dark:text-purple-400"
+                className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600 dark:text-purple-400"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -620,51 +621,51 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-          </div>
-            <p className="text-lg">No comments yet. Be the first to comment!</p>
+            </div>
+            <p className="text-base sm:text-lg">No comments yet. Be the first to comment!</p>
           </motion.div>
         ) : (
           <AnimatePresence>
             {comments.map((comment) => (
               <motion.div
                 key={comment.id}
-                className="space-y-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300"
+                className="space-y-3 sm:space-y-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-4 sm:p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300"
                 variants={itemVariants}
                 layout
               >
-              <div className="flex items-start gap-4">
-                  <Avatar className="h-12 w-12 border-2 border-white dark:border-gray-800 shadow-md">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <Avatar className="h-8 w-8 sm:h-12 sm:w-12 border-2 border-white dark:border-gray-800 shadow-md">
                     <AvatarImage src={comment.author?.image || ""} alt={comment.author?.name || "User"} />
-                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
+                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs sm:text-base">
                       {comment.author?.name
-                      ? comment.author.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase()
-                      : "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2 text-gray-900 dark:text-gray-100">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-purple-900 dark:text-purple-300">
+                        ? comment.author.name
+                            .split(" ")
+                            .map((n) => n[0])
+                            .join("")
+                            .toUpperCase()
+                        : "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 text-gray-900 dark:text-gray-100 gap-1 sm:gap-0">
+                      <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 min-w-0">
+                        <h4 className="font-medium text-sm sm:text-base text-purple-900 dark:text-purple-300 truncate">
                           {comment.author?.name || "Anonymous"}
                         </h4>
-                        <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
-                      {formatDate(comment.createdAt)}
-                    </span>
-                  </div>
+                        <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full inline-block w-fit">
+                          {formatDate(comment.createdAt)}
+                        </span>
+                      </div>
                       {session?.user?.id === comment.author?.id && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
+                            <Button
+                              variant="ghost"
                               size="icon"
-                              className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                              className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 self-start sm:self-auto mt-1 sm:mt-0"
                             >
                               <MoreVertical className="h-4 w-4" />
-                  </Button>
+                            </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40 border-purple-100 dark:border-purple-900">
                             <DropdownMenuItem
@@ -687,7 +688,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
-                </div>
+                    </div>
                     {editingComment === comment.id ? (
                       <motion.form
                         onSubmit={(e) => handleEditComment(e, comment.id)}
@@ -695,31 +696,31 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                >
-                  <Textarea
+                      >
+                        <Textarea
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
-                          className="mb-2 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                          className="mb-2 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
                           rows={3}
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
                               setEditingComment(null)
                               setEditContent("")
-                      }}
-                            className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
-                    >
-                      Cancel
-                    </Button>
+                            }}
+                            className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30 text-xs sm:text-sm"
+                          >
+                            Cancel
+                          </Button>
                           <Button
                             type="submit"
                             size="sm"
                             disabled={isLoading}
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-xs sm:text-sm"
                           >
                             {isLoading ? "Saving..." : "Save"}
                           </Button>
@@ -727,7 +728,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                       </motion.form>
                     ) : (
                       <>
-                        <p className="text-sm mb-3 leading-relaxed">{comment.content}</p>
+                        <p className="text-sm leading-relaxed mb-2 sm:mb-3 break-words">{comment.content}</p>
                         {session ? (
                           <Button
                             variant="ghost"
@@ -749,52 +750,52 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                               <Reply className="h-3 w-3 mr-1" />
                               Sign in to reply
                             </Link>
-                    </Button>
+                          </Button>
                         )}
                       </>
                     )}
                   </div>
                 </div>
 
-              {/* Replies */}
-              {comment.replies && comment.replies.length > 0 && (
+                {/* Replies */}
+                {comment.replies && comment.replies.length > 0 && (
                   <motion.div
-                    className="ml-14 space-y-4 pl-4 border-l-2 border-purple-200 dark:border-purple-900"
+                    className="ml-8 sm:ml-14 space-y-3 sm:space-y-4 pl-3 sm:pl-4 border-l-2 border-purple-200 dark:border-purple-900"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
                   >
                     <AnimatePresence>
-                  {comment.replies.map((reply) => (
+                      {comment.replies.map((reply) => (
                         <motion.div
                           key={reply.id}
-                          className="flex gap-4"
+                          className="flex gap-2 sm:gap-4"
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -10 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800 shadow-sm">
+                          <Avatar className="h-6 w-6 sm:h-8 sm:w-8 border-2 border-white dark:border-gray-800 shadow-sm">
                             <AvatarImage src={reply.author?.image || ""} alt={reply.author?.name || "Anonymous"} />
                             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs">
                               {reply.author?.name
-                            ? reply.author.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")
-                                .toUpperCase()
+                                ? reply.author.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")
+                                    .toUpperCase()
                                 : "A"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 w-full">
-                              <div>
-                                <span className="font-medium text-sm text-purple-900 dark:text-purple-300 break-all">
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 w-full">
+                              <div className="flex flex-col xs:flex-row xs:items-center gap-1 min-w-0">
+                                <span className="font-medium text-xs sm:text-sm text-purple-900 dark:text-purple-300 truncate">
                                   {reply.author?.name || "Anonymous"}
-                          </span>
-                        </div>
-                              <div className="text-xs mt-1 sm:mt-0 ml-0 sm:ml-2 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full break-all">
-                                {formatDate(reply.createdAt)}
+                                </span>
+                                <div className="text-xs px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full inline-block w-fit">
+                                  {formatDate(reply.createdAt)}
+                                </div>
                               </div>
                               {session?.user?.id === reply.author.id && (
                                 <DropdownMenu>
@@ -802,9 +803,9 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="h-8 w-8 p-0 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30"
+                                      className="h-6 w-6 sm:h-8 sm:w-8 p-0 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 self-start xs:self-auto"
                                     >
-                                      <MoreVertical className="h-4 w-4" />
+                                      <MoreVertical className="h-3 w-3 sm:h-4 sm:w-4" />
                                     </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent
@@ -844,7 +845,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                 <Textarea
                                   value={editReplyContent}
                                   onChange={(e) => setEditReplyContent(e.target.value)}
-                                  className="mb-2 resize-none text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                  className="mb-2 resize-none text-xs sm:text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                   rows={2}
                                 />
                                 <div className="flex justify-end gap-2">
@@ -856,7 +857,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                       setEditingReply(null)
                                       setEditReplyContent("")
                                     }}
-                                    className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                                    className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30 text-xs"
                                   >
                                     Cancel
                                   </Button>
@@ -864,16 +865,18 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                     type="submit"
                                     size="sm"
                                     disabled={isLoading}
-                                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-xs"
                                   >
                                     {isLoading ? "Saving..." : "Save"}
                                   </Button>
-                      </div>
+                                </div>
                               </motion.form>
                             ) : (
-                              <p className="text-sm mt-1 text-gray-900 dark:text-gray-100">{reply.content}</p>
+                              <p className="text-xs sm:text-sm mt-1 text-gray-900 dark:text-gray-100 break-words">
+                                {reply.content}
+                              </p>
                             )}
-                    </div>
+                          </div>
                         </motion.div>
                       ))}
                     </AnimatePresence>
@@ -885,7 +888,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   {replyTo === comment.id && session && (
                     <motion.form
                       onSubmit={(e) => handleSubmitReply(e, comment.id)}
-                      className="ml-14 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/80 dark:to-gray-700/80 p-4 rounded-lg border border-gray-100 dark:border-gray-800"
+                      className="ml-8 sm:ml-14 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/80 dark:to-gray-700/80 p-3 sm:p-4 rounded-lg border border-gray-100 dark:border-gray-800"
                       initial={{ opacity: 0, height: 0, y: -20 }}
                       animate={{ opacity: 1, height: "auto", y: 0 }}
                       exit={{ opacity: 0, height: 0, y: -20 }}
@@ -895,7 +898,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                         placeholder={`Reply to ${comment.author?.name || "Anonymous"}...`}
                         value={replyContent}
                         onChange={(e) => setReplyContent(e.target.value)}
-                        className="mb-2 resize-none text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                        className="mb-2 resize-none text-xs sm:text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                         rows={2}
                       />
                       <div className="flex justify-end gap-2">
@@ -907,7 +910,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             setReplyTo(null)
                             setReplyContent("")
                           }}
-                          className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
+                          className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30 text-xs"
                         >
                           Cancel
                         </Button>
@@ -915,7 +918,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           type="submit"
                           size="sm"
                           disabled={isLoading}
-                          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
+                          className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-xs"
                         >
                           {isLoading ? (
                             <div className="flex items-center">
@@ -945,15 +948,15 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             <div className="flex items-center">
                               <Reply className="mr-1 h-3 w-3" />
                               Reply
-                </div>
-              )}
+                            </div>
+                          )}
                         </Button>
-            </div>
+                      </div>
                     </motion.form>
                   )}
                 </AnimatePresence>
 
-                <Separator className="my-6 bg-gradient-to-r from-transparent via-purple-200 dark:via-purple-900/50 to-transparent" />
+                <Separator className="my-4 sm:my-6 bg-gradient-to-r from-transparent via-purple-200 dark:via-purple-900/50 to-transparent" />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -962,15 +965,15 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
 
       {/* Delete Comment Dialog */}
       <AlertDialog open={!!commentToDelete} onOpenChange={() => setCommentToDelete(null)}>
-        <AlertDialogContent className="border-2 border-red-100 dark:border-red-900/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
+        <AlertDialogContent className="border-2 border-red-100 dark:border-red-900/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm max-w-[90vw] sm:max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-red-600 dark:text-red-400">Delete Comment</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this comment? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20">
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+            <AlertDialogCancel className="border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 mt-0">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -989,15 +992,15 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
 
       {/* Delete Reply Dialog */}
       <AlertDialog open={!!replyToDelete} onOpenChange={() => setReplyToDelete(null)}>
-        <AlertDialogContent className="border-2 border-red-100 dark:border-red-900/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
+        <AlertDialogContent className="border-2 border-red-100 dark:border-red-900/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm max-w-[90vw] sm:max-w-md">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-red-600 dark:text-red-400">Delete Reply</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this reply? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20">
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+            <AlertDialogCancel className="border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-900/20 mt-0">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
