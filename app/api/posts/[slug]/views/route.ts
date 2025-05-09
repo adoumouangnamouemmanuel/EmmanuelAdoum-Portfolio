@@ -1,4 +1,5 @@
 import { adminDb } from "@/lib/firebase/admin";
+import { FieldValue } from "firebase-admin/firestore";
 import { type NextRequest, NextResponse } from "next/server";
 
 // POST /api/posts/[slug]/views - Increment view count
@@ -16,7 +17,7 @@ export async function POST(
     const postRef = postsSnapshot.docs[0].ref;
     // Increment views
     await postRef.update({
-      views: adminDb.FieldValue.increment(1)
+      views: FieldValue.increment(1)
     });
     return NextResponse.json({ success: true });
   } catch (error) {

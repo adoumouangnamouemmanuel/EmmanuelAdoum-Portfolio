@@ -162,6 +162,25 @@ export default function BlogPostPage() {
     }
   }, [slug]);
 
+  useEffect(() => {
+    console.log("View increment effect running. Slug:", slug);
+    if (!slug) return;
+    if (typeof window === "undefined") return;
+    const viewKey = `post_${slug}_viewed`;
+    if (!localStorage.getItem(viewKey)) {
+      console.log("Calling view increment API for", slug);
+      fetch(`/api/posts/${slug}/views`, { method: 'POST' })
+        .then(res => {
+          if (res.ok) localStorage.setItem(viewKey, "1");
+        })
+        .catch(err => {
+          console.error('Error incrementing view count:', err);
+        });
+    } else {
+      console.log("View already counted for", slug);
+    }
+  }, [slug]);
+
   const copyToClipboard = () => {
     if (typeof window !== "undefined") {
       navigator.clipboard.writeText(window.location.href);
