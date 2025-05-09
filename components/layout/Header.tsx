@@ -10,8 +10,9 @@ import {
 } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme/mode-toggle";
-import { Menu, X, ChevronRight } from "lucide-react";
+import { Menu, X, ChevronRight, Moon, Sun } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useTheme } from "next-themes"
 
 const navItems = [
   { name: "Home", href: "#home" },
@@ -28,6 +29,7 @@ const navItems = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+   const { theme, setTheme } = useTheme()
   const [activeSection, setActiveSection] = useState("home");
   const [sectionPositions, setSectionPositions] = useState<{
     [key: string]: number;
@@ -319,7 +321,18 @@ export default function Header() {
               whileHover={{ rotate: 180 }}
               className="ml-2"
             >
-              <ModeToggle />
+              {/* <ModeToggle /> */}
+               {/* Theme toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
+              aria-label="Toggle theme"
+            >
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
+            </Button>
             </motion.div>
           </nav>
 
@@ -331,7 +344,19 @@ export default function Header() {
               transition={{ delay: 0.5 }}
               whileHover={{ rotate: 180 }}
             >
-              <ModeToggle />
+              {/* <ModeToggle /> */}
+               {/* <ModeToggle /> */}
+               {/* Theme toggle */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
+              aria-label="Toggle theme"
+            >
+              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
+              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
+            </Button>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
