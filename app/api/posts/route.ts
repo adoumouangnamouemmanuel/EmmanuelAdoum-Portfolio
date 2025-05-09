@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
           author: author ? {
             id: author.id,
             name: author.displayName || author.name || 'Unknown',
-            image: author.photoURL || author.image || '/images/posts/profile.jpeg',
+            image: author.photoURL || author.image || null,
             bio: author.bio || author.description || '',
             social: {
               github: author.github || '',

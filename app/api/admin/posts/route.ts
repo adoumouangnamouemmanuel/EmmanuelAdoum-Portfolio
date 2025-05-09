@@ -16,13 +16,13 @@ export async function GET() {
         const post = { id: doc.id, ...doc.data() };
         // Get author info
         let author = null;
-        if (post.authorId) {
-          const authorDoc = await adminDb.collection("users").doc(post.authorId).get();
+        if ((post as any).authorId) {
+          const authorDoc = await adminDb.collection("users").doc((post as any).authorId).get();
           author = authorDoc.exists
             ? {
                 id: authorDoc.id,
                 name: authorDoc.data()?.name || "Unknown",
-                image: authorDoc.data()?.image || "/images/posts/profile.jpeg",
+                image: authorDoc.data()?.image || null,
               }
             : null;
         }

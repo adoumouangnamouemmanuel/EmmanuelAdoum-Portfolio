@@ -1,12 +1,12 @@
 "use client";
 
+import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { blogPosts } from "@/data/blog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useInView } from "framer-motion";
-import Footer from "@/components/layout/Footer";
 import {
   ArrowLeft,
   BookmarkPlus,
@@ -57,6 +57,10 @@ type BlogPost = {
     };
   };
   views: number;
+  _count?: {
+    likes?: number;
+    comments?: number;
+  };
 };
 
 export default function BlogPage() {
@@ -100,11 +104,12 @@ export default function BlogPage() {
             categories: post.categories || [],
             views: post.views || 0,
             author: {
-              name: post.author?.name || 'Unknown',
+              name: post.author?.name || 'User',
               avatar: post.author?.image || '/images/posts/profile.jpeg',
               bio: post.author?.bio,
               social: post.author?.social,
             },
+            _count: post._count,
           }))
         );
 
@@ -134,6 +139,7 @@ export default function BlogPage() {
           bio: post.author.bio,
           social: post.author.social,
         },
+        _count: post._count,
       }))
     );
 
@@ -208,6 +214,17 @@ export default function BlogPage() {
       },
     },
   };
+
+  // Featured post logic using Firestore data
+  const featuredPost = blogPostsData
+    .slice()
+    .sort((a, b) => {
+      const likesA = a._count?.likes || 0;
+      const likesB = b._count?.likes || 0;
+      if (likesA !== likesB) return likesB - likesA;
+      if ((b.views || 0) !== (a.views || 0)) return (b.views || 0) - (a.views || 0);
+      return (a.author.name || '').localeCompare(b.author.name || '');
+    })[0];
 
   return (
     <main className="min-h-screen">
@@ -388,23 +405,32 @@ export default function BlogPage() {
                 <div className="border-t border-gray-200 dark:border-gray-700 my-6 pt-6">
                   <h3 className="text-lg font-semibold mb-4">Featured Post</h3>
                   <div className="space-y-3">
-                    <div className="relative h-40 rounded-lg overflow-hidden">
-                      <Image
-                        src="/placeholder.svg?height=160&width=300"
-                        alt="Featured post"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <h4 className="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      <Link href="/blog/featured-post">
-                        The Future of Web Development in 2023
-                      </Link>
-                    </h4>
-                    <div className="flex items-center text-xs text-muted-foreground">
-                      <Calendar className="h-3 w-3 mr-1" />
-                      <span>June 12, 2023</span>
-                    </div>
+                    {featuredPost ? (
+                      <>
+                        <div className="relative h-40 rounded-lg overflow-hidden">
+                          <Image
+                            src={"/images/posts/blog.avif"} //featuredPost.coverImage
+                            alt={featuredPost.title || "Featured Post"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <h4 className="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                          <Link href={`/blog/${featuredPost.slug}`}>
+                            {featuredPost.title}
+                          </Link>
+                        </h4>
+                        <div className="flex items-center text-xs text-muted-foreground gap-2">
+                          <Eye className="h-3 w-3" />
+                          <span>{featuredPost.views} views</span>
+                          <span className="mx-1">·</span>
+                          <span>👍 {featuredPost._count?.likes || 0} likes</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground line-clamp-2">{featuredPost.excerpt}</p>
+                      </>
+                    ) : (
+                      <div className="text-xs text-muted-foreground">No featured post available.</div>
+                    )}
                   </div>
                 </div>
               </motion.div>
