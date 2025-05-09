@@ -18,7 +18,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { Edit, MoreVertical, Reply, Send, Trash2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
@@ -628,7 +628,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
             {comments.map((comment) => (
               <motion.div
                 key={comment.id}
-                className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300"
+                className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col sm:flex-row sm:space-y-0 sm:gap-4"
                 variants={itemVariants}
                 layout
               >
@@ -646,7 +646,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1 sm:gap-2 w-full">
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium text-purple-900 dark:text-purple-300">
                           {comment.author?.name || "Anonymous"}
@@ -759,7 +759,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                 {/* Replies */}
                 {comment.replies && comment.replies.length > 0 && (
                   <motion.div
-                    className="ml-14 space-y-4 pl-4 border-l-2 border-purple-200 dark:border-purple-900"
+                    className="ml-0 sm:ml-14 space-y-4 pl-0 sm:pl-4 border-l-0 sm:border-l-2 border-purple-200 dark:border-purple-900"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
@@ -774,7 +774,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           exit={{ opacity: 0, x: -10 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800 shadow-sm">
+                          <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800 shadow-sm flex-shrink-0">
                             <AvatarImage src={reply.author?.image || ""} alt={reply.author?.name || "Anonymous"} />
                             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs">
                               {reply.author?.name
@@ -787,7 +787,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 w-full">
                               <div>
                                 <span className="font-medium text-sm text-purple-900 dark:text-purple-300">
                                   {reply.author?.name || "Anonymous"}

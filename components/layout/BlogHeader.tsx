@@ -247,9 +247,9 @@ export default function Header() {
         {/* Mobile menu */}
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0, x: 200 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 200 }}
             transition={{ duration: 0.3 }}
             className="md:hidden mt-2 pb-6 border-t border-violet-100 dark:border-violet-900/30 pt-4"
           >
