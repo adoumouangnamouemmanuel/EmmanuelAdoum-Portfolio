@@ -6,8 +6,21 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
-import { motion } from "framer-motion"
-import { Facebook, Github, Linkedin, Mail, MapPin, Phone, Send, Twitter } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
+import {
+    BookOpen,
+    CheckCircle2,
+    Facebook,
+    Github,
+    Home,
+    Linkedin,
+    Mail,
+    MapPin,
+    Phone,
+    Send,
+    Twitter,
+} from "lucide-react"
+import Link from "next/link"
 import Script from "next/script"
 import { useEffect, useRef, useState } from "react"
 
@@ -20,6 +33,7 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [emailJSLoaded, setEmailJSLoaded] = useState(false)
+  const [formSubmitted, setFormSubmitted] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
 
   useEffect(() => {
@@ -32,6 +46,19 @@ export default function ContactPage() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const resetForm = () => {
+    // Reset form after 5 seconds
+    setTimeout(() => {
+      setFormSubmitted(false)
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      })
+    }, 5000)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -50,10 +77,10 @@ export default function ContactPage() {
 
     try {
       // Replace these with your actual EmailJS service ID, template ID, and public key
-      const serviceId = "service_id"
+       const serviceId = "service_3y81tlr"
       const templateId = "template_erff06q"
-      const publicKey = "public_key"
-
+        const publicKey = "g5-_hb5q_TnaUc14K"
+        
       const templateParams = {
         from_name: formData.name,
         from_email: formData.email,
@@ -69,12 +96,8 @@ export default function ContactPage() {
         description: "Thank you for reaching out. I'll get back to you soon.",
       })
 
-      setFormData({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
-      })
+      setFormSubmitted(true)
+      resetForm()
     } catch (error) {
       console.error("Error sending email:", error)
       toast({
@@ -160,6 +183,21 @@ export default function ContactPage() {
     },
   ]
 
+  const navigationButtons = [
+    {
+      icon: <Home className="h-5 w-5" />,
+      name: "Visit Portfolio",
+      url: "/",
+      color: "from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700",
+    },
+    {
+      icon: <BookOpen className="h-5 w-5" />,
+      name: "Read My Blog",
+      url: "/blog",
+      color: "from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600",
+    },
+  ]
+
   return (
     <>
       {/* EmailJS Script */}
@@ -178,7 +216,7 @@ export default function ContactPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-16"
+            className="text-center mb-10"
           >
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -192,11 +230,32 @@ export default function ContactPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
+              className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8"
             >
               Have a question or want to work together? Feel free to reach out using the form below or through any of my
               social channels.
             </motion.p>
+
+            {/* Navigation Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-wrap justify-center gap-4 mb-8"
+            >
+              {navigationButtons.map((button) => (
+                <Button
+                  key={button.name}
+                  asChild
+                  className={`bg-gradient-to-r ${button.color} text-white shadow-md hover:shadow-lg transition-all duration-300`}
+                >
+                  <Link href={button.url} className="flex items-center gap-2">
+                    {button.icon}
+                    <span>{button.name}</span>
+                  </Link>
+                </Button>
+              ))}
+            </motion.div>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
@@ -209,7 +268,7 @@ export default function ContactPage() {
             >
               {/* Contact Cards */}
               <div className="space-y-4">
-                {contactInfo.map((item, index) => (
+                {contactInfo.map((item) => (
                   <motion.a
                     key={item.title}
                     href={item.link}
@@ -278,108 +337,138 @@ export default function ContactPage() {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="lg:col-span-3"
             >
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg border border-gray-100 dark:border-gray-700">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Send me a message</h2>
-                <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Your Name
-                      </label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="John Doe"
-                        required
-                        className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Your Email
-                      </label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="emmanuel.adoum@ashesi.edu.gh"
-                        required
-                        className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="subject" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Subject
-                    </label>
-                    <Input
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      placeholder="How can I help you?"
-                      required
-                      className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Message
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Your message here..."
-                      rows={6}
-                      required
-                      className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 resize-none"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting || !emailJSLoaded}
-                    className="w-full bg-gradient-to-r from-violet-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 text-white shadow-md shadow-violet-500/20 hover:shadow-violet-500/30 transition-all duration-200"
-                  >
-                    {isSubmitting ? (
-                      <div className="flex items-center">
-                        <svg
-                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg border border-gray-100 dark:border-gray-700 min-h-[500px] flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  {formSubmitted ? (
+                    <motion.div
+                      key="success"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                      className="text-center py-10 px-6"
+                    >
+                      <div className="flex justify-center mb-6">
+                        <CheckCircle2 className="h-20 w-20 text-green-500" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">Message Sent!</h2>
+                      <p className="text-gray-600 dark:text-gray-300 mb-6">
+                        Thank you for reaching out. I'll get back to you as soon as possible.
+                      </p>
+                      <div className="w-16 h-1 bg-gradient-to-r from-violet-600 to-pink-500 mx-auto rounded-full"></div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="form"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="w-full"
+                    >
+                      <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">Send me a message</h2>
+                      <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                          <div className="space-y-2">
+                            <label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Your Name
+                            </label>
+                            <Input
+                              id="name"
+                              name="name"
+                              value={formData.name}
+                              onChange={handleChange}
+                              placeholder="Emmanuel Adoum"
+                              required
+                              className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 placeholder:opacity-40"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                              Your Email
+                            </label>
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              placeholder="emmanuel.adoum@ashesi.edu.gh"
+                              required
+                              className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 placeholder:opacity-40"
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="subject" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Subject
+                          </label>
+                          <Input
+                            id="subject"
+                            name="subject"
+                            value={formData.subject}
+                            onChange={handleChange}
+                            placeholder="How can I help you?"
+                            required
+                            className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 placeholder:opacity-40"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="message" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Message
+                          </label>
+                          <Textarea
+                            id="message"
+                            name="message"
+                            value={formData.message}
+                            onChange={handleChange}
+                            placeholder="Your message here..."
+                            rows={6}
+                            required
+                            className="border-gray-300 dark:border-gray-600 focus:ring-violet-500 focus:border-violet-500 resize-none placeholder:opacity-40"
+                          />
+                        </div>
+                        <Button
+                          type="submit"
+                          disabled={isSubmitting || !emailJSLoaded}
+                          className="w-full bg-gradient-to-r from-violet-600 to-pink-500 hover:from-violet-700 hover:to-pink-600 text-white shadow-md shadow-violet-500/20 hover:shadow-violet-500/30 transition-all duration-200"
                         >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        Sending...
-                      </div>
-                    ) : !emailJSLoaded ? (
-                      "Loading..."
-                    ) : (
-                      <div className="flex items-center">
-                        <Send className="mr-2 h-4 w-4" />
-                        Send Message
-                      </div>
-                    )}
-                  </Button>
-                </form>
+                          {isSubmitting ? (
+                            <div className="flex items-center">
+                              <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
+                              Sending...
+                            </div>
+                          ) : !emailJSLoaded ? (
+                            "Loading..."
+                          ) : (
+                            <div className="flex items-center">
+                              <Send className="mr-2 h-4 w-4" />
+                              Send Message
+                            </div>
+                          )}
+                        </Button>
+                      </form>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.div>
           </div>

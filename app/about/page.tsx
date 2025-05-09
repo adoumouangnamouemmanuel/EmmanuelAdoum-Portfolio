@@ -5,6 +5,15 @@ import { motion } from "framer-motion"
 import { BookOpen, Code, Download, ExternalLink, Github, Linkedin, Mail, MapPin, Twitter } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+
+// BlogPost type for recent posts
+type BlogPost = {
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+};
 
 export default function AboutPage() {
   // Animation variants
@@ -77,26 +86,27 @@ export default function AboutPage() {
     },
   ]
 
-  const recentPosts = [
-    {
-      title: "Building Sustainable Tech Solutions for African Communities",
-      excerpt: "Exploring how technology can address unique challenges in developing regions...",
-      date: "April 15, 2023",
-      slug: "/blog/building-sustainable-tech-solutions",
-    },
-    {
-      title: "The Future of Web Development in 2023",
-      excerpt: "Analyzing emerging trends and technologies shaping the web development landscape...",
-      date: "March 22, 2023",
-      slug: "/blog/future-of-web-development-2023",
-    },
-    {
-      title: "Bridging the Digital Divide Through Education",
-      excerpt: "How educational initiatives can help close the technology access gap...",
-      date: "February 10, 2023",
-      slug: "/blog/bridging-digital-divide",
-    },
-  ]
+  const [recentPosts, setRecentPosts] = useState<BlogPost[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [postsError, setPostsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      setLoadingPosts(true);
+      setPostsError(null);
+      try {
+        const res = await fetch("/api/posts?limit=3&published=true");
+        if (!res.ok) throw new Error("Failed to fetch posts");
+        const data = await res.json();
+        setRecentPosts(data.posts || []);
+      } catch (err) {
+        setPostsError("Could not load blog posts.");
+      } finally {
+        setLoadingPosts(false);
+      }
+    }
+    fetchPosts();
+  }, []);
 
   return (
     <div className="min-h-screen pt-24 pb-16">
@@ -248,24 +258,32 @@ export default function AboutPage() {
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              {recentPosts.map((post, index) => (
-                <motion.div
-                  key={post.slug}
-                  variants={itemVariants}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
-                >
-                  <span className="text-xs text-violet-600 dark:text-violet-400">{post.date}</span>
-                  <h3 className="font-medium text-gray-900 dark:text-gray-100 mt-1 mb-2 line-clamp-2">{post.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
-                  <Link
-                    href={post.slug}
-                    className="text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+              {loadingPosts ? (
+                <div className="col-span-3 text-center text-gray-500 dark:text-gray-400">Loading...</div>
+              ) : postsError ? (
+                <div className="col-span-3 text-center text-red-500">{postsError}</div>
+              ) : recentPosts.length === 0 ? (
+                <div className="col-span-3 text-center text-gray-500 dark:text-gray-400">No posts found.</div>
+              ) : (
+                recentPosts.map((post, index) => (
+                  <motion.div
+                    key={post.slug}
+                    variants={itemVariants}
+                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                    className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
                   >
-                    Read more →
-                  </Link>
-                </motion.div>
-              ))}
+                    <span className="text-xs text-violet-600 dark:text-violet-400">{post.date}</span>
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100 mt-1 mb-2 line-clamp-2">{post.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
+                    <Link
+                      href={`/blog/${post.slug}`}
+                      className="text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300"
+                    >
+                      Read more →
+                    </Link>
+                  </motion.div>
+                ))
+              )}
             </div>
 
             <div className="text-center">
