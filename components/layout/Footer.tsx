@@ -342,7 +342,7 @@ export default function Footer() {
                         href="mailto:hello@example.com"
                         className="text-muted-foreground hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                       >
-                        hello@example.com
+                        emmanuel.adoum@ashesi.edu.gh
                       </a>
                     </li>
                     <li className="flex items-start">
@@ -392,16 +392,16 @@ export default function Footer() {
             <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
               Built by{" "}
               <a
-                href="https://github.com/yourusername"
+                href="https://github.com/adoumouangnamouemmanuel"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium underline underline-offset-4"
               >
-                Your Name
+                Emmanuel Adoum
               </a>
               . The source code is available on{" "}
               <a
-                href="https://github.com/yourusername/your-repo"
+                href="https://github.com/adoumouangnamouemmanuel/Emmanuel-Adoum-Portfolio"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium underline underline-offset-4"
