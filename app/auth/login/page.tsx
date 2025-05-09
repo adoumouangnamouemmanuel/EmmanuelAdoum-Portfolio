@@ -2,14 +2,14 @@
 
 import type React from "react"
 
-import { useToast } from "@/components/ui/use-toast"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, Github, Loader2, Mail, Lock, KeyRound } from 'lucide-react'
+import { useToast } from "@/components/ui/use-toast"
+import { motion } from "framer-motion"
+import { ArrowLeft, KeyRound, Loader2, Lock, Mail } from 'lucide-react'
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -72,22 +72,6 @@ export default function LoginPage() {
       toast({
         title: "Error",
         description: "Failed to sign in with Google. Please try again.",
-        variant: "destructive",
-      })
-      setIsLoading(false)
-      setAuthProvider(null)
-    }
-  }
-
-  const handleGithubSignIn = async () => {
-    setIsLoading(true)
-    setAuthProvider("github")
-    try {
-      await signIn("github", { callbackUrl })
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to sign in with GitHub. Please try again.",
         variant: "destructive",
       })
       setIsLoading(false)
@@ -164,8 +148,8 @@ export default function LoginPage() {
             </CardHeader>
             
             <CardContent className="space-y-6">
-              <motion.div className="grid grid-cols-2 gap-4" variants={itemVariants}>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div className="grid grid-cols-1 gap-4 place-items-center" variants={itemVariants}>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full">
                   <Button
                     variant="outline"
                     className="w-full relative overflow-hidden group bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
@@ -193,23 +177,6 @@ export default function LoginPage() {
                       </svg>
                     )}
                     <span className="relative z-10">Google</span>
-                  </Button>
-                </motion.div>
-                
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant="outline"
-                    className="w-full relative overflow-hidden group bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
-                    onClick={handleGithubSignIn}
-                    disabled={isLoading}
-                  >
-                    <div className="absolute inset-0 w-3 bg-gradient-to-r from-gray-800 to-gray-600 group-hover:w-full transition-all duration-300 opacity-80 group-hover:opacity-20"></div>
-                    {isLoading && authProvider === "github" ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <Github className="mr-2 h-4 w-4" />
-                    )}
-                    <span className="relative z-10">GitHub</span>
                   </Button>
                 </motion.div>
               </motion.div>

@@ -35,6 +35,7 @@ import {
   Users,
 } from "lucide-react"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
@@ -314,6 +315,16 @@ export default function AdminDashboard() {
                 Refresh Data
               </Button>
             </motion.div>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex gap-4 mb-8">
+            <Link href="/">
+              <a className="inline-block px-6 py-3 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold shadow-md hover:from-purple-700 hover:to-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-purple-400">Go to Portfolio</a>
+            </Link>
+            <Link href="/blog">
+              <a className="inline-block px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-md hover:from-blue-700 hover:to-purple-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">Go to Blogs</a>
+            </Link>
           </div>
 
           <motion.div

@@ -234,7 +234,7 @@ export default function BlogPage() {
               >
                 <Link href="/">
                   <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                  Back to Home
+                  Go to My Portfolio
                 </Link>
               </Button>
             </motion.div>
