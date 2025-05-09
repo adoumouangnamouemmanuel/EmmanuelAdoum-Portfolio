@@ -171,10 +171,10 @@ export async function POST(
           image: authorDoc.data()?.image || session.user.image || null,
         }
       : {
-          id: session.user.id,
-          name: session.user.name || "Anonymous",
+        id: session.user.id,
+        name: session.user.name || "Anonymous",
           email: session.user.email,
-          image: session.user.image || null,
+        image: session.user.image || null,
         };
 
     return NextResponse.json(

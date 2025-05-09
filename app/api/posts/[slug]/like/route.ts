@@ -12,7 +12,7 @@ export async function GET(
   try {
     const { slug } = await context.params;
     const post = await postModel.findBySlug(slug);
-    
+
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
@@ -48,7 +48,7 @@ export async function POST(
 
     const { slug } = await context.params;
     const post = await postModel.findBySlug(slug);
-    
+
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }

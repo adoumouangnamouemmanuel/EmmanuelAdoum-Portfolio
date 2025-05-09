@@ -20,7 +20,7 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
       );
     }
-
+    
     // Users collection
     match /users/{userId} {
       allow read: if true;
@@ -28,7 +28,7 @@ service cloud.firestore {
       allow update: if isOwner(userId);
       allow delete: if isOwner(userId);
     }
-
+    
     // Comments collection
     match /comments/{commentId} {
       allow read: if true;
@@ -42,14 +42,14 @@ service cloud.firestore {
         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
       );
     }
-
+    
     // Likes collection
     match /likes/{likeId} {
       allow read: if true;
       allow create: if isAuthenticated();
       allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
-
+    
     // Categories collection
     match /categories/{categoryId} {
       allow read: if true;

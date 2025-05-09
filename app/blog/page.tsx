@@ -407,25 +407,25 @@ export default function BlogPage() {
                   <div className="space-y-3">
                     {featuredPost ? (
                       <>
-                        <div className="relative h-40 rounded-lg overflow-hidden">
-                          <Image
+                    <div className="relative h-40 rounded-lg overflow-hidden">
+                      <Image
                             src={"/images/posts/blog.avif"} //featuredPost.coverImage
                             alt={featuredPost.title || "Featured Post"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <h4 className="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <h4 className="font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                           <Link href={`/blog/${featuredPost.slug}`}>
                             {featuredPost.title}
-                          </Link>
-                        </h4>
+                      </Link>
+                    </h4>
                         <div className="flex items-center text-xs text-muted-foreground gap-2">
                           <Eye className="h-3 w-3" />
                           <span>{featuredPost.views} views</span>
                           <span className="mx-1">·</span>
                           <span>👍 {featuredPost._count?.likes || 0} likes</span>
-                        </div>
+                    </div>
                         <p className="text-xs text-muted-foreground line-clamp-2">{featuredPost.excerpt}</p>
                       </>
                     ) : (

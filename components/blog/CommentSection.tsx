@@ -565,7 +565,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                       <span className="xs:hidden">Post</span>
                     </div>
                   )}
-                </Button>
+              </Button>
               </div>
             </div>
           </div>
@@ -621,7 +621,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-            </div>
+          </div>
             <p className="text-base sm:text-lg">No comments yet. Be the first to comment!</p>
           </motion.div>
         ) : (
@@ -638,14 +638,14 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                     <AvatarImage src={comment.author?.image || "/images/posts/profile.jpeg"} alt={comment.author?.name || "User"} />
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs sm:text-base">
                       {comment.author?.name
-                        ? comment.author.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "U"}
-                    </AvatarFallback>
-                  </Avatar>
+                      ? comment.author.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "U"}
+                  </AvatarFallback>
+                </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-2 text-gray-900 dark:text-gray-100">
                       <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 min-w-0 pr-2">
@@ -653,19 +653,19 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           {comment.author?.name || "Anonymous"}
                         </h4>
                         <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full inline-block w-fit">
-                          {formatDate(comment.createdAt)}
-                        </span>
-                      </div>
+                      {formatDate(comment.createdAt)}
+                    </span>
+                  </div>
                       {session?.user?.id === comment.author?.id && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
+                  <Button
+                    variant="ghost"
                               size="icon"
                               className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 flex-shrink-0"
                             >
                               <MoreVertical className="h-4 w-4" />
-                            </Button>
+                  </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40 border-purple-100 dark:border-purple-900">
                             <DropdownMenuItem
@@ -688,7 +688,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
-                    </div>
+                </div>
                     {editingComment === comment.id ? (
                       <motion.form
                         onSubmit={(e) => handleEditComment(e, comment.id)}
@@ -696,26 +696,26 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                      >
-                        <Textarea
+                >
+                  <Textarea
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
                           className="mb-2 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
                           rows={3}
-                        />
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
                               setEditingComment(null)
                               setEditContent("")
-                            }}
+                      }}
                             className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30 text-xs sm:text-sm"
-                          >
-                            Cancel
-                          </Button>
+                    >
+                      Cancel
+                    </Button>
                           <Button
                             type="submit"
                             size="sm"
@@ -750,15 +750,15 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                               <Reply className="h-3 w-3 mr-1" />
                               Sign in to reply
                             </Link>
-                          </Button>
+                    </Button>
                         )}
                       </>
                     )}
                   </div>
                 </div>
 
-                {/* Replies */}
-                {comment.replies && comment.replies.length > 0 && (
+              {/* Replies */}
+              {comment.replies && comment.replies.length > 0 && (
                   <motion.div
                     className="ml-8 sm:ml-14 space-y-3 sm:space-y-4 pl-3 sm:pl-4 border-l-2 border-purple-200 dark:border-purple-900"
                     initial={{ opacity: 0 }}
@@ -766,7 +766,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                     transition={{ delay: 0.2 }}
                   >
                     <AnimatePresence>
-                      {comment.replies.map((reply) => (
+                  {comment.replies.map((reply) => (
                         <motion.div
                           key={reply.id}
                           className="flex gap-2 sm:gap-4"
@@ -779,14 +779,14 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             <AvatarImage src={reply.author?.image || "/images/posts/profile.jpeg"} alt={reply.author?.name || "Anonymous"} />
                             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs">
                               {reply.author?.name
-                                ? reply.author.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")
-                                    .toUpperCase()
+                            ? reply.author.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()
                                 : "A"}
-                            </AvatarFallback>
-                          </Avatar>
+                        </AvatarFallback>
+                      </Avatar>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-1 w-full">
                               <div className="flex flex-col xs:flex-row xs:items-center gap-1 min-w-0 pr-2">
@@ -794,9 +794,9 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                   {reply.author?.name || "Anonymous"}
                                 </span>
                                 <div className="text-xs px-1.5 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full inline-block w-fit">
-                                  {formatDate(reply.createdAt)}
-                                </div>
-                              </div>
+                            {formatDate(reply.createdAt)}
+                      </div>
+                    </div>
                               {session?.user?.id === reply.author.id && (
                                 <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
@@ -948,10 +948,10 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             <div className="flex items-center">
                               <Reply className="mr-1 h-3 w-3" />
                               Reply
-                            </div>
-                          )}
+                </div>
+              )}
                         </Button>
-                      </div>
+            </div>
                     </motion.form>
                   )}
                 </AnimatePresence>

@@ -263,7 +263,7 @@ export default function BlogPostPage() {
                     className="shadow-md group dark:text-white"
                     asChild
                   >
-                    <Link href={`/admin/posts/${post.id}/edit`} className="text-black hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <Link href={`/blog/edit/${post.slug}`} className="text-black hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                       <Edit className="w-4 h-4 mr-2 inline" />
                       Edit Post
                     </Link>
