@@ -21,16 +21,19 @@ export async function GET(req: NextRequest) {
       page,
     });
 
-    // Get author details for each post
+    // Get author details and counts for each post
     const postsWithAuthors = await Promise.all(
       posts.map(async (post) => {
         let author = null;
         if (post.authorId) {
           author = await userModel.findById(post.authorId);
         }
-
-      return {
-        ...post,
+        // Count likes
+        const likesSnapshot = await adminDb.collection("likes").where("postId", "==", post.id).get();
+        // Count comments
+        const commentsSnapshot = await adminDb.collection("comments").where("postId", "==", post.id).get();
+        return {
+          ...post,
           author: author ? {
             id: author.id,
             name: author.displayName || author.name || 'Unknown',
@@ -41,8 +44,12 @@ export async function GET(req: NextRequest) {
               twitter: author.twitter || '',
               linkedin: author.linkedin || '',
             }
-          } : null
-      };
+          } : null,
+          _count: {
+            likes: likesSnapshot.size,
+            comments: commentsSnapshot.size,
+          }
+        };
       })
     );
 
