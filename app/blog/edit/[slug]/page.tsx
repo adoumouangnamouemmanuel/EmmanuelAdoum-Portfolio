@@ -494,7 +494,7 @@ export default function EditBlogPost() {
                       <Input
                         id="coverImage"
                         placeholder="/images/posts/blog.avif"
-                        value={"/images/posts/blog.avif"} //coverImage
+                        value={coverImage} //coverImage
                         onChange={(e) => setCoverImage(e.target.value)}
                         required
                       />
