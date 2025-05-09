@@ -163,7 +163,7 @@ export default function ProjectsSection() {
                     <Image
                       src={
                         projects[activeProject].image ||
-                        "/images/projects/blog.png"
+                        "/images/posts/blog.png"
                       }
                       alt={projects[activeProject].title}
                       width={600}

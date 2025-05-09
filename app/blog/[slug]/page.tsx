@@ -332,7 +332,7 @@ export default function BlogPostPage() {
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 dark:bg-gray-700">
                 <img
-                  src={author.image || "/images/posts/profile.jpeg"}
+                  src={"/images/posts/profile.jpeg"} //author.image ||
                   alt={author.name}
                   className="w-full h-full object-cover"
                 />
@@ -438,7 +438,7 @@ export default function BlogPostPage() {
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
                   <img
-                    src={author.image || "/images/posts/profile.jpeg"}
+                    src={"/images/posts/profile.jpeg"} //author.image ||
                     alt={author.name}
                     className="w-full h-full object-cover"
                   />

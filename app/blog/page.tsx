@@ -1,23 +1,23 @@
 "use client";
 
-import Footer from "@/components/layout/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { blogPosts } from "@/data/blog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useInView } from "framer-motion";
+import Footer from "@/components/layout/Footer";
 import {
-    ArrowLeft,
-    BookmarkPlus,
-    Calendar,
-    ChevronRight,
-    Clock,
-    Eye,
-    Plus,
-    Search,
-    Share2,
-    Tag,
+  ArrowLeft,
+  BookmarkPlus,
+  Calendar,
+  ChevronRight,
+  Clock,
+  Eye,
+  Plus,
+  Search,
+  Share2,
+  Tag,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -101,7 +101,7 @@ export default function BlogPage() {
             views: post.views || 0,
             author: {
               name: post.author?.name || 'Unknown',
-              avatar: post.author?.image || '/',
+              avatar: post.author?.image || '/images/posts/profile.jpeg',
               bio: post.author?.bio,
               social: post.author?.social,
             },
@@ -441,11 +441,8 @@ export default function BlogPage() {
                           <div className="relative h-36 lg:h-44 overflow-hidden">
                             <Image
                               src={
-                                post.coverImage ||
-                                "/placeholder.svg?height=400&width=600" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg" ||
-                                "/placeholder.svg"
+                                // post.coverImage ||
+                                "/images/posts/blog.avif"
                               }
                               alt={post.title}
                               fill
@@ -542,7 +539,7 @@ export default function BlogPage() {
                                 <Image
                                   src={
                                     post.author.avatar ||
-                                    "/placeholder.svg?height=28&width=28" ||
+                                    "/images/posts/profile.jpeg" ||
                                     "/placeholder.svg"
                                   }
                                   alt={post.author.name}
@@ -644,10 +641,11 @@ export default function BlogPage() {
                 )}
               </motion.div>
             </div>
-            <Footer />
+            
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }

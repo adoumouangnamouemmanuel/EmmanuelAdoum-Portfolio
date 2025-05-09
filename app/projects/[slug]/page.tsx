@@ -660,7 +660,7 @@ export default function ProjectDetailPage() {
                           <Image
                             src={
                               relatedProject.image ||
-                              "/images/projects/blog.png"
+                              "/images/posts/blog.png"
                             }
                             alt={relatedProject.title}
                             fill

@@ -131,7 +131,7 @@ export const projects = [
     title: "Social Media Platform",
     description:
       "A social networking platform with user profiles, posts, comments, likes, and real-time notifications.",
-    image: "/placeholder.svg?height=600&width=800",
+    image: "/images/posts/blog.png",
     technologies: [
       "Next.js",
       "TypeScript",

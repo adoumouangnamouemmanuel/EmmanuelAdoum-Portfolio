@@ -199,7 +199,7 @@ export default function ProjectsPage() {
                         <Image
                           src={
                             project.image ||
-                            "/images/projects/blog.png"
+                            "/images/posts/blog.png"
                           }
                           alt={project.title}
                           fill
