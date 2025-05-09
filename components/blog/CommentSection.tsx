@@ -647,8 +647,8 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 text-gray-900 dark:text-gray-100 gap-1 sm:gap-0">
-                      <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 min-w-0">
+                    <div className="flex items-center justify-between mb-2 text-gray-900 dark:text-gray-100">
+                      <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 min-w-0 pr-2">
                         <h4 className="font-medium text-sm sm:text-base text-purple-900 dark:text-purple-300 truncate">
                           {comment.author?.name || "Anonymous"}
                         </h4>
@@ -662,7 +662,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 self-start sm:self-auto mt-1 sm:mt-0"
+                              className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 flex-shrink-0"
                             >
                               <MoreVertical className="h-4 w-4" />
                             </Button>
@@ -788,8 +788,8 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
-                            <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 w-full">
-                              <div className="flex flex-col xs:flex-row xs:items-center gap-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1 w-full">
+                              <div className="flex flex-col xs:flex-row xs:items-center gap-1 min-w-0 pr-2">
                                 <span className="font-medium text-xs sm:text-sm text-purple-900 dark:text-purple-300 truncate">
                                   {reply.author?.name || "Anonymous"}
                                 </span>
@@ -803,7 +803,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="h-6 w-6 sm:h-8 sm:w-8 p-0 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 self-start xs:self-auto"
+                                      className="h-6 w-6 sm:h-8 sm:w-8 p-0 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30 flex-shrink-0"
                                     >
                                       <MoreVertical className="h-3 w-3 sm:h-4 sm:w-4" />
                                     </Button>

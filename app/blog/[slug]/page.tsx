@@ -447,7 +447,7 @@ export default function BlogPostPage() {
                   <h3 className="text-xl font-bold mb-2">{author.name}</h3>
                   <p className="text-muted-foreground mb-4">
                     {author.bio ||
-                      "Web developer with over 5 years of experience specializing in frontend technologies. Passionate about creating beautiful and functional user experiences."}
+                      "Author's bio is not available."}
                   </p>
                   <div className="flex space-x-3">
                     {author.social?.github && (
@@ -585,7 +585,7 @@ export default function BlogPostPage() {
 
             {/* Sidebar */}
             <div className="hidden lg:block lg:col-span-1 xl:col-span-1 xl:max-w-sm">
-              <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Contents</h2>
+              <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Table of Contents</h2>
               <TableOfContents />
             </div>
           </div>
