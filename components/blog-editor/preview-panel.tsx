@@ -32,7 +32,7 @@ export const PreviewPanel: React.FC<PreviewPanelProps> = ({ title, excerpt, cove
     >
       <div className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video">
         <img
-          src={coverImage || "/placeholder.svg?height=600&width=1200"}
+          src={coverImage || "/images/posts/blog.avif"}
           alt={title}
           className="w-full h-full object-cover"
         />

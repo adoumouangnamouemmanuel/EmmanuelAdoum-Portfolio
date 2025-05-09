@@ -522,7 +522,7 @@ export default function AdminDashboard() {
                                 <div className="flex items-center gap-2">
                                   <div className="w-6 h-6 rounded-full overflow-hidden bg-violet-100 dark:bg-violet-900/30 flex-shrink-0">
                                     <img
-                                      src={post.author.image || "/placeholder.svg"}
+                                      src={post.author.image || "/images/posts/profile.jpeg"}
                                       alt={post.author.name}
                                       className="w-full h-full object-cover"
                                     />
@@ -705,7 +705,7 @@ export default function AdminDashboard() {
                                     transition={{ type: "spring", stiffness: 300, damping: 10 }}
                                   >
                                     <img
-                                      src={user.image || "/placeholder.svg"}
+                                      src={user.image || "/images/posts/profile.jpeg"}
                                       alt={user.name || "User"}
                                       className="w-full h-full object-cover"
                                     />

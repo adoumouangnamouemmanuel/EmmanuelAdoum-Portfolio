@@ -22,7 +22,7 @@ export default function ResponsiveImage({
   return (
     <div className="relative overflow-hidden rounded-xl shadow-lg aspect-video">
       <Image
-        src={src || "/placeholder.svg?height=600&width=1200"}
+        src={src || "/images/posts/blog.avif"}
         alt={alt}
         fill={true}
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

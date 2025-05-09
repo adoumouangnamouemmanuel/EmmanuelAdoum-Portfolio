@@ -300,7 +300,7 @@ export default function CreateBlogPost() {
                           <div className="flex space-x-2">
                             <Input
                               id="coverImage"
-                              placeholder="https://example.com/image.jpg"
+                              placeholder="/images/posts/blog.avif"
                               value={coverImage}
                               onChange={(e) => setCoverImage(e.target.value)}
                         required
@@ -414,7 +414,7 @@ export default function CreateBlogPost() {
                   <div className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video">
                     <img
                       src={
-                        coverImage || "/placeholder.svg?height=600&width=1200"
+                        coverImage || "/images/posts/blog.avif"
                       }
                       alt={title}
                       className="w-full h-full object-cover"

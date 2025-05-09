@@ -199,7 +199,7 @@ export default function ProjectsPage() {
                         <Image
                           src={
                             project.image ||
-                            "/placeholder.svg?height=400&width=600"
+                            "/images/projects/blog.png"
                           }
                           alt={project.title}
                           fill

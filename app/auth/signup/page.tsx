@@ -259,7 +259,7 @@ export default function SignupPage() {
                   </Label>
                   <Input
                     id="name"
-                    placeholder="John Doe"
+                    placeholder="Emmanuel Adoum"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -287,7 +287,7 @@ export default function SignupPage() {
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="emmanuel.adoum@ashesi.edu.gh"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required

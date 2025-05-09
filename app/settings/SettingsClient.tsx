@@ -35,7 +35,7 @@ function SettingsForm({ user }: { user: any }) {
   const [userData, setUserData] = useState<UserData>({
     name: user?.name || "",
     email: user?.email || "",
-    image: user?.image || null,
+    image: user?.image || "/images/posts/profile.jpeg",
     bio: user?.bio || "",
     github: user?.github || "",
     twitter: user?.twitter || "",
@@ -58,7 +58,7 @@ function SettingsForm({ user }: { user: any }) {
           setUserData({
             name: data.name || "",
             email: data.email || "",
-            image: data.image || null,
+            image: data.image || "/images/posts/profile.jpeg",
             bio: data.bio || "",
             github: data.github || "",
             twitter: data.twitter || "",
@@ -286,7 +286,7 @@ function SettingsForm({ user }: { user: any }) {
                       >
                         <Avatar className="h-32 w-32 ring-4 ring-purple-100 dark:ring-purple-900 shadow-lg">
                           <AvatarImage
-                            src={userData.image || session?.user?.image || ""}
+                            src={userData.image || session?.user?.image || "/images/posts/profile.jpeg"}
                             alt={userData.name || session?.user?.name || "User"}
                             className="object-cover"
                           />

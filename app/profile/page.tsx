@@ -153,7 +153,7 @@ export default async function ProfilePage() {
               <CardHeader className="text-center pt-12 relative z-10">
                 <Avatar className="w-28 h-28 mx-auto mb-4 border-4 border-white dark:border-gray-800 shadow-xl">
                   <AvatarImage
-                    src={userData?.image || session.user.image || ""}
+                    src={userData?.image || session.user.image || "/images/posts/profile.jpeg"}
                     alt={userData?.name || session.user.name || "User"}
                   />
                   <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xl">

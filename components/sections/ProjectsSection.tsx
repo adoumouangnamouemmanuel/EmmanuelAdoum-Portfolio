@@ -163,7 +163,7 @@ export default function ProjectsSection() {
                     <Image
                       src={
                         projects[activeProject].image ||
-                        "/placeholder.svg?height=600&width=800"
+                        "/images/projects/blog.png"
                       }
                       alt={projects[activeProject].title}
                       width={600}
@@ -379,7 +379,7 @@ export default function ProjectsSection() {
             >
               <div className="relative h-44 overflow-hidden">
                 <Image
-                  src={project.image || "/placeholder.svg?height=400&width=600"}
+                  src={project.image || "/images/projects/blog.png"}
                   alt={project.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"

@@ -198,7 +198,7 @@ export default function TestimonialsSection() {
                     <Image
                       src={
                         testimonials[activeIndex].avatar ||
-                        "/placeholder.svg?height=80&width=80"
+                        "/images/posts/profile.jpeg"
                       }
                       alt={testimonials[activeIndex].name}
                       width={80}
@@ -317,7 +317,7 @@ export default function TestimonialsSection() {
                   <Image
                     src={
                       testimonial.avatar ||
-                      "/placeholder.svg?height=48&width=48"
+                      "/images/posts/profile.jpeg"
                     }
                     alt={testimonial.name}
                     fill

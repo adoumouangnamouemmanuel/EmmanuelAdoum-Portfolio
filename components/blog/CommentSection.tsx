@@ -509,7 +509,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
         >
           <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
             <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 border-white dark:border-gray-800 shadow-md">
-              <AvatarImage src={session.user.image || ""} alt={session.user.name || "User"} />
+              <AvatarImage src={session.user.image || "/images/posts/profile.jpeg"} alt={session.user.name || "User"} />
               <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
                 {session.user.name
                   ? session.user.name
@@ -635,7 +635,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
               >
                 <div className="flex items-start gap-3 sm:gap-4">
                   <Avatar className="h-8 w-8 sm:h-12 sm:w-12 border-2 border-white dark:border-gray-800 shadow-md">
-                    <AvatarImage src={comment.author?.image || ""} alt={comment.author?.name || "User"} />
+                    <AvatarImage src={comment.author?.image || "/images/posts/profile.jpeg"} alt={comment.author?.name || "User"} />
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs sm:text-base">
                       {comment.author?.name
                         ? comment.author.name
@@ -776,7 +776,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           transition={{ duration: 0.3 }}
                         >
                           <Avatar className="h-6 w-6 sm:h-8 sm:w-8 border-2 border-white dark:border-gray-800 shadow-sm">
-                            <AvatarImage src={reply.author?.image || ""} alt={reply.author?.name || "Anonymous"} />
+                            <AvatarImage src={reply.author?.image || "/images/posts/profile.jpeg"} alt={reply.author?.name || "Anonymous"} />
                             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs">
                               {reply.author?.name
                                 ? reply.author.name

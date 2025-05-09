@@ -158,7 +158,7 @@ export default function BlogSection() {
                 <Link href={`/blog/${post.slug}`} className="block">
                   <div className="relative h-48 overflow-hidden">
                     <Image
-                      src={post.coverImage || "/placeholder.svg?height=400&width=600"}
+                      src={post.coverImage || "/images/posts/blog.avif"}
                       alt={post.title}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"

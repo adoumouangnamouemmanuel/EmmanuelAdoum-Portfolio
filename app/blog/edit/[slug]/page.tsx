@@ -122,7 +122,7 @@ export default function EditBlogPost() {
         setExcerpt(post.excerpt || "");
         setContent(post.content);
         setCoverImage(
-          post.coverImage || "/placeholder.svg?height=600&width=1200"
+          post.coverImage || "/images/posts/blog.avif"
         );
         setCategories(
           post.categories.map((cat: any) =>
@@ -146,7 +146,7 @@ export default function EditBlogPost() {
               setExcerpt(foundPost.excerpt || "");
               setContent(foundPost.content);
               setCoverImage(
-                foundPost.coverImage || "/placeholder.svg?height=600&width=1200"
+                foundPost.coverImage || "/images/posts/blog.avif"
               );
               setCategories(foundPost.categories);
               setError(null);
@@ -493,7 +493,7 @@ export default function EditBlogPost() {
                     <div className="flex space-x-2">
                       <Input
                         id="coverImage"
-                        placeholder="https://example.com/image.jpg"
+                        placeholder="/images/posts/blog.avif"
                         value={coverImage}
                         onChange={(e) => setCoverImage(e.target.value)}
                         required
@@ -596,7 +596,7 @@ export default function EditBlogPost() {
                   <div className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video">
                     <img
                       src={
-                        coverImage || "/placeholder.svg?height=600&width=1200"
+                        coverImage || "/images/posts/blog.avif"
                       }
                       alt={title}
                       className="w-full h-full object-cover"

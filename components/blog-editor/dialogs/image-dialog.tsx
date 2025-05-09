@@ -69,7 +69,7 @@ export const ImageDialog: React.FC<ImageDialogProps> = ({
             </Label>
             <Input
               id="imageUrl"
-              placeholder="https://example.com/image.jpg"
+              placeholder="/images/posts/blog.avif"
               value={imageUrl}
               onChange={(e) => {
                 setImageUrl(e.target.value)

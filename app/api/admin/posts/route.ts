@@ -22,7 +22,7 @@ export async function GET() {
             ? {
                 id: authorDoc.id,
                 name: authorDoc.data()?.name || "Unknown",
-                image: authorDoc.data()?.image || "/placeholder.svg?height=40&width=40",
+                image: authorDoc.data()?.image || "/images/posts/profile.jpeg",
               }
             : null;
         }

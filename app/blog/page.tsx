@@ -101,7 +101,7 @@ export default function BlogPage() {
             views: post.views || 0,
             author: {
               name: post.author?.name || 'Unknown',
-              avatar: post.author?.image || '/placeholder.svg?height=40&width=40',
+              avatar: post.author?.image || '/',
               bio: post.author?.bio,
               social: post.author?.social,
             },

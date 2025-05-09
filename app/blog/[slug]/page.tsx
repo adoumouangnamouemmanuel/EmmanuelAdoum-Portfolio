@@ -99,7 +99,7 @@ export default function BlogPostPage() {
           author: {
             id: data.author?.id || data.authorId || '',
             name: data.author?.name || data.author?.displayName || 'Unknown',
-            image: data.author?.image || data.author?.photoURL || '/placeholder.svg?height=40&width=40',
+            image: data.author?.image || data.author?.photoURL || '/images/posts/profile.jpeg',
             bio: data.author?.bio || data.author?.description || '',
             social: {
               github: data.author?.social?.github || data.author?.github || '',
@@ -138,7 +138,7 @@ export default function BlogPostPage() {
               author: {
                 id: p.author?.id || p.authorId || '',
                 name: p.author?.name || p.author?.displayName || 'Unknown',
-                image: p.author?.image || p.author?.photoURL || '/placeholder.svg?height=40&width=40',
+                image: p.author?.image || p.author?.photoURL || '/images/posts/profile.jpeg',
                 bio: p.author?.bio || p.author?.description || '',
                 social: {
                   github: p.author?.social?.github || p.author?.github || '',
@@ -210,7 +210,7 @@ export default function BlogPostPage() {
   const author = post.author || {
     id: post.authorId || '',
     name: 'Unknown Author',
-    image: '/placeholder.svg?height=40&width=40',
+    image: '/images/posts/profile.jpeg',
     bio: '',
     social: {}
   };
@@ -332,7 +332,7 @@ export default function BlogPostPage() {
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 dark:bg-gray-700">
                 <img
-                  src={author.image}
+                  src={author.image || "/images/posts/profile.jpeg"}
                   alt={author.name}
                   className="w-full h-full object-cover"
                 />
@@ -438,13 +438,13 @@ export default function BlogPostPage() {
               >
                 <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
                   <img
-                    src={author.image}
+                    src={author.image || "/images/posts/profile.jpeg"}
                     alt={author.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2">{author.name}</h3>
+                  <h3 className="text-xl font-bold mb-2 dark:text-white sm-text-center">{author.name}</h3>
                   <p className="text-muted-foreground mb-4">
                     {author.bio ||
                       "Author's bio is not available."}

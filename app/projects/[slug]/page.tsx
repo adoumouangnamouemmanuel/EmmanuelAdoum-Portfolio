@@ -176,7 +176,7 @@ export default function ProjectDetailPage() {
             className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video"
           >
             <Image
-              src={project.image || "/placeholder.svg?height=600&width=1200"}
+              src={project.image || "/images/projects/blog.png"}
               alt={project.title}
               fill
               className="object-cover"
@@ -660,7 +660,7 @@ export default function ProjectDetailPage() {
                           <Image
                             src={
                               relatedProject.image ||
-                              "/placeholder.svg?height=144&width=288"
+                              "/images/projects/blog.png"
                             }
                             alt={relatedProject.title}
                             fill

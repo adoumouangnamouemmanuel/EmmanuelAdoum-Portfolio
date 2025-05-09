@@ -177,7 +177,7 @@ export default function Header() {
                     className="rounded-full p-0.5 h-10 w-10 ring-2 ring-violet-200 dark:ring-violet-800 hover:ring-violet-300 dark:hover:ring-violet-700 transition-all duration-200 cursor-pointer"
                   >
                     <Avatar className="h-9 w-9 border-2 border-background">
-                      <AvatarImage src={session.user.image || ""} alt={session.user.name || "User"} />
+                      <AvatarImage src={session.user.image || "/images/posts/profile.jpeg"} alt={session.user.name || "User"} />
                       <AvatarFallback className="bg-gradient-to-br from-violet-600 to-pink-500 text-white">
                         {session.user.name
                           ? session.user.name
@@ -196,7 +196,7 @@ export default function Header() {
                 >
                   <div className="flex items-center justify-start gap-3 p-2 border-b border-violet-100/50 dark:border-violet-900/30 pb-3 mb-1">
                     <Avatar className="h-10 w-10 border-2 border-violet-100 dark:border-violet-900">
-                      <AvatarImage src={session.user.image || ""} alt={session.user.name || "User"} />
+                      <AvatarImage src={session.user.image || "/images/posts/profile.jpeg"} alt={session.user.name || "User"} />
                       <AvatarFallback className="bg-gradient-to-br from-violet-600 to-pink-500 text-white">
                         {session.user.name
                           ? session.user.name
