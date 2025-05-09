@@ -301,8 +301,8 @@ export default function CreateBlogPost() {
                             <Input
                               id="coverImage"
                               placeholder="/images/posts/blog.avif"
-                              value={coverImage}
-                              onChange={(e) => setCoverImage(e.target.value)}
+                                value={"/images/posts/blog.avif"} //coverImage
+                                onChange={(e) => setCoverImage(e.target.value)}
                         required
                       />
                       <Button type="button" variant="outline" size="icon" disabled>
@@ -414,7 +414,7 @@ export default function CreateBlogPost() {
                   <div className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video">
                     <img
                       src={
-                        coverImage || "/images/posts/blog.avif"
+                        "/images/posts/blog.avif" //coverImage
                       }
                       alt={title}
                       className="w-full h-full object-cover"
