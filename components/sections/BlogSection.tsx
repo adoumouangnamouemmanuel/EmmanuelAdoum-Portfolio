@@ -69,7 +69,7 @@ export default function BlogSection() {
   }, []);
 
   return (
-    <section id="blog" className="py-24 relative overflow-hidden">
+    <section id="articles" className="py-24 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 -z-10">
         <motion.div

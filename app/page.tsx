@@ -21,8 +21,8 @@ export default function Home() {
         <SkillsSection />
         <ProjectsSection />
         <JourneySection />
-        <TestimonialsSection />
         <BlogSection />
+        <TestimonialsSection />
         <ContactSection />
       </main>
       <Footer />
