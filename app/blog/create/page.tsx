@@ -2,16 +2,8 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { motion } from "framer-motion";
-import { ArrowLeft, Plus, Save, X, Eye, ImageIcon } from "lucide-react";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -20,9 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
+import { motion } from "framer-motion";
+import { ArrowLeft, Eye, ImageIcon, Plus, Save, X } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CreateBlogPost() {
   const router = useRouter();
@@ -114,64 +114,64 @@ export default function CreateBlogPost() {
     e.preventDefault();
     setIsSaving(true);
 
-    try {
-      // Validate required fields
+      try {
+        // Validate required fields
       if (!title || !slug || !content) {
-        toast({
-          title: "Missing required fields",
-          description: "Please fill in all required fields",
-          variant: "destructive",
+          toast({
+            title: "Missing required fields",
+            description: "Please fill in all required fields",
+            variant: "destructive",
         });
         setIsSaving(false);
         return;
-      }
+        }
 
-      // Create post data
-      const postData = {
-        title,
-        slug,
-        excerpt,
+        // Create post data
+        const postData = {
+          title,
+          slug,
+          excerpt,
         content,
-        coverImage,
-        categories: categories.length > 0 ? categories : ["Uncategorized"],
-        published: true,
+          coverImage,
+          categories: categories.length > 0 ? categories : ["Uncategorized"],
+          published: true,
       };
 
-      // Send to API
-      const response = await fetch("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
+        // Send to API
+        const response = await fetch("/api/posts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData),
       });
 
-      if (response.ok) {
+        if (response.ok) {
         const data = await response.json();
-        toast({
-          title: "Success!",
-          description: "Your post has been published",
+          toast({
+            title: "Success!",
+            description: "Your post has been published",
         });
 
-        // Redirect after a short delay
-        setTimeout(() => {
+          // Redirect after a short delay
+          setTimeout(() => {
           router.push(`/blog/${data.slug}`);
         }, 1000);
-      } else {
+        } else {
         const error = await response.json();
         throw new Error(error.error || "Failed to create post");
-      }
-    } catch (error: any) {
+        }
+      } catch (error: any) {
       console.error("Error saving blog post:", error);
-      toast({
-        title: "Error",
+        toast({
+          title: "Error",
         description:
           error.message || "Error saving blog post. Please try again.",
-        variant: "destructive",
+          variant: "destructive",
       });
-    } finally {
+      } finally {
       setIsSaving(false);
-    }
+      }
   };
 
   // Show loading state while checking authentication
@@ -190,172 +190,172 @@ export default function CreateBlogPost() {
 
   return (
     <main className="min-h-screen py-16">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              variant="outline"
-              size="sm"
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex justify-between items-center mb-8">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    variant="outline"
+                    size="sm"
               className="shadow-md group"
-              asChild
-            >
-              <Link href="/blog">
+                    asChild
+                  >
+                    <Link href="/blog">
                 <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                Back to Blog
-              </Link>
-            </Button>
-          </motion.div>
+                        Back to Blog
+                    </Link>
+                  </Button>
+                </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Button
-              variant="outline"
-              size="sm"
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                        <Button
+                          variant="outline"
+                          size="sm"
               className="shadow-md"
               onClick={() => setPreview(!preview)}
             >
-              {preview ? "Edit" : "Preview"}
+                      {preview ? "Edit" : "Preview"}
               <Eye className="ml-2 h-4 w-4" />
-            </Button>
-          </motion.div>
-        </div>
+                  </Button>
+                </motion.div>
+              </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
           className="text-3xl md:text-4xl font-bold mb-6 text-center"
-        >
+              >
           Create New <span className="gradient-text">Blog Post</span>
-        </motion.h1>
+              </motion.h1>
 
         <Tabs defaultValue="editor" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
             <TabsTrigger value="editor">Editor</TabsTrigger>
             <TabsTrigger value="preview" onClick={() => setPreview(true)}>
-              Preview
-            </TabsTrigger>
-          </TabsList>
+                    Preview
+                  </TabsTrigger>
+                </TabsList>
 
           <TabsContent value="editor" className={preview ? "hidden" : ""}>
             <form onSubmit={handleSubmit}>
               <Card>
                 <CardHeader>
                   <CardTitle>Blog Post Details</CardTitle>
-                  <CardDescription>
+                      <CardDescription>
                     Fill in the details of your new blog post. All fields are
                     required.
-                  </CardDescription>
-                </CardHeader>
+                      </CardDescription>
+                    </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="space-y-2">
+                        <div className="space-y-2">
                     <Label htmlFor="title">Title</Label>
-                    <Input
-                      id="title"
-                      placeholder="Enter blog post title"
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      required
-                    />
-                  </div>
+                          <Input
+                            id="title"
+                            placeholder="Enter blog post title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                          />
+                        </div>
 
-                  <div className="space-y-2">
+                        <div className="space-y-2">
                     <Label htmlFor="slug">Slug</Label>
-                    <Input
-                      id="slug"
-                      placeholder="url-friendly-title"
-                      value={slug}
-                      onChange={(e) => setSlug(e.target.value)}
-                      required
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      This will be used in the URL: /blog/
-                      {slug || "your-post-slug"}
-                    </p>
-                  </div>
+                          <Input
+                            id="slug"
+                            placeholder="url-friendly-title"
+                            value={slug}
+                            onChange={(e) => setSlug(e.target.value)}
+                            required
+                          />
+                          <p className="text-sm text-muted-foreground">
+                            This will be used in the URL: /blog/
+                              {slug || "your-post-slug"}
+                          </p>
+                      </div>
 
-                  <div className="space-y-2">
+                      <div className="space-y-2">
                     <Label htmlFor="excerpt">Excerpt</Label>
-                    <Textarea
-                      id="excerpt"
-                      placeholder="A brief summary of your blog post"
-                      value={excerpt}
-                      onChange={(e) => setExcerpt(e.target.value)}
+                        <Textarea
+                          id="excerpt"
+                          placeholder="A brief summary of your blog post"
+                          value={excerpt}
+                          onChange={(e) => setExcerpt(e.target.value)}
                       required
                       className="resize-none h-20"
-                    />
-                  </div>
+                        />
+                      </div>
 
-                  <div className="space-y-2">
+                        <div className="space-y-2">
                     <Label htmlFor="coverImage">Cover Image URL</Label>
-                    <div className="flex space-x-2">
-                      <Input
-                        id="coverImage"
-                        placeholder="https://example.com/image.jpg"
-                        value={coverImage}
-                        onChange={(e) => setCoverImage(e.target.value)}
+                          <div className="flex space-x-2">
+                            <Input
+                              id="coverImage"
+                              placeholder="https://example.com/image.jpg"
+                              value={coverImage}
+                              onChange={(e) => setCoverImage(e.target.value)}
                         required
                       />
                       <Button type="button" variant="outline" size="icon">
                         <ImageIcon className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
+                                  </Button>
+                          </div>
+                        </div>
 
-                  <div className="space-y-2">
+                        <div className="space-y-2">
                     <Label htmlFor="categories">Categories</Label>
-                    <div className="flex space-x-2">
-                      <Input
-                        id="categories"
-                        placeholder="Add a category"
-                        value={category}
-                        onChange={(e) => setCategory(e.target.value)}
-                        list="category-options"
-                      />
-                      <datalist id="category-options">
-                        {availableCategories.map((cat) => (
-                          <option key={cat} value={cat} />
-                        ))}
-                      </datalist>
-                      <Button
-                        type="button"
-                        onClick={addCategory}
-                        variant="outline"
-                        size="icon"
-                      >
+                          <div className="flex space-x-2">
+                            <Input
+                              id="categories"
+                              placeholder="Add a category"
+                              value={category}
+                              onChange={(e) => setCategory(e.target.value)}
+                              list="category-options"
+                            />
+                            <datalist id="category-options">
+                              {availableCategories.map((cat) => (
+                                <option key={cat} value={cat} />
+                              ))}
+                            </datalist>
+                                  <Button
+                                    type="button"
+                                    onClick={addCategory}
+                                    variant="outline"
+                                    size="icon"
+                                  >
                         <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-2">
-                      {categories.map((cat) => (
+                                  </Button>
+                            </div>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {categories.map((cat) => (
                         <Badge
-                          key={cat}
-                          variant="secondary"
+                                    key={cat}
+                                      variant="secondary"
                           className="flex items-center gap-1"
-                        >
-                          {cat}
-                          <button
-                            type="button"
-                            onClick={() => removeCategory(cat)}
+                                    >
+                                      {cat}
+                                      <button
+                                        type="button"
+                                        onClick={() => removeCategory(cat)}
                             className="ml-1 hover:text-destructive"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
+                                      >
+                                        <X className="h-3 w-3" />
+                                      </button>
+                                    </Badge>
+                                ))}
+                        </div>
+                      </div>
 
-                  <div className="space-y-2">
+                      <div className="space-y-2">
                     <Label htmlFor="content">Content (HTML)</Label>
                     <Textarea
                       id="content"
@@ -369,36 +369,36 @@ export default function CreateBlogPost() {
                       You can use HTML tags for formatting. Estimated read time:{" "}
                       {calculateReadTime(content)} min
                     </p>
-                  </div>
-                </CardContent>
+                      </div>
+                    </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button
-                    variant="outline"
-                    type="button"
-                    onClick={() => router.push("/blog")}
-                  >
-                    Cancel
-                  </Button>
-                  <div className="flex items-center gap-4">
-                    {saveMessage && (
-                      <span
-                        className={
-                          saveMessage.includes("Error")
-                            ? "text-destructive text-sm"
-                            : "text-green-600 dark:text-green-400 text-sm"
-                        }
+                      <Button
+                        variant="outline"
+                        type="button"
+                        onClick={() => router.push("/blog")}
                       >
-                        {saveMessage}
-                      </span>
-                    )}
+                        Cancel
+                      </Button>
+                      <div className="flex items-center gap-4">
+                        {saveMessage && (
+                          <span
+                            className={
+                              saveMessage.includes("Error")
+                            ? "text-destructive text-sm"
+                                : "text-green-600 dark:text-green-400 text-sm"
+                            }
+                          >
+                            {saveMessage}
+                          </span>
+                        )}
                     <Button type="submit" disabled={isSaving}>
-                      {isSaving ? "Saving..." : "Save Post"}
-                      <Save className="ml-2 h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            </form>
+                          {isSaving ? "Saving..." : "Save Post"}
+                          <Save className="ml-2 h-4 w-4" />
+                        </Button>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                </form>
           </TabsContent>
 
           <TabsContent value="preview" className={!preview ? "hidden" : ""}>
@@ -450,7 +450,7 @@ export default function CreateBlogPost() {
                     <div className="flex items-center">
                       <span>{calculateReadTime(content)} min read</span>
                     </div>
-                  </div>
+            </div>
 
                   <div className="mb-8">
                     <p className="text-lg text-muted-foreground italic">
@@ -482,6 +482,6 @@ export default function CreateBlogPost() {
           </TabsContent>
         </Tabs>
       </div>
-    </main>
+          </main>
   );
 }

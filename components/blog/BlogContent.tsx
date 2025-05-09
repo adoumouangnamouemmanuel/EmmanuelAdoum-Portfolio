@@ -26,7 +26,7 @@ export default function BlogContent({ content }: BlogContentProps) {
           heading.id = id
         }
         // Add scroll margin to account for fixed header
-        heading.style.scrollMarginTop = "6rem"
+        (heading as HTMLElement).style.scrollMarginTop = "6rem"
       })
     }
   }, [content])
@@ -36,9 +36,9 @@ export default function BlogContent({ content }: BlogContentProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="bg-white dark:bg-gray-900 dark:text-gray-100 rounded-xl p-6 md:p-8 shadow-lg prose dark:prose-invert prose-blue max-w-none"
+      className="bg-white dark:bg-gray-800 rounded-xl p-6 md:p-8 shadow-lg prose dark:prose-invert prose-blue max-w-none"
     >
-      <div ref={contentRef} className="blog-content" dangerouslySetInnerHTML={{ __html: content }} />
+      <div ref={contentRef} className="blog-content scroll-smooth" dangerouslySetInnerHTML={{ __html: content }} />
     </motion.article>
   )
 }

@@ -110,7 +110,7 @@ export async function POST(req: NextRequest) {
     };
     return NextResponse.json({
       id: docRef.id,
-      ...newPost,
+        ...newPost,
       author,
     }, { status: 201 });
   } catch (error) {

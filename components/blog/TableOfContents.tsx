@@ -76,8 +76,7 @@ export default function TableOfContents() {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg sticky top-24">
-      <h3 className="text-lg font-semibold mb-4">Table of Contents</h3>
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg dark:text-white sticky top-24 w-[350px]">
       <nav>
         <ul className="space-y-2 text-sm">
           {headings.map((heading) => (

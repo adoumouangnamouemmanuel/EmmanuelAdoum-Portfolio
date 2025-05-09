@@ -487,7 +487,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="mt-12 rounded-xl bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm p-6 border border-gray-100 dark:border-gray-800 shadow-lg"
+      className="mt-12 rounded-xl bg-white/50 dark:bg-gray-900/80 backdrop-blur-sm p-6 border border-gray-100 dark:border-gray-800 shadow-lg"
     >
       <motion.h3
         className="text-2xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent inline-block"
@@ -502,7 +502,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
       {session ? (
         <motion.form
           onSubmit={handleSubmitComment}
-          className="mb-8 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/50 dark:to-gray-700/50 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm"
+          className="mb-8 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/80 dark:to-gray-700/80 p-6 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -525,7 +525,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                 placeholder="Share your thoughts..."
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                className="mb-3 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-lg"
+                className="mb-3 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 rounded-lg"
                 rows={3}
               />
               <div className="flex justify-end">
@@ -564,7 +564,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                       Post Comment
                     </div>
                   )}
-                </Button>
+              </Button>
               </div>
             </div>
           </div>
@@ -620,7 +620,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </svg>
-            </div>
+          </div>
             <p className="text-lg">No comments yet. Be the first to comment!</p>
           </motion.div>
         ) : (
@@ -628,43 +628,43 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
             {comments.map((comment) => (
               <motion.div
                 key={comment.id}
-                className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300 flex flex-col sm:flex-row sm:space-y-0 sm:gap-4"
+                className="space-y-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300"
                 variants={itemVariants}
                 layout
               >
-                <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4">
                   <Avatar className="h-12 w-12 border-2 border-white dark:border-gray-800 shadow-md">
                     <AvatarImage src={comment.author?.image || ""} alt={comment.author?.name || "User"} />
                     <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white">
                       {comment.author?.name
-                        ? comment.author.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")
-                            .toUpperCase()
-                        : "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-1 sm:gap-2 w-full">
+                      ? comment.author.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()
+                      : "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                    <div className="flex items-center justify-between mb-2 text-gray-900 dark:text-gray-100">
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium text-purple-900 dark:text-purple-300">
                           {comment.author?.name || "Anonymous"}
                         </h4>
                         <span className="text-xs px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
-                          {formatDate(comment.createdAt)}
-                        </span>
-                      </div>
+                      {formatDate(comment.createdAt)}
+                    </span>
+                  </div>
                       {session?.user?.id === comment.author?.id && (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
+                  <Button
+                    variant="ghost"
                               size="icon"
                               className="h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/30"
                             >
                               <MoreVertical className="h-4 w-4" />
-                            </Button>
+                  </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-40 border-purple-100 dark:border-purple-900">
                             <DropdownMenuItem
@@ -687,7 +687,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
-                    </div>
+                </div>
                     {editingComment === comment.id ? (
                       <motion.form
                         onSubmit={(e) => handleEditComment(e, comment.id)}
@@ -695,26 +695,26 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                      >
-                        <Textarea
+                >
+                  <Textarea
                           value={editContent}
                           onChange={(e) => setEditContent(e.target.value)}
                           className="mb-2 resize-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                           rows={3}
-                        />
-                        <div className="flex justify-end gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
                               setEditingComment(null)
                               setEditContent("")
-                            }}
+                      }}
                             className="border-purple-200 dark:border-purple-800 hover:bg-purple-50 dark:hover:bg-purple-900/30"
-                          >
-                            Cancel
-                          </Button>
+                    >
+                      Cancel
+                    </Button>
                           <Button
                             type="submit"
                             size="sm"
@@ -749,23 +749,23 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                               <Reply className="h-3 w-3 mr-1" />
                               Sign in to reply
                             </Link>
-                          </Button>
+                    </Button>
                         )}
                       </>
                     )}
                   </div>
                 </div>
 
-                {/* Replies */}
-                {comment.replies && comment.replies.length > 0 && (
+              {/* Replies */}
+              {comment.replies && comment.replies.length > 0 && (
                   <motion.div
-                    className="ml-0 sm:ml-14 space-y-4 pl-0 sm:pl-4 border-l-0 sm:border-l-2 border-purple-200 dark:border-purple-900"
+                    className="ml-14 space-y-4 pl-4 border-l-2 border-purple-200 dark:border-purple-900"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.2 }}
                   >
                     <AnimatePresence>
-                      {comment.replies.map((reply) => (
+                  {comment.replies.map((reply) => (
                         <motion.div
                           key={reply.id}
                           className="flex gap-4"
@@ -774,27 +774,27 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                           exit={{ opacity: 0, x: -10 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800 shadow-sm flex-shrink-0">
+                          <Avatar className="h-8 w-8 border-2 border-white dark:border-gray-800 shadow-sm">
                             <AvatarImage src={reply.author?.image || ""} alt={reply.author?.name || "Anonymous"} />
                             <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-600 text-white text-xs">
                               {reply.author?.name
-                                ? reply.author.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")
-                                    .toUpperCase()
+                            ? reply.author.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase()
                                 : "A"}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 w-full">
                               <div>
-                                <span className="font-medium text-sm text-purple-900 dark:text-purple-300">
+                                <span className="font-medium text-sm text-purple-900 dark:text-purple-300 break-all">
                                   {reply.author?.name || "Anonymous"}
-                                </span>
-                                <span className="text-xs ml-2 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full">
-                                  {formatDate(reply.createdAt)}
-                                </span>
+                          </span>
+                        </div>
+                              <div className="text-xs mt-1 sm:mt-0 ml-0 sm:ml-2 px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full break-all">
+                                {formatDate(reply.createdAt)}
                               </div>
                               {session?.user?.id === reply.author.id && (
                                 <DropdownMenu>
@@ -868,12 +868,12 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                                   >
                                     {isLoading ? "Saving..." : "Save"}
                                   </Button>
-                                </div>
+                      </div>
                               </motion.form>
                             ) : (
-                              <p className="text-sm mt-1">{reply.content}</p>
+                              <p className="text-sm mt-1 text-gray-900 dark:text-gray-100">{reply.content}</p>
                             )}
-                          </div>
+                    </div>
                         </motion.div>
                       ))}
                     </AnimatePresence>
@@ -885,7 +885,7 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                   {replyTo === comment.id && session && (
                     <motion.form
                       onSubmit={(e) => handleSubmitReply(e, comment.id)}
-                      className="ml-14 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/50 dark:to-gray-700/50 p-4 rounded-lg border border-gray-100 dark:border-gray-800"
+                      className="ml-14 bg-gradient-to-r from-purple-50/80 to-blue-50/80 dark:from-gray-800/80 dark:to-gray-700/80 p-4 rounded-lg border border-gray-100 dark:border-gray-800"
                       initial={{ opacity: 0, height: 0, y: -20 }}
                       animate={{ opacity: 1, height: "auto", y: 0 }}
                       exit={{ opacity: 0, height: 0, y: -20 }}
@@ -945,10 +945,10 @@ export default function CommentSection({ postSlug }: { postSlug: string }) {
                             <div className="flex items-center">
                               <Reply className="mr-1 h-3 w-3" />
                               Reply
-                            </div>
-                          )}
+                </div>
+              )}
                         </Button>
-                      </div>
+            </div>
                     </motion.form>
                   )}
                 </AnimatePresence>

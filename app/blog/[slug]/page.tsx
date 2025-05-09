@@ -172,7 +172,7 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-white dark:bg-gray-900">
         <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse">
@@ -216,7 +216,7 @@ export default function BlogPostPage() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero section */}
       <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
@@ -236,7 +236,7 @@ export default function BlogPostPage() {
               <Button
                 variant="outline"
                 size="sm"
-                className="shadow-md group"
+                className="shadow-md group dark:text-white"
                 asChild
               >
                 <Link href="/blog">
@@ -260,7 +260,7 @@ export default function BlogPostPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="shadow-md group"
+                    className="shadow-md group dark:text-white"
                     asChild
                   >
                     <Link href={`/blog/edit/${slug}`}>
@@ -289,7 +289,7 @@ export default function BlogPostPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-3xl md:text-4xl font-bold mb-6 text-center"
+            className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent dark:text-white"
           >
             {post.title}
           </motion.h1>
@@ -423,7 +423,7 @@ export default function BlogPostPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Main content */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 xl:col-span-3 xl:max-w-5xl">
               <BlogContent content={post.content} />
 
               {/* Comments section */}
@@ -584,7 +584,8 @@ export default function BlogPostPage() {
             </div>
 
             {/* Sidebar */}
-            <div className="lg:col-span-1">
+            <div className="hidden lg:block lg:col-span-1 xl:col-span-1 xl:max-w-sm">
+              <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Contents</h2>
               <TableOfContents />
             </div>
           </div>

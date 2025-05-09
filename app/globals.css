@@ -125,6 +125,10 @@
     @apply list-disc pl-6 my-4;
   }
 
+  .dark .blog-content ul {
+    color: #000;
+  }
+
   .blog-content ol {
     @apply list-decimal pl-6 my-4;
   }
