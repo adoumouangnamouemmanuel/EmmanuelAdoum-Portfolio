@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { LogOut, Menu, Moon, Settings, Shield, Sun, User, X } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 import { useTheme } from "next-themes"
@@ -50,6 +50,63 @@ export default function Header() {
     if (path === "/" && pathname === "/") return true
     if (path !== "/" && pathname?.startsWith(path)) return true
     return false
+  }
+
+  // Mobile menu animation variants
+  const mobileMenuVariants = {
+    hidden: {
+      opacity: 0,
+      x: "100%",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    visible: {
+      opacity: 1,
+      x: "0%",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        staggerChildren: 0.07,
+        delayChildren: 0.1,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: "100%",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+        staggerChildren: 0.05,
+        staggerDirection: -1,
+      },
+    },
+  }
+
+  const navItemVariants = {
+    hidden: { opacity: 0, x: 20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    exit: {
+      opacity: 0,
+      x: 20,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
   }
 
   return (
@@ -244,52 +301,35 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, x: 200 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 200 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden mt-2 pb-6 border-t border-violet-100 dark:border-violet-900/30 pt-4"
-          >
-            <nav className="flex flex-col space-y-3">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
-                    isActive(item.href)
-                      ? "bg-gradient-to-r from-violet-600/10 via-purple-500/10 to-pink-500/10 text-violet-600 dark:text-violet-400 font-semibold"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-violet-600 dark:hover:text-violet-400"
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              {status === "loading" ? (
-                <div className="h-12 w-full rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse" />
-              ) : (
-                !session && (
-                  <div className="grid grid-cols-2 gap-3 mt-2 pt-3 border-t border-violet-100 dark:border-violet-900/30">
+        {/* Mobile menu with AnimatePresence for proper exit animations */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              variants={mobileMenuVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="md:hidden fixed top-20 right-0 w-full max-w-xs bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-xl rounded-l-2xl border-l border-t border-b border-violet-100 dark:border-violet-900/30 h-auto max-h-[calc(100vh-5rem)] overflow-y-auto z-50"
+            >
+              <nav className="flex flex-col space-y-3 p-4">
+                {navItems.map((item, index) => (
+                  <motion.div key={item.name} variants={navItemVariants} custom={index}>
                     <Link
-                      href="/auth/login"
-                      className="px-4 py-3 rounded-xl text-center text-sm font-medium border border-violet-200 dark:border-violet-800 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors cursor-pointer"
+                      href={item.href}
+                      className={`block px-4 py-3 rounded-xl text-sm font-medium transition-colors cursor-pointer ${
+                        isActive(item.href)
+                          ? "bg-gradient-to-r from-violet-600/10 via-purple-500/10 to-pink-500/10 text-violet-600 dark:text-violet-400 font-semibold"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:text-violet-600 dark:hover:text-violet-400"
+                      }`}
                     >
-                      Log in
+                      {item.name}
                     </Link>
-                    <Link
-                      href="/auth/signup"
-                      className="px-4 py-3 rounded-xl text-center text-sm font-medium bg-gradient-to-r from-violet-600 to-pink-500 text-white hover:from-violet-700 hover:to-pink-600 transition-colors cursor-pointer"
-                    >
-                      Sign up
-                    </Link>
-                  </div>
-                )
-              )}
-            </nav>
-          </motion.div>
-        )}
+                  </motion.div>
+                ))}
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )

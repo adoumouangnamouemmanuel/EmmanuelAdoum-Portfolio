@@ -239,8 +239,8 @@ export default function BlogPostPage() {
                 className="shadow-md group dark:text-white"
                 asChild
               >
-                <Link href="/blog">
-                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+                <Link href="/blog" className="text-black hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  <ArrowLeft className="w-4 h-4 mr-2 inline" />
                   Back to Blog
                 </Link>
               </Button>
@@ -263,8 +263,8 @@ export default function BlogPostPage() {
                     className="shadow-md group dark:text-white"
                     asChild
                   >
-                    <Link href={`/blog/edit/${slug}`}>
-                      <Edit className="mr-2 h-4 w-4" />
+                    <Link href={`/admin/posts/${post.id}/edit`} className="text-black hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                      <Edit className="w-4 h-4 mr-2 inline" />
                       Edit Post
                     </Link>
                   </Button>
@@ -338,7 +338,7 @@ export default function BlogPostPage() {
                 />
               </div>
               <div>
-                <div className="font-medium">{author.name}</div>
+                <div className="font-medium text-black dark:text-white">{author.name}</div>
                 <div className="text-xs text-muted-foreground">
                   {author.bio
                     ? author.bio.split(" ").slice(0, 3).join(" ") + "..."
