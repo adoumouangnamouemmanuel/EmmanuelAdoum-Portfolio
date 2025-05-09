@@ -275,7 +275,8 @@ export default function AboutPage() {
                     variants={itemVariants}
                     whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-5 border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
-                  >
+                    >
+                        <Image src={"/images/posts/blog.avif"} alt={post.title} width={300} height={100} />
                     <span className="text-xs text-violet-600 dark:text-violet-400">{post.date}</span>
                     <h3 className="font-medium text-gray-900 dark:text-gray-100 mt-1 mb-2 line-clamp-2">{post.title}</h3>
                     <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">{post.excerpt}</p>
