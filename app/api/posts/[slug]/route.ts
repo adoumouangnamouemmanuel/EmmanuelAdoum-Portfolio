@@ -1,4 +1,5 @@
 import { authOptions } from "@/lib/auth";
+import { adminDb } from "@/lib/firebase/admin";
 import { postModel, userModel } from "@/lib/firebase/models";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
@@ -23,9 +24,29 @@ export async function GET(
       author = await userModel.findById(post.authorId);
     }
 
+    // Get comments count
+    const commentsSnapshot = await adminDb
+      .collection('comments')
+      .where('postId', '==', post.id)
+      .count()
+      .get();
+    const commentsCount = commentsSnapshot.data().count;
+
+    // Get likes count
+    const likesSnapshot = await adminDb
+      .collection('likes')
+      .where('postId', '==', post.id)
+      .count()
+      .get();
+    const likesCount = likesSnapshot.data().count;
+
     // Format the response
     const response = {
       ...post,
+      _count: {
+        comments: commentsCount,
+        likes: likesCount
+      },
       author: author ? {
         id: author.id,
         name: author.displayName || author.name || 'Unknown',
