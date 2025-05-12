@@ -401,7 +401,7 @@ export default function Footer() {
               </a>
               . The source code is available on{" "}
               <a
-                href="https://github.com/adoumouangnamouemmanuel/Emmanuel-Adoum-Portfolio"
+                href="https://github.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium underline underline-offset-4"
