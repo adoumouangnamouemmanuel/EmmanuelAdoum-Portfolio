@@ -1,566 +1,334 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { education } from "@/data/education";
-import { experiences } from "@/data/experiences";
-import { AnimatePresence, motion, useInView } from "framer-motion";
-import {
-  Award,
-  BriefcaseIcon,
-  Building,
-  Calendar,
-  ExternalLink,
-  GraduationCap,
-  MapPin,
-} from "lucide-react";
-import Image from "next/image";
+import { motion, useInView } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { experiences } from "@/data/experiences";
+import { education } from "@/data/education";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function JourneySection() {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [activeTab, setActiveTab] = useState("experience");
-  const [hoveredItem, setHoveredItem] = useState<number | null>(null);
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
   };
 
-  const tabVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-    exit: {
-      opacity: 0,
-      y: 20,
-      transition: {
-        duration: 0.3,
-      },
-    },
+  // Sort logic -> Newest first based on endDate. (For 'Present', it counts essentially as infinity).
+  const getYear = (dateStr?: string) => {
+    if (!dateStr) return 0;
+    if (dateStr.toLowerCase() === "present") return 9999;
+    return parseInt(dateStr.slice(-4)) || 0;
   };
+
+  const sortedExperiences = [...experiences].sort((a, b) => getYear(b.endDate) - getYear(a.endDate));
+  
+  const degrees = education.filter((item) => item.type === "degree");
+  const sortedDegrees = [...degrees].sort((a, b) => getYear(b.endDate) - getYear(a.endDate));
+  
+  const certifications = education.filter((item) => item.type === "certification");
+  const sortedCerts = [...certifications].sort((a, b) => getYear(b.endDate) - getYear(a.endDate));
 
   return (
-    <section
-      id="journey"
-      className="py-24 bg-gradient-to-b from-white to-blue-50 dark:from-gray-950 dark:to-gray-900 overflow-hidden"
-    >
-      <div className="section-container">
-        <div className="text-center mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
+    <section id="journey" className="py-20 lg:py-32 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+      <div className="section-container pl-4 pr-10 sm:pl-6 sm:pr-12 md:pr-16 lg:pl-8 lg:pr-24 xl:pr-32 max-w-7xl mx-auto">
+        
+        <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 shadow-md mb-4"
+            className="mb-4 lg:mb-5"
           >
-            My Journey
-          </motion.span>
+            <p className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 shadow-sm dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-blue-400">
+              My Journey
+            </p>
+          </motion.div>
+          
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white"
           >
-            Professional Path & <span className="gradient-text">Education</span>
+            Professional {" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+              Path
+            </span>
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="text-muted-foreground max-w-2xl mx-auto"
-          >
-            My career journey and educational background that have shaped my
-            skills and expertise.
-          </motion.p>
         </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mb-12"
+          className="mb-12 flex justify-center"
         >
-          <Tabs
-            defaultValue="experience"
-            className="w-full"
-            onValueChange={setActiveTab}
-          >
-            <div className="flex justify-center mb-12">
-              <TabsList className="grid grid-cols-2 w-full max-w-md shadow-xl rounded-xl overflow-hidden p-1 bg-white dark:bg-gray-800">
-                <TabsTrigger
-                  value="experience"
-                  className="flex items-center gap-2 py-3 data-[state=active]:shadow-md data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 rounded-lg transition-all"
+          <Tabs defaultValue="experience" className="w-full max-w-5xl" onValueChange={setActiveTab}>
+            <div className="flex justify-center mb-16 px-2 sm:px-0">
+              <TabsList className="grid grid-cols-3 w-full max-w-[550px] h-14 p-1 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl shadow-inner border border-slate-300/50 dark:border-slate-700/50">
+                <TabsTrigger 
+                  value="experience" 
+                  className="rounded-xl text-[9px] sm:text-[11px] font-bold uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-sm transition-all"
                 >
-                  <BriefcaseIcon className="h-4 w-4" />
-                  <span>Experience</span>
+                  Experience
                 </TabsTrigger>
-                <TabsTrigger
-                  value="education"
-                  className="flex items-center gap-2 py-3 data-[state=active]:shadow-md data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 rounded-lg transition-all"
+                <TabsTrigger 
+                  value="education" 
+                  className="rounded-xl text-[9px] sm:text-[11px] font-bold uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-sm transition-all"
                 >
-                  <GraduationCap className="h-4 w-4" />
-                  <span>Education</span>
+                  Education
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="certifications" 
+                  className="rounded-xl text-[9px] sm:text-[11px] font-bold uppercase tracking-widest data-[state=active]:bg-white dark:data-[state=active]:bg-slate-900 data-[state=active]:text-blue-600 dark:data-[state=active]:text-blue-400 data-[state=active]:shadow-sm transition-all"
+                >
+                  Certificates
                 </TabsTrigger>
               </TabsList>
             </div>
 
-            <AnimatePresence mode="wait">
-              {activeTab === "experience" && (
-                <TabsContent value="experience" className="mt-0">
-                  <motion.div
-                    key="experience"
-                    variants={tabVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    ref={ref}
-                    className="relative"
-                  >
-                    {/* Timeline line */}
-                    <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-600 via-purple-500 to-blue-600 dark:from-blue-500 dark:via-purple-400 dark:to-blue-500"></div>
+            <div ref={ref} className="relative">
+              {/* Central beautiful architectural timeline line on desktop */}
+              <div className="hidden lg:block absolute left-[25%] top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-800" />
 
-                    {experiences.map((experience, index) => (
-                      <motion.div
-                        key={index}
-                        variants={itemVariants}
-                        custom={index}
-                        initial="hidden"
-                        animate={isInView ? "visible" : "hidden"}
-                        transition={{ delay: index * 0.1 }}
-                        className={`relative mb-10 md:mb-16 md:w-1/2 ${
-                          index % 2 === 0
-                            ? "md:pr-10 md:ml-0"
-                            : "md:pl-10 md:ml-auto"
-                        }`}
-                        onMouseEnter={() => setHoveredItem(index)}
-                        onMouseLeave={() => setHoveredItem(null)}
-                      >
-                        {/* Timeline dot */}
-                        <motion.div
-                          className={`absolute top-6 ${
-                            index % 2 === 0
-                              ? "right-0 md:-right-3"
-                              : "left-0 md:-left-3"
-                          } w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center z-10 shadow-lg`}
-                          animate={{
-                            scale: hoveredItem === index ? 1.2 : 1,
-                            boxShadow:
-                              hoveredItem === index
-                                ? "0 0 0 4px rgba(59, 130, 246, 0.3)"
-                                : "none",
-                          }}
-                        >
-                          <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                        </motion.div>
+              <TabsContent value="experience" className="mt-0 opacity-100 transition-opacity duration-500">
+                <div className="flex flex-col">
+                  {sortedExperiences.map((experience, index) => {
+                    const currentYear = getYear(experience.endDate);
+                    const previousYear = index > 0 ? getYear(sortedExperiences[index - 1].endDate) : null;
+                    const isSameYear = currentYear === previousYear;
 
-                        <motion.div
-                          className="relative p-5 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-blue-100 dark:border-blue-900/30 overflow-hidden group"
-                          whileHover={{
-                            y: -5,
-                            boxShadow:
-                              "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                          }}
-                        >
-                          {/* Background gradient on hover */}
-                          <motion.div
-                            className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                            initial={{ opacity: 0 }}
-                            whileHover={{ opacity: 1 }}
-                          />
-
-                          <div className="relative z-10">
-                            <div className="flex justify-between items-start mb-3">
-                              <div>
-                                <h3 className="text-lg font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                  {experience.role}
-                                </h3>
-                                <p className="text-blue-600 dark:text-blue-400 font-medium flex items-center text-sm">
-                                  <Building className="w-3.5 h-3.5 mr-1" />
-                                  {experience.company}
-                                </p>
-                              </div>
-                              <Badge
-                                variant="outline"
-                                className="bg-blue-50 dark:bg-blue-900/20 shadow-sm flex items-center text-xs"
-                              >
-                                <Calendar className="w-3 h-3 mr-1" />
-                                {experience.startDate} - {experience.endDate}
-                              </Badge>
-                            </div>
-
-                            <p className="text-muted-foreground mb-3 text-sm">
-                              {experience.description}
-                            </p>
-
-                            <div className="flex flex-wrap gap-1.5 mb-3">
-                              {experience.technologies.map(
-                                (tech, techIndex) => (
-                                  <motion.div
-                                    key={techIndex}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{
-                                      delay: 0.5 + techIndex * 0.05,
-                                    }}
-                                    whileHover={{ y: -2, scale: 1.05 }}
-                                  >
-                                    <Badge
-                                      variant="secondary"
-                                      className="shadow-sm text-xs"
-                                    >
-                                      {tech}
-                                    </Badge>
-                                  </motion.div>
-                                )
-                              )}
-                            </div>
-
-                            {experience.achievements && (
-                              <motion.div
-                                className="mt-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg"
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{
-                                  opacity: 1,
-                                  height: "auto",
-                                  transition: { delay: 0.3, duration: 0.3 },
-                                }}
-                              >
-                                <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-300 flex items-center text-sm">
-                                  <Award className="h-3.5 w-3.5 mr-1.5" />
-                                  Key Achievements:
-                                </h4>
-                                <ul className="space-y-1.5">
-                                  {experience.achievements.map(
-                                    (achievement, achievementIndex) => (
-                                      <motion.li
-                                        key={achievementIndex}
-                                        className="flex items-start text-muted-foreground text-xs"
-                                        initial={{ opacity: 0, x: -10 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{
-                                          delay: 0.5 + achievementIndex * 0.1,
-                                        }}
-                                      >
-                                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-600 mt-1 mr-2"></span>
-                                        {achievement}
-                                      </motion.li>
-                                    )
-                                  )}
-                                </ul>
-                              </motion.div>
-                            )}
-                          </div>
-                        </motion.div>
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                </TabsContent>
-              )}
-
-              {activeTab === "education" && (
-                <TabsContent value="education" className="mt-0">
-                  <motion.div
-                    key="education"
-                    variants={tabVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    className="relative"
-                  >
-                    <div ref={ref} className="relative">
-                      {/* Timeline line */}
-                      <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-600 via-purple-500 to-blue-600 dark:from-blue-500 dark:via-purple-400 dark:to-blue-500"></div>
-
-                      {education
-                        .filter((item) => item.type === "degree")
-                        .map((item, index) => (
-                          <motion.div
-                            key={index}
-                            variants={itemVariants}
-                            custom={index}
-                            initial="hidden"
-                            animate="visible"
-                            transition={{ delay: index * 0.1 }}
-                            className={`relative mb-10 md:mb-16 md:w-1/2 ${
-                              index % 2 === 0
-                                ? "md:pr-10 md:ml-0"
-                                : "md:pl-10 md:ml-auto"
-                            }`}
-                            onMouseEnter={() => setHoveredItem(index)}
-                            onMouseLeave={() => setHoveredItem(null)}
-                          >
-                            {/* Timeline dot */}
-                            <motion.div
-                              className={`absolute top-6 ${
-                                index % 2 === 0
-                                  ? "right-0 md:-right-3"
-                                  : "left-0 md:-left-3"
-                              } w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center z-10 shadow-lg`}
-                              animate={{
-                                scale: hoveredItem === index ? 1.2 : 1,
-                                boxShadow:
-                                  hoveredItem === index
-                                    ? "0 0 0 4px rgba(59, 130, 246, 0.3)"
-                                    : "none",
-                              }}
-                            >
-                              <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                            </motion.div>
-
-                            <motion.div
-                              className="relative p-5 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-blue-100 dark:border-blue-900/30 overflow-hidden group"
-                              whileHover={{
-                                y: -5,
-                                boxShadow:
-                                  "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                              }}
-                            >
-                              {/* Background gradient on hover */}
-                              <motion.div
-                                className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                                initial={{ opacity: 0 }}
-                                whileHover={{ opacity: 1 }}
-                              />
-
-                              <div className="relative z-10">
-                                <div className="flex items-start gap-3">
-                                  <motion.div
-                                    className="w-12 h-12 relative flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-1.5 shadow-md"
-                                    whileHover={{ rotate: 5 }}
-                                  >
-                                    <Image
-                                      src={
-                                        item.logo ||
-                                        "/placeholder.svg?height=48&width=48"
-                                      }
-                                      alt={item.institution}
-                                      fill
-                                      className="object-contain p-1"
-                                    />
-                                  </motion.div>
-
-                                  <div>
-                                    <h3 className="text-lg font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                      {item.degree}
-                                    </h3>
-                                    <p className="text-blue-600 dark:text-blue-400 font-medium text-sm">
-                                      {item.institution}
-                                    </p>
-                                    <div className="flex items-center gap-2 mt-1 mb-2">
-                                      <Badge
-                                        variant="outline"
-                                        className="bg-blue-50 dark:bg-blue-900/20 shadow-sm flex items-center text-xs"
-                                      >
-                                        <Calendar className="w-3 h-3 mr-1" />
-                                        {item.startDate} - {item.endDate}
-                                      </Badge>
-                                      {item.location && (
-                                        <span className="text-xs text-muted-foreground flex items-center">
-                                          <MapPin className="w-3 h-3 mr-1" />
-                                          {item.location}
-                                        </span>
-                                      )}
-                                    </div>
-                                    <p className="text-muted-foreground text-sm">
-                                      {item.description}
-                                    </p>
-
-                                    {item.courses && (
-                                      <motion.div
-                                        className="mt-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg"
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{
-                                          opacity: 1,
-                                          height: "auto",
-                                          transition: {
-                                            delay: 0.3,
-                                            duration: 0.3,
-                                          },
-                                        }}
-                                      >
-                                        <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-300 text-sm">
-                                          Relevant Courses:
-                                        </h4>
-                                        <div className="flex flex-wrap gap-1.5">
-                                          {item.courses.map(
-                                            (course, courseIndex) => (
-                                              <motion.div
-                                                key={courseIndex}
-                                                initial={{
-                                                  opacity: 0,
-                                                  scale: 0.8,
-                                                }}
-                                                animate={{
-                                                  opacity: 1,
-                                                  scale: 1,
-                                                }}
-                                                transition={{
-                                                  delay:
-                                                    0.5 + courseIndex * 0.05,
-                                                }}
-                                                whileHover={{
-                                                  y: -2,
-                                                  scale: 1.05,
-                                                }}
-                                              >
-                                                <Badge
-                                                  variant="secondary"
-                                                  className="shadow-sm text-xs"
-                                                >
-                                                  {course}
-                                                </Badge>
-                                              </motion.div>
-                                            )
-                                          )}
-                                        </div>
-                                      </motion.div>
-                                    )}
-
-                                    {item.website && (
-                                      <motion.div
-                                        className="mt-3"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                      >
-                                        <Button
-                                          variant="outline"
-                                          size="sm"
-                                          className="group text-xs h-8"
-                                          asChild
-                                        >
-                                          <Link
-                                            href={item.website}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                          >
-                                            Visit Website
-                                            <ExternalLink className="ml-1.5 h-3 w-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                          </Link>
-                                        </Button>
-                                      </motion.div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </motion.div>
-                          </motion.div>
-                        ))}
-                    </div>
-
-                    {/* Certifications */}
+                    return (
                     <motion.div
-                      className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
+                      key={`exp-${index}`}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-50px" }}
+                      variants={itemVariants}
+                      className="group relative flex gap-6 lg:gap-0 py-10 lg:py-16 border-t border-slate-200 dark:border-slate-800/60 lg:border-t-0"
                     >
-                      <h3 className="text-2xl font-bold mb-8 text-center">
-                        <span className="gradient-text">Certifications</span> &
-                        Additional Training
-                      </h3>
+                      {/* Left Column: Dates (Desktop Only) */}
+                      <div className="hidden lg:block lg:w-1/4 flex-shrink-0 lg:pr-12 lg:text-right relative">
+                         <div className="absolute top-[10px] -right-[5px] w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-colors group-hover:bg-blue-500" />
+                         
+                         <p className={`text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500 ${isSameYear ? 'lg:opacity-0' : ''}`}>
+                          {experience.startDate.slice(-4)} — {experience.endDate.slice(-4) === 'sent' ? 'PRESENT' : experience.endDate.slice(-4)}
+                        </p>
+                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {education
-                          .filter((item) => item.type === "certification")
-                          .map((cert, index) => (
-                            <motion.div
-                              key={index}
-                              variants={itemVariants}
-                              initial="hidden"
-                              animate="visible"
-                              transition={{ delay: 0.7 + index * 0.1 }}
-                              whileHover={{
-                                y: -5,
-                                boxShadow:
-                                  "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                              }}
-                              className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg border border-blue-100 dark:border-blue-900/30 group"
-                            >
-                              <div className="flex items-center gap-3 mb-3">
-                                <motion.div
-                                  className="w-10 h-10 relative flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-1 shadow-md"
-                                  whileHover={{ rotate: 5 }}
-                                >
-                                  <Image
-                                    src={
-                                      cert.logo ||
-                                      "/placeholder.svg?height=32&width=32"
-                                    }
-                                    alt={cert.institution}
-                                    fill
-                                    className="object-contain p-1"
-                                  />
-                                </motion.div>
-                                <div>
-                                  <h4 className="font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors text-sm">
-                                    {cert.degree}
-                                  </h4>
-                                  <p className="text-xs text-muted-foreground">
-                                    {cert.institution}
-                                  </p>
-                                </div>
+                      {/* Right Column: Details */}
+                      <div className="w-full lg:w-3/4 flex flex-col lg:pl-12">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {experience.role}
+                          </h3>
+                          {/* Mobile Date Badge */}
+                          <div className="lg:hidden shrink-0 mt-1 mb-2 sm:mb-0">
+                             {!isSameYear && (
+                               <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                 {experience.startDate.slice(-4)} — {experience.endDate.slice(-4) === 'sent' ? 'PRESENT' : experience.endDate.slice(-4)}
+                               </span>
+                             )}
+                          </div>
+                        </div>
+                        
+                        <h4 className="text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6 lg:mb-8">
+                          {experience.company}
+                        </h4>
+
+                        <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
+                          {experience.description}
+                        </p>
+
+                        {experience.achievements && experience.achievements.length > 0 && (
+                          <ul className="mb-8 lg:mb-10 space-y-3 lg:space-y-4">
+                            {experience.achievements.map((achievement, actIndex) => (
+                              <li key={actIndex} className="relative pl-6 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed group-hover:text-slate-800 dark:group-hover:text-slate-300 transition-colors">
+                                <span className="absolute left-0 top-2.5 w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 opacity-60 group-hover:scale-125 group-hover:opacity-100 transition-all" />
+                                {achievement}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        {experience.technologies && experience.technologies.length > 0 && (
+                          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-auto">
+                            {experience.technologies.map((tech: string, techIndex: number) => (
+                              <div key={techIndex} className="flex items-center">
+                                <span className="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                  {tech}
+                                </span>
+                                {techIndex < experience.technologies.length - 1 && (
+                                  <span className="mx-2 sm:mx-3 text-slate-200 dark:text-slate-800">·</span>
+                                )}
                               </div>
-                              <Badge
-                                variant="outline"
-                                className="mb-2 bg-blue-50 dark:bg-blue-900/20 shadow-sm flex items-center w-fit text-xs"
-                              >
-                                <Calendar className="w-3 h-3 mr-1" />
-                                {cert.endDate}
-                              </Badge>
-                              <p className="text-xs text-muted-foreground">
-                                {cert.description}
-                              </p>
-
-                              {cert.website && (
-                                <motion.div
-                                  className="mt-3"
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                >
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="group text-xs h-8"
-                                    asChild
-                                  >
-                                    <Link
-                                      href={cert.website}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                    >
-                                      View Certificate
-                                      <ExternalLink className="ml-1.5 h-3 w-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                                    </Link>
-                                  </Button>
-                                </motion.div>
-                              )}
-                            </motion.div>
-                          ))}
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </motion.div>
-                  </motion.div>
-                </TabsContent>
-              )}
-            </AnimatePresence>
+                  )})}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="education" className="mt-0 transition-opacity duration-500">
+                <div className="flex flex-col">
+                  {sortedDegrees.map((item, index) => {
+                    const currentYear = getYear(item.endDate);
+                    const previousYear = index > 0 ? getYear(sortedDegrees[index - 1].endDate) : null;
+                    const isSameYear = currentYear === previousYear;
+                    
+                    return (
+                    <motion.div
+                      key={`degree-${index}`}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-50px" }}
+                      variants={itemVariants}
+                      className="group relative flex lg:flex-row gap-6 lg:gap-0 py-10 lg:py-16 border-t border-slate-200 dark:border-slate-800/60 lg:border-t-0"
+                    >
+                      <div className="hidden lg:block lg:w-1/4 flex-shrink-0 lg:pr-12 lg:text-right relative">
+                         <div className="absolute top-[10px] -right-[5px] w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-colors group-hover:bg-blue-500" />
+                         <p className={`text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500 ${isSameYear ? 'lg:opacity-0' : ''}`}>
+                          {item.startDate ? `${item.startDate.slice(-4)} — ` : ""}{item.endDate?.slice(-4)}
+                        </p>
+                      </div>
+
+                      <div className="w-full lg:w-3/4 flex flex-col lg:pl-12">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
+                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {item.degree}
+                          </h3>
+                          <div className="lg:hidden shrink-0 mt-1 mb-2 sm:mb-0">
+                             {!isSameYear && (
+                               <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                 {item.startDate ? `${item.startDate.slice(-4)} — ` : ""}{item.endDate?.slice(-4)}
+                               </span>
+                             )}
+                          </div>
+                        </div>
+
+                        <h4 className="text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6 lg:mb-8">
+                          {item.institution}
+                        </h4>
+
+                        <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
+                          {item.description}
+                        </p>
+
+                        {item.courses && item.courses.length > 0 && (
+                          <div className="flex flex-col mb-8 lg:mb-10">
+                             <p className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-900 dark:text-white mb-4">Relevant Coursework</p>
+                             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                              {item.courses.map((course: string, courseIndex: number) => (
+                                <div key={courseIndex} className="flex items-center">
+                                  <span className="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    {course}
+                                  </span>
+                                  {courseIndex < item.courses.length - 1 && (
+                                    <span className="mx-2 sm:mx-3 text-slate-200 dark:text-slate-800">·</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {item.website && (
+                          <div className="mt-auto inline-flex">
+                            <Link
+                              href={item.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group/btn inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white overflow-hidden relative"
+                            >
+                              <span className="relative z-10 pb-1 border-b-[1.5px] border-slate-900 dark:border-white transition-colors group-hover/btn:border-blue-600 dark:group-hover/btn:border-blue-400">
+                                Institution Website
+                              </span>
+                              <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 text-blue-600 dark:text-blue-400" />
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )})}
+                </div>
+              </TabsContent>
+
+              <TabsContent value="certifications" className="mt-0 opacity-100 transition-opacity duration-500">
+                <div className="flex flex-col">
+                  {sortedCerts.map((item, index) => {
+                    const currentYear = getYear(item.endDate);
+                    const previousYear = index > 0 ? getYear(sortedCerts[index - 1].endDate) : null;
+                    const isSameYear = currentYear === previousYear;
+                    
+                    return (
+                    <motion.div
+                      key={`cert-${index}`}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true, margin: "-50px" }}
+                      variants={itemVariants}
+                      className="group relative flex lg:flex-row gap-6 lg:gap-0 py-10 lg:py-16 border-t border-slate-200 dark:border-slate-800/60 lg:border-t-0 first:border-0"
+                    >
+                      <div className="hidden lg:block lg:w-1/4 flex-shrink-0 lg:pr-12 lg:text-right relative">
+                         <div className="absolute top-[10px] -right-[5px] w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-colors group-hover:bg-blue-500" />
+                         <p className={`text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500 ${isSameYear ? 'lg:opacity-0' : ''}`}>
+                          {item.endDate.slice(-4)}
+                        </p>
+                      </div>
+
+                      <div className="w-full lg:w-3/4 flex flex-col lg:pl-12">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
+                          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {item.degree}
+                          </h3>
+                          <div className="lg:hidden shrink-0 mt-1 mb-2 sm:mb-0">
+                             {!isSameYear && (
+                               <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                 {item.endDate.slice(-4)}
+                               </span>
+                             )}
+                          </div>
+                        </div>
+
+                        <h4 className="text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-4 lg:mb-6">
+                          {item.institution}
+                        </h4>
+
+                        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
+                          {item.description}
+                        </p>
+                        
+                        {item.website && (
+                          <div className="mt-auto inline-flex">
+                            <Link
+                              href={item.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group/btn inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white overflow-hidden relative"
+                            >
+                              <span className="relative z-10 pb-1 border-b-[1.5px] border-slate-900 dark:border-white transition-colors group-hover/btn:border-blue-600 dark:group-hover/btn:border-blue-400">
+                                View Certificate
+                              </span>
+                              <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 text-blue-600 dark:text-blue-400" />
+                            </Link>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )})}
+                </div>
+              </TabsContent>
+            </div>
           </Tabs>
         </motion.div>
       </div>
