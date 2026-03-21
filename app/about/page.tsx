@@ -54,19 +54,19 @@ export default function AboutPage() {
       title: "Software Engineer",
       company: "Tech Innovators",
       period: "2022 - Present",
-      description: "Architecting high-performance educational technology solutions optimized for scale. Refactoring monolithic legacy structures into modular Next.js arrays.",
+      description: "Building high-performance educational technology solutions, refactoring legacy monoliths into modular Next.js applications.",
     },
     {
       title: "Full Stack Developer",
       company: "Digital Solutions",
       period: "2020 - 2022",
-      description: "Engineered robust full-stack web applications with deep data-layer integrations focused on sustainability telemetry and tracking.",
+      description: "Engineered robust full-stack web applications with deep data-layer integrations focused on sustainability tracking and analytics.",
     },
     {
       title: "Research Assistant",
       company: "Ashesi University",
       period: "2018 - 2020",
-      description: "Spearheaded research protocols identifying core technical solutions resolving fundamental African community infrastructure limitations.",
+      description: "Led research identifying core technical solutions addressing fundamental African community infrastructure challenges.",
     },
   ]
 
@@ -90,7 +90,7 @@ export default function AboutPage() {
                      </span>
                      <span className="px-4 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 shadow-sm border border-blue-200 dark:border-blue-800/50">
                         <MapPin className="inline-block w-3.5 h-3.5 mr-2" />
-                        Chad / Global Grid
+                         Chad / Remote
                      </span>
                   </div>
                   
@@ -99,17 +99,17 @@ export default function AboutPage() {
                   </h1>
                   
                   <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 font-light max-w-xl leading-relaxed mb-10">
-                     A visionary engineer and systems architect focused on deploying deep technological innovation to resolve fundamental infrastructural challenges. Translating complex matrices into breathtaking interfaces.
+                     A passionate engineer focused on building innovative technology solutions that address real-world challenges. Turning complex problems into elegant, high-performance interfaces.
                   </p>
                   
                   <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4">
                      <Link href="/contact" className="group flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold tracking-[0.2em] uppercase hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
-                        Initiate Connection
-                        <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                         Get in Touch
+                         <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                      </Link>
                      <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className="group flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-slate-200/50 dark:bg-slate-900/50 text-slate-900 dark:text-white text-xs font-bold tracking-[0.2em] uppercase border border-slate-300 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                        Inspect Documentation
-                        <Download className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
+                         Download CV
+                         <Download className="w-4 h-4 group-hover:-translate-y-1 transition-transform" />
                      </a>
                   </div>
                </div>
@@ -151,10 +151,10 @@ export default function AboutPage() {
          <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center">
             <Zap className="w-12 h-12 mx-auto text-blue-600 dark:text-blue-400 mb-8" />
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight mb-8">
-               "A relentless operator engineering scalable systems to obliterate modern bottlenecks."
+                "A passionate engineer building scalable systems to solve modern challenges."
             </h2>
             <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-               I combine a deep theoretical understanding of computer science with brutal pragmatism in deployment. My architecture focuses on creating absolute seamless experiences, whether building complex databases for sustainability or constructing high-converting frontend matrices. 
+                I combine a strong theoretical foundation in computer science with practical experience building production systems. My work focuses on creating seamless user experiences, from complex database design to polished, high-converting frontends.
             </p>
          </div>
       </section>
@@ -168,13 +168,13 @@ export default function AboutPage() {
                   <div className="sticky top-32">
                      <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 mb-4 flex items-center gap-3">
                         <span className="w-4 h-[2px] bg-blue-600 dark:bg-blue-400" />
-                        Log 01
+                         01
                      </h2>
-                     <h3 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">
-                        Operational <br/>History.
+                      <h3 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">
+                         Work <br/>Experience.
                      </h3>
                      <p className="text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                        A chronological extraction of previous engineering deployments and structural command roles.
+                         A summary of my past roles, responsibilities, and engineering contributions.
                      </p>
                   </div>
                </div>
@@ -212,11 +212,11 @@ export default function AboutPage() {
          <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 text-center mb-16 relative z-10">
             <h2 className="text-xs font-bold tracking-[0.2em] uppercase text-purple-600 dark:text-purple-400 mb-4 flex items-center justify-center gap-3">
                <span className="w-4 h-[2px] bg-purple-600 dark:bg-purple-400" />
-               Log 02
+               02
                <span className="w-4 h-[2px] bg-purple-600 dark:bg-purple-400" />
             </h2>
             <h3 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white">
-               Technical Matrix.
+                Technical Skills.
             </h3>
          </div>
          
@@ -264,7 +264,7 @@ export default function AboutPage() {
                </div>
             ) : postsError || recentPosts.length === 0 ? (
                <div className="py-20 text-center border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl">
-                  <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Null Data Read</h4>
+                   <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No Posts Yet</h4>
                   <p className="text-slate-500 dark:text-slate-400">No blog posts published yet.</p>
                </div>
             ) : (
@@ -304,9 +304,9 @@ export default function AboutPage() {
                           <div className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 bg-slate-100 dark:bg-slate-900 px-3 py-1.5 rounded-md">
                             {post.date}
                           </div>
-                          <span className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform">
-                            Decrypt <ArrowRight className="h-3 w-3" />
-                          </span>
+                           <span className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform">
+                             Read More <ArrowRight className="h-3 w-3" />
+                           </span>
                         </div>
                       </div>
                     </motion.div>

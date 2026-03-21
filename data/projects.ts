@@ -23,7 +23,7 @@ export const projects = [
     ],
     github: "https://github.com/adoumouangnamouemmanuel/Chad-education-system",
     demo: "https://tchad-edu.vercel.app",
-    featured: true,
+    featured: false,
     category: "EdTech",
     client: "Ministry of Education - Chad",
     date: "2025-05-06",
@@ -85,7 +85,7 @@ export const projects = [
     github:
       "https://github.com/adoumouangnamouemmanuel/moussey-french-translator",
     demo: "https://moussey.vercel.app",
-    featured: true,
+    featured: false,
     category: "LanguageTech",
     client: "Community-led Moussey Language Preservation Group",
     date: "2025-02-18",
@@ -127,24 +127,7 @@ export const projects = [
       },
     ],
   },
-  {
-    title: "Social Media Platform",
-    description:
-      "A social networking platform with user profiles, posts, comments, likes, and real-time notifications.",
-    image: "/images/posts/blog.png",
-    technologies: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind CSS",
-      "Supabase",
-      "Pusher",
-      "SWR",
-    ],
-    github: "https://github.com",
-    demo: "https://example.com",
-    featured: false,
-    slug: "finance-dashboard",
-  },
+
   {
     title: "Tumor-Immune Dynamics Model",
     description:
@@ -275,7 +258,7 @@ export const projects = [
     category: "Algorithms & Data Structures",
     client: "Ashesi University — CS Programming Challenge 2026",
     date: "2026-03-01",
-    slug: "ghana-transport-network",
+    slug: "ghana-road-transport-network",
     challenges: [
       "6 duplicate bidirectional edges with conflicting weights in the raw dataset",
       "Efficiently finding top-K loopless shortest paths without modifying the main graph",

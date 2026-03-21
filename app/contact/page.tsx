@@ -89,9 +89,9 @@ export default function ContactPage() {
       setFormSubmitted(true)
       resetForm()
     } catch (error) {
-      console.error("Transmission Error:", error)
+      console.error("Submission Error:", error)
       toast({
-        title: "Transmission Failed.",
+        title: "Message Failed.",
         description: "The packet dropped. Please ping socials directly.",
         variant: "destructive",
       })
@@ -208,7 +208,7 @@ export default function ContactPage() {
                           <div className="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-8">
                              <CheckCircle2 className="w-12 h-12 text-emerald-500" />
                           </div>
-                          <h2 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">Transmission Sent.</h2>
+                          <h2 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">Message Sent.</h2>
                           <p className="text-lg text-slate-500 dark:text-slate-400 font-light max-w-md">
                             The communication packet was successfully routed. You will receive a response shortly.
                           </p>
