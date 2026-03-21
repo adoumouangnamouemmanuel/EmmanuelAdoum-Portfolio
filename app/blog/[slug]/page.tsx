@@ -3,11 +3,8 @@
 import BlogContent from "@/components/blog/BlogContent";
 import CommentSection from "@/components/blog/CommentSection";
 import LikeButton from "@/components/blog/LikeButton";
-import ResponsiveImage from "@/components/blog/ResponsiveImage";
 import TableOfContents from "@/components/blog/TableOfContents";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { useScroll, useTransform, motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Calendar,
@@ -20,8 +17,10 @@ import {
   Facebook,
   Linkedin,
   Twitter,
+  Share2
 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -72,7 +71,14 @@ export default function BlogPostPage() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const viewCounted = useRef(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  
+  const { scrollY } = useScroll();
+  const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const heroY = useTransform(scrollY, [0, 500], [0, 150]);
+  const actionBackground = useTransform(scrollY, [0, 300], ["rgba(255,255,255,0)", "rgba(255,255,255,0.8)"]);
+  const actionBackgroundDark = useTransform(scrollY, [0, 300], ["rgba(15,23,42,0)", "rgba(15,23,42,0.85)"]);
+  const actionBorder = useTransform(scrollY, [0, 300], ["rgba(200,200,200,0)", "rgba(200,200,200,0.3)"]);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -118,7 +124,6 @@ export default function BlogPostPage() {
         );
         if (relatedResponse.ok) {
           const relatedData = await relatedResponse.json();
-          // Filter out the current post and ensure author data
           const filteredPosts = relatedData.posts
             .filter((p: BlogPost) => p.slug !== slug)
             .map((p: BlogPost) => ({
@@ -128,11 +133,6 @@ export default function BlogPostPage() {
                 name: p.author?.name || p.author?.displayName || 'Unknown',
                 image: p.author?.image || p.author?.photoURL || '/images/posts/profile.jpeg',
                 bio: p.author?.bio || p.author?.description || '',
-                social: {
-                  github: p.author?.social?.github || p.author?.github || '',
-                  twitter: p.author?.social?.twitter || p.author?.twitter || '',
-                  linkedin: p.author?.social?.linkedin || p.author?.linkedin || '',
-                }
               }
             }));
           setRelatedPosts(filteredPosts.slice(0, 3));
@@ -174,46 +174,34 @@ export default function BlogPostPage() {
       navigator.clipboard.writeText(window.location.href);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      setShowShareMenu(false);
     }
   };
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-white dark:bg-gray-900">
-        <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="animate-pulse">
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-8"></div>
-              <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-6"></div>
-              <div className="flex justify-center space-x-6 mb-8">
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div>
-              </div>
-              <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded-xl mb-8"></div>
-            </div>
-          </div>
-        </section>
+      <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex justify-center items-center">
+        <div className="w-12 h-12 rounded-full border-4 border-slate-200 dark:border-slate-800 border-t-blue-600 dark:border-t-blue-400 animate-spin" />
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="min-h-screen py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl font-bold mb-4">Error</h1>
-          <p className="mb-8 text-muted-foreground">{error}</p>
-          <Button asChild>
-            <Link href="/blog">Back to Blog</Link>
-          </Button>
-        </div>
+      <main className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center items-center py-16 px-6">
+        <h1 className="text-4xl font-bold mb-4 tracking-tighter text-slate-900 dark:text-white">Record Not Found</h1>
+        <p className="mb-10 text-slate-500 font-light text-lg">{error}</p>
+        <Link href="/blog">
+          <button className="px-8 py-4 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold tracking-widest uppercase hover:scale-105 transition-transform duration-300">
+             Return to Vault
+          </button>
+        </Link>
       </main>
     );
   }
 
   if (!post) return null;
 
-  // Ensure author data exists
   const author = post.author || {
     id: post.authorId || '',
     name: 'Unknown Author',
@@ -223,381 +211,292 @@ export default function BlogPostPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-900 pb-45 mt-[-20px]">
-      {/* Hero section */}
-      <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
-        </div>
+    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pb-24">
+      
+      {/* 1. Cinematic Edge-to-Edge Cover */}
+      <section className="relative w-full h-[60vh] sm:h-[70vh] lg:h-[85vh] overflow-hidden bg-slate-950">
+        <motion.div 
+           className="absolute inset-0 z-0 origin-top"
+           style={{ opacity: heroOpacity, y: heroY, scale: 1.05 }}
+        >
+          <Image
+            src={post.coverImage || "/images/posts/blog.avif"}
+            alt={post.title}
+            fill
+            priority
+            className="object-cover"
+          />
+        </motion.div>
+        
+        {/* Cinematic Gradients */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/40 to-black/20" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="shadow-md group dark:text-white"
-                asChild
-              >
-                <Link href="/blog" className="text-black hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  <ArrowLeft className="w-4 h-4 mr-2 inline" />
-                  Back to Blog
-                </Link>
-              </Button>
-            </motion.div>
-
-            {session?.user &&
-              post?.author?.id &&
-              (session.user.id === post.author.id ||
-                session.user.role === "admin") && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="shadow-md group dark:text-white"
-                    asChild
-                  >
-                    <Link href={`/blog/edit/${post.slug}`} className="text-black hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                      <Edit className="w-4 h-4 mr-2 inline" />
-                      Edit Post
-                    </Link>
-                  </Button>
-                </motion.div>
-              )}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-wrap gap-2 mb-4 justify-center"
-          >
-            {post.categories.map((category, index) => (
-              <Badge key={index} variant="secondary" className="shadow-sm">
-                {category}
-              </Badge>
-            ))}
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-700 to-purple-700 bg-clip-text text-transparent dark:text-white"
-          >
-            {post.title}
-          </motion.h1>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex items-center justify-center space-x-6 text-sm text-muted-foreground mb-8"
-          >
-            <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-1 text-blue-600 dark:text-blue-400" />
-              <span>{post.date}</span>
-            </div>
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-1 text-blue-600 dark:text-blue-400" />
-              <span>{post.readTime} min read</span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="mb-8"
-          >
-            <ResponsiveImage
-              src={ "/images/posts/blog.avif"} //post.coverImage ||
-              alt={post.title}
-              priority
-            />
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex items-center justify-between mb-8"
-          >
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full overflow-hidden mr-3 bg-gray-200 dark:bg-gray-700">
-                <img
-                  src={"/images/posts/profile.jpeg"} //author.image ||
-                  alt={author.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <div className="font-medium text-black dark:text-white">{author.name}</div>
-                <div className="text-xs text-muted-foreground">
-                  {author.bio
-                    ? author.bio.split(" ").slice(0, 3).join(" ") + "..."
-                    : "Author"}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex space-x-2">
-              <LikeButton postSlug={slug} />
-
-              <motion.div
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-              >
-                <div className="flex items-center gap-1">
-                  <Eye className="h-4 w-4" />
-                  {post.views > 0 && (
-                    <span className="text-xs font-medium">{post.views}</span>
-                  )}
-                </div>
-              </motion.div>
-
-              <motion.button
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-                onClick={copyToClipboard}
-              >
-                {copied ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </motion.button>
-
-              <motion.a
-                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
-                  typeof window !== "undefined" ? window.location.href : ""
-                )}&text=${encodeURIComponent(post.title)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-              >
-                <Twitter className="h-4 w-4" />
-              </motion.a>
-
-              <motion.a
-                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                  typeof window !== "undefined" ? window.location.href : ""
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-              >
-                <Facebook className="h-4 w-4" />
-              </motion.a>
-
-              <motion.a
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                  typeof window !== "undefined" ? window.location.href : ""
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 hover:bg-blue-200 dark:hover:bg-blue-800/40 transition-colors"
-              >
-                <Linkedin className="h-4 w-4" />
-              </motion.a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="py-5">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Main content */}
-            <div className="lg:col-span-3 xl:col-span-3 xl:max-w-5xl">
-              <BlogContent content={post.content} />
-
-              {/* Comments section */}
-              <CommentSection postSlug={slug} />
-
-              {/* Author bio */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg mt-8 flex flex-col md:flex-row items-center md:items-start gap-6"
-              >
-                <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0 bg-gray-200 dark:bg-gray-700">
-                  <img
-                    src={"/images/posts/profile.jpeg"} //author.image ||
+        {/* Mastermind Hover Elements Overlay */}
+        <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 sm:p-12 lg:p-20 lg:pb-24 max-w-7xl mx-auto w-full">
+           
+           <motion.div
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+             className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8"
+           >
+             {post.categories.map((category, index) => (
+               <span key={index} className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl">
+                 {category}
+               </span>
+             ))}
+           </motion.div>
+           
+           <motion.h1
+             initial={{ opacity: 0, y: 30 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+             className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-6 leading-[1.05] md:leading-[1.1] max-w-5xl"
+           >
+             {post.title}
+           </motion.h1>
+           
+           <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+             className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10"
+           >
+             {/* Author Chip Inside Hero */}
+             <div className="flex items-center gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white/20">
+                  <Image
+                    src={author.image || "/images/posts/profile.jpeg"}
                     alt={author.name}
+                    width={56}
+                    height={56}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-2 dark:text-white sm-text-center">{author.name}</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {author.bio ||
-                      "Author's bio is not available."}
-                  </p>
-                  <div className="flex space-x-3">
-                    {author.social?.github && (
-                      <motion.a
-                        href={author.social.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                        whileHover={{ y: -3, scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <svg
-                          className="h-5 w-5"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      </motion.a>
-                    )}
-                    {author.social?.twitter && (
-                      <motion.a
-                        href={author.social.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                        whileHover={{ y: -3, scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <svg
-                          className="h-5 w-5 text-blue-400"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                        </svg>
-                      </motion.a>
-                    )}
-                    {author.social?.linkedin && (
-                      <motion.a
-                        href={author.social.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                        whileHover={{ y: -3, scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <svg
-                          className="h-5 w-5 text-blue-600"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                          aria-hidden="true"
-                        >
-                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                        </svg>
-                      </motion.a>
-                    )}
-                  </div>
+                   <div className="text-white font-medium text-sm sm:text-base">{author.name}</div>
+                   <div className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">Author</div>
                 </div>
-              </motion.div>
-
-              {/* Related posts */}
-              {relatedPosts.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="mt-12"
-                >
-                  <h3 className="text-2xl font-bold mb-6">Related Articles</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {relatedPosts.map((relatedPost, index) => (
-                      <motion.div
-                        key={index}
-                        whileHover={{
-                          y: -5,
-                          transition: {
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 10,
-                          },
-                        }}
-                        className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 flex flex-col"
-                      >
-                        <Link
-                          href={`/blog/${relatedPost.slug}`}
-                          className="block h-36 relative"
-                        >
-                          <img
-                            src={
-                              relatedPost.coverImage ||
-                              "/placeholder.svg?height=144&width=288"
-                            }
-                            alt={relatedPost.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </Link>
-                        <div className="p-4 flex-1 flex flex-col">
-                          <div className="flex-1">
-                            <h4 className="font-bold mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors text-sm">
-                              <Link href={`/blog/${relatedPost.slug}`}>
-                                {relatedPost.title}
-                              </Link>
-                            </h4>
-                            <p className="text-muted-foreground text-xs line-clamp-2 mb-3">
-                              {relatedPost.excerpt}
-                            </p>
-                          </div>
-                          <div className="flex justify-between items-center text-xs text-muted-foreground">
-                            <div className="flex items-center">
-                              <Calendar className="h-3 w-3 mr-1" />
-                              <span>{relatedPost.date}</span>
-                            </div>
-                            <Link
-                              href={`/blog/${relatedPost.slug}`}
-                              className="text-blue-600 dark:text-blue-400 font-medium hover:underline flex items-center"
-                            >
-                              Read
-                              <ChevronRight className="ml-1 h-3 w-3" />
-                            </Link>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            {/* Sidebar */}
-            <div className="hidden lg:block lg:col-span-1 xl:col-span-1 xl:max-w-sm">
-              <h2 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Table of Contents</h2>
-              <TableOfContents />
-            </div>
-          </div>
+             </div>
+             
+             {/* Meta Data */}
+             <div className="hidden sm:flex flex-wrap items-center gap-6 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300 border-l border-white/20 pl-10">
+                <span className="flex items-center gap-2 relative z-20"><Calendar className="w-4 h-4 text-blue-400" /> {post.date}</span>
+                <span className="flex items-center gap-2 relative z-20"><Clock className="w-4 h-4 text-purple-400" /> {post.readTime} MIN READ</span>
+                <span className="flex items-center gap-2 relative z-20"><Eye className="w-4 h-4 text-emerald-400" /> {post.views} VIEWS</span>
+             </div>
+           </motion.div>
         </div>
       </section>
+
+      {/* 2. Glassmorphic Apple-Style Floating Bar */}
+      <motion.div 
+        className="sticky top-0 z-40 w-full border-b border-transparent transition-all backdrop-blur-0"
+        style={{
+           backgroundColor: typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches 
+             ? actionBackgroundDark as any 
+             : actionBackground as any,
+           borderColor: actionBorder as any,
+           backdropFilter: "blur(12px)"
+        }}
+      >
+         <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between py-4">
+            <Link href="/blog" className="inline-flex items-center text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group">
+               <ArrowLeft className="mr-3 h-4 w-4 group-hover:-translate-x-2 transition-transform duration-300" />
+               <span className="hidden sm:inline">Return to Journal</span>
+               <span className="inline sm:hidden">Vault</span>
+            </Link>
+            
+            <div className="flex items-center gap-2 sm:gap-4">
+               {session?.user && post?.author?.id && (session.user.id === post.author.id || session.user.role === "admin") && (
+                 <Link href={`/blog/edit/${post.slug}`}>
+                   <button className="flex flex-row items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-widest uppercase hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
+                     <Edit className="w-4 h-4" />
+                     <span className="hidden sm:inline">Modify</span>
+                   </button>
+                 </Link>
+               )}
+               
+               {/* Minimalist Like */}
+               <div className="bg-slate-100 dark:bg-slate-900/50 rounded-full scale-90 sm:scale-100 origin-right">
+                  <LikeButton postSlug={slug} />
+               </div>
+
+               {/* Dropdown Share Menu */}
+               <div className="relative">
+                  <button 
+                     onClick={() => setShowShareMenu(!showShareMenu)}
+                     className="p-3 rounded-full bg-slate-100 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                  >
+                     <Share2 className="w-4 h-4" />
+                  </button>
+                  <AnimatePresence>
+                     {showShareMenu && (
+                        <motion.div
+                           initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                           animate={{ opacity: 1, y: 0, scale: 1 }}
+                           exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                           className="absolute right-0 top-full mt-3 p-2 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 flex flex-col gap-1 min-w-[200px]"
+                        >
+                           <button onClick={copyToClipboard} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 transition-colors text-left">
+                              {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                              {copied ? "Link Copied!" : "Copy URL"}
+                           </button>
+                           <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}&text=${encodeURIComponent(post.title)}`} target="_blank" rel="noopener noreferrer" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-500 transition-colors">
+                              <Twitter className="w-4 h-4" /> Share to X
+                           </a>
+                           <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`} target="_blank" rel="noopener noreferrer" className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-blue-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-blue-700 transition-colors">
+                              <Linkedin className="w-4 h-4" /> Share to LinkedIn
+                           </a>
+                        </motion.div>
+                     )}
+                  </AnimatePresence>
+               </div>
+            </div>
+         </div>
+      </motion.div>
+
+      {/* 3. Ergonomic Content Engine */}
+      <section className="py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12">
+          
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+            
+            {/* The Reading Column (Max-width optimal for typography line-length) */}
+            <article className="w-full lg:w-8/12 xl:w-9/12 max-w-4xl">
+              
+              {/* Mobile Meta Data Inject (Since it's hidden in hero on mobile) */}
+              <div className="flex sm:hidden flex-wrap items-center gap-4 text-[10px] font-bold tracking-widest uppercase text-slate-400 mb-12 pb-6 border-b border-slate-200 dark:border-slate-800">
+                 <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" /> {post.date}</span>
+                 <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {post.readTime} MIN</span>
+                 <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> {post.views} VIEWS</span>
+              </div>
+
+              {/* The Actual Content Document */}
+              <div className="prose prose-lg dark:prose-invert prose-headings:font-bold prose-headings:tracking-tight prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:text-blue-500 max-w-none mb-20">
+                 <BlogContent content={post.content} />
+              </div>
+
+              {/* Majestic Centered Author Bio Matrix */}
+              <div className="py-16 border-t border-b border-slate-200 dark:border-slate-800/60 my-20">
+                 <div className="flex flex-col items-center text-center max-w-2xl mx-auto">
+                    <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden mb-8 border-4 border-slate-50 dark:border-slate-900 shadow-xl">
+                       <Image
+                         src={author.image || "/images/posts/profile.jpeg"}
+                         alt={author.name}
+                         width={128}
+                         height={128}
+                         className="w-full h-full object-cover"
+                       />
+                    </div>
+                    <div className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 mb-3">
+                       Written By
+                    </div>
+                    <h3 className="text-3xl sm:text-4xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">
+                       {author.name}
+                    </h3>
+                    <p className="text-slate-500 dark:text-slate-400 font-light text-base sm:text-lg mb-8 leading-relaxed">
+                       {author.bio || "Principal Architect and Engineer structuring high-end layouts."}
+                    </p>
+                    
+                    <div className="flex items-center gap-4">
+                       {author.social?.github && (
+                          <a href={author.social.github} target="_blank" rel="noopener noreferrer" className="p-4 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all hover:scale-110">
+                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd"/></svg>
+                          </a>
+                       )}
+                       {author.social?.twitter && (
+                          <a href={author.social.twitter} target="_blank" rel="noopener noreferrer" className="p-4 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all hover:scale-110">
+                             <Twitter className="w-5 h-5 text-blue-400" />
+                          </a>
+                       )}
+                       {author.social?.linkedin && (
+                          <a href={author.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-4 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all hover:scale-110">
+                             <Linkedin className="w-5 h-5 text-blue-600" />
+                          </a>
+                       )}
+                    </div>
+                 </div>
+              </div>
+
+              {/* Seamless Comment Section */}
+              <div className="mb-20">
+                 <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-10 flex items-center gap-3">
+                    <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
+                    Community Log
+                 </h3>
+                 <CommentSection postSlug={slug} />
+              </div>
+
+            </article>
+
+            {/* Sticky Table of Contents Sidebar */}
+            <aside className="hidden lg:block lg:w-4/12 xl:w-3/12 relative">
+               <div className="sticky top-32">
+                  <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400 mb-8 flex items-center gap-3">
+                     <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
+                     Document Index
+                  </h3>
+                  <div className="pl-6 border-l border-slate-200 dark:border-slate-800/60">
+                     <TableOfContents />
+                  </div>
+               </div>
+            </aside>
+            
+          </div>
+
+          {/* Mastermind Architectural Related Posts */}
+          {relatedPosts.length > 0 && (
+            <div className="pt-24 border-t border-slate-200 dark:border-slate-800/60">
+              <h3 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white mb-12 text-center sm:text-left">Related Indexes</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {relatedPosts.map((relatedPost, index) => (
+                  <motion.div
+                    key={index}
+                    whileHover={{ y: -5 }}
+                    className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 transition-all duration-500 shadow-sm hover:shadow-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-800"
+                  >
+                    <Link href={`/blog/${relatedPost.slug}`} className="absolute inset-0 z-20" aria-label={`Read ${relatedPost.title}`} />
+                    
+                    <div className="w-full aspect-[16/10] overflow-hidden relative bg-slate-100 dark:bg-slate-800">
+                      <Image
+                        src={relatedPost.coverImage || "/images/posts/blog.avif"}
+                        alt={relatedPost.title}
+                        fill
+                        className="object-cover transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:scale-105"
+                      />
+                    </div>
+                    
+                    <div className="p-6 sm:p-8 flex-1 flex flex-col relative z-10 pointer-events-none">
+                      <div className="flex-1 mb-6">
+                        <h4 className="text-xl font-bold mb-3 tracking-tight text-slate-900 dark:text-white line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {relatedPost.title}
+                        </h4>
+                        <p className="text-slate-500 dark:text-slate-400 font-light text-sm line-clamp-2">
+                          {relatedPost.excerpt}
+                        </p>
+                      </div>
+                      
+                      <div className="flex justify-between items-center pt-5 border-t border-slate-200 dark:border-slate-800/50 mt-auto">
+                        <div className="flex items-center gap-1.5 text-[9px] font-bold tracking-widest uppercase text-slate-400">
+                          <Calendar className="h-3 w-3" />
+                          <span>{relatedPost.date}</span>
+                        </div>
+                        <span className="flex items-center gap-1 text-[9px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform">
+                          Read <ChevronRight className="h-3 w-3" />
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+
+        </div>
+      </section>
+
     </main>
   );
 }
