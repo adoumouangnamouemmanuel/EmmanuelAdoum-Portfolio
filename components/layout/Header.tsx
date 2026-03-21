@@ -226,7 +226,7 @@ export default function Header() {
                    size="icon"
                    className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 cursor-pointer"
                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                   aria-label="Toggle Command Center"
+                   aria-label="Toggle Mobile Menu"
                  >
                    {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
                  </Button>

@@ -203,12 +203,12 @@ export default function BlogHeader() {
                     <div className="px-1 py-1 space-y-1">
                       <DropdownMenuItem asChild className="rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-900/50 font-medium text-slate-700 dark:text-slate-300 transition-colors">
                         <Link href="/profile" className="flex items-center gap-3">
-                          <User className="h-4 w-4" /> Command Center
+                          <User className="h-4 w-4" /> profile
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild className="rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-900/50 font-medium text-slate-700 dark:text-slate-300 transition-colors">
                         <Link href="/settings" className="flex items-center gap-3">
-                          <Settings className="h-4 w-4" /> Telemetry Config
+                          <Settings className="h-4 w-4" />  Settings
                         </Link>
                       </DropdownMenuItem>
                       {session.user.role === "admin" && (
