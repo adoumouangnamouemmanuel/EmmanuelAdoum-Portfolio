@@ -27,7 +27,7 @@ export default function HeroSection() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden bg-white dark:bg-slate-950"
+      className="relative lg:min-h-screen block lg:flex lg:items-center pt-24 pb-12 lg:pb-16 overflow-hidden bg-white dark:bg-slate-950"
     >
       {/* Bold Background Image Overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none">

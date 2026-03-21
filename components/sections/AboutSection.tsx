@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { motion, useInView } from "framer-motion";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
@@ -31,34 +31,21 @@ export default function AboutSection() {
     },
   };
 
-  const skills = [
-    "Artificial Intelligence",
-    "Responsive Web Design",
-    "Frontend Development",
-    "Backend Architecture",
-    "Database Management",
-    "Deep Learning",
-    "API Engineering",
-    "UI/UX Implementation",
-    "Performance Tuning",
-    "DevOps & Deployment",
-  ];
-
   return (
     <section
       id="about"
-      className="pb-24 lg:pb-32 bg-slate-50 dark:bg-slate-950 overflow-hidden relative"
+      className="lg:min-h-screen lg:flex lg:items-center pt-0 pb-16 lg:py-0 bg-slate-50 dark:bg-slate-950 overflow-hidden relative"
     >
-      <div className="section-container px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="section-container px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
         <motion.div
           ref={ref}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-24 items-center"
         >
           {/* Left side with clean, professional image overlay */}
-          <div className="relative mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
+          <div className="relative mx-auto lg:mx-0 w-full max-w-md lg:max-w-none">
             <motion.div
               variants={itemVariants}
               className="relative z-10 w-full aspect-[4/5] lg:aspect-square rounded-[2rem] overflow-hidden shadow-2xl shadow-slate-300/50 dark:shadow-blue-900/10 border border-slate-200/50 dark:border-slate-800/50 group"
@@ -87,9 +74,9 @@ export default function AboutSection() {
           <motion.div
             ref={textRef}
             variants={containerVariants}
-            className="relative lg:pl-10"
+            className="relative lg:pl-4 text-center lg:text-left flex flex-col items-center lg:items-start"
           >
-            <motion.div variants={itemVariants} className="mb-6">
+            <motion.div variants={itemVariants} className="mb-6 flex justify-center lg:justify-start w-full">
               <p className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 shadow-sm dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-blue-400">
                 Behind The Code
               </p>
@@ -108,7 +95,7 @@ export default function AboutSection() {
 
             <motion.div
               variants={itemVariants}
-              className="space-y-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-10"
+              className="space-y-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0"
             >
               <p>
                 I’m a software engineer focused on building scalable web and AI-driven systems that solve real-world problems.
@@ -118,49 +105,7 @@ export default function AboutSection() {
               </p>
             </motion.div>
 
-            {/* Skills section */}
-            <motion.div
-              variants={itemVariants}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-12"
-            >
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span className="w-6 h-1 bg-blue-600 rounded-full" />
-                  Key Skills
-                </h3>
-                <ul className="space-y-3">
-                  {skills.slice(0, 5).map((skill, index) => (
-                    <motion.li
-                      key={index}
-                      className="flex items-center text-slate-700 dark:text-slate-300 font-medium text-sm sm:text-base group"
-                    >
-                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-500 mr-3 flex-shrink-0 transition-transform group-hover:scale-125" />
-                      <span className="group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{skill}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <span className="w-6 h-1 bg-indigo-600 rounded-full" />
-                  Expertise
-                </h3>
-                <ul className="space-y-3">
-                  {skills.slice(5).map((skill, index) => (
-                    <motion.li
-                      key={index}
-                      className="flex items-center text-slate-700 dark:text-slate-300 font-medium text-sm sm:text-base group"
-                    >
-                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600 dark:text-indigo-500 mr-3 flex-shrink-0 transition-transform group-hover:scale-125" />
-                      <span className="group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">{skill}</span>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="w-full sm:w-auto">
               <Button
                 asChild
                 size="lg"
