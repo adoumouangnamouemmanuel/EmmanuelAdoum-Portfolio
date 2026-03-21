@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,16 +11,6 @@ export default function AboutSection() {
   const ref = useRef(null);
   const textRef = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
-  const isTextInView = useInView(textRef, { once: true, amount: 0.2 });
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  // Parallax and rotation effects
-  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
-  const x = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 3]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -37,10 +27,7 @@ export default function AboutSection() {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.16, 1, 0.3, 1],
-      },
+      transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
     },
   };
 
@@ -60,7 +47,7 @@ export default function AboutSection() {
   return (
     <section
       id="about"
-      className="py-24 lg:py-32 bg-slate-50 dark:bg-slate-950 overflow-hidden relative"
+      className="pb-24 lg:pb-32 bg-slate-50 dark:bg-slate-950 overflow-hidden relative"
     >
       <div className="section-container px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <motion.div
@@ -70,74 +57,30 @@ export default function AboutSection() {
           variants={containerVariants}
           className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center"
         >
-          {/* Left side with image */}
+          {/* Left side with clean, professional image overlay */}
           <div className="relative mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
             <motion.div
               variants={itemVariants}
-              className="relative z-10 w-full aspect-square md:aspect-[4/5] lg:aspect-square"
-              style={{ y, rotate }}
+              className="relative z-10 w-full aspect-[4/5] lg:aspect-square rounded-[2rem] overflow-hidden shadow-2xl shadow-slate-300/50 dark:shadow-blue-900/10 border border-slate-200/50 dark:border-slate-800/50 group"
             >
-              <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/20 dark:shadow-blue-900/10 group border border-slate-200/50 dark:border-slate-800/50">
-                <Image
-                  src="/images/emma-hero.png"
-                  alt="Developer portrait"
-                  fill
-                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500">
-                  <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="text-white text-2xl font-bold tracking-tight">
-                      Emmanuel Adoum
-                    </h3>
-                    <p className="text-blue-300 font-medium mt-1">
-                      Full-Stack & AI Engineer
-                    </p>
-                  </div>
-                </div>
+              <Image
+                src="/images/emma-hero.png"
+                alt="Emmanuel Adoum"
+                fill
+                className="object-cover object-center"
+              />
+              {/* Professional subtle gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/10 to-transparent pointer-events-none" />
+              
+              <div className="absolute bottom-0 left-0 right-0 p-8 pointer-events-none">
+                <h3 className="text-white text-2xl font-bold tracking-tight drop-shadow-md">
+                  Emmanuel Adoum
+                </h3>
+                <p className="text-slate-200 font-medium mt-1 drop-shadow-md">
+                  Software Engineer
+                </p>
               </div>
-
-              {/* Experience badge */}
-              <motion.div
-                className="absolute -top-6 -right-6 lg:-top-8 lg:-right-8 bg-slate-900 dark:bg-blue-600 text-white px-5 py-3 rounded-2xl shadow-xl border border-slate-800 dark:border-blue-500 text-sm sm:text-base font-semibold tracking-tight"
-                initial={{ scale: 0, rotate: -15 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 15 }}
-                whileHover={{ scale: 1.05, rotate: 5 }}
-              >
-                3+ Years Experience
-              </motion.div>
-
-              {/* Floating card */}
-              <motion.div
-                className="absolute -bottom-8 -left-6 lg:-bottom-10 lg:-left-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/50 dark:border-slate-800 max-w-[200px] sm:max-w-[240px]"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
-                whileHover={{ y: -5 }}
-              >
-                <div className="flex items-start gap-4">
-                  <span className="text-3xl sm:text-4xl drop-shadow-md">🚀</span>
-                  <div>
-                    <h4 className="font-bold text-slate-900 dark:text-white text-sm">
-                      Impact Driven
-                    </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                      Code that solves real problems
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
             </motion.div>
-
-            {/* Decorative elements */}
-            <motion.div
-              className="absolute -bottom-16 -right-16 w-64 h-64 bg-blue-300/20 dark:bg-blue-600/10 rounded-full blur-[80px] -z-10"
-              style={{ x }}
-            />
-            <motion.div
-              className="absolute -top-16 -left-16 w-64 h-64 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-[80px] -z-10"
-              style={{ x: useTransform(scrollYProgress, [0, 1], [0, 30]) }}
-            />
           </div>
 
           {/* Right side with text */}
@@ -168,10 +111,10 @@ export default function AboutSection() {
               className="space-y-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-10"
             >
               <p>
-                <strong className="text-slate-900 dark:text-white font-semibold">I am a software engineer from Chad</strong> with a singular focus: leveraging deep technical expertise to build systems that create meaningful impact. I don't just write code—I architect scalable Web and AI solutions that tackle real-world challenges, particularly in education and sustainability.
+                I’m a software engineer focused on building scalable web and AI-driven systems that solve real-world problems.
               </p>
               <p>
-                With over 3 years of experience spanning full-stack development and artificial intelligence, I bridge the gap between complex engineering and flawless user experiences. My philosophy is simple: build products that are <strong className="text-slate-900 dark:text-white font-semibold">blazingly fast, structurally sound, and purpose-driven</strong>.
+                Beyond coding, I lead technical initiatives and work on projects aimed at improving access to technology and opportunity, particularly in underserved communities. I’m driven by building solutions that are not just functional, but meaningful and long-lasting.
               </p>
             </motion.div>
 
