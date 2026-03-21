@@ -34,7 +34,10 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
       } gap-12 lg:gap-20 items-center group`}
     >
       {/* Image Side */}
-      <div className="w-full lg:w-7/12 relative overflow-hidden rounded-[2rem] bg-slate-100 dark:bg-slate-900 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] xl:aspect-[16/10]">
+      <Link 
+        href={`/projects/${project.slug}`}
+        className="block cursor-pointer w-full lg:w-7/12 relative overflow-hidden rounded-[2rem] bg-slate-100 dark:bg-slate-900 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] xl:aspect-[16/10]"
+      >
         <motion.div
           style={{ y, scale: 1.15 }}
           className="absolute inset-0 w-full h-[120%]"
@@ -49,7 +52,7 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
         
         {/* Subtle inner shadow for premium feel */}
         <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] dark:shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] z-10 pointer-events-none" />
-      </div>
+      </Link>
 
       {/* Text Side */}
       <div className="w-full lg:w-5/12 flex flex-col justify-center">
@@ -75,19 +78,15 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
         </p>
 
         <div className="flex items-center gap-6">
-          {project.demo && (
-            <Link
-              href={project.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/btn inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-900 dark:text-white overflow-hidden relative"
-            >
-              <span className="relative z-10 pb-1 border-b-2 border-slate-900 dark:border-white transition-colors group-hover/btn:border-blue-600 dark:group-hover/btn:border-blue-400">
-                View Project
-              </span>
-              <ArrowUpRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 text-blue-600 dark:text-blue-400" />
-            </Link>
-          )}
+          <Link
+            href={`/projects/${project.slug}`}
+            className="group/btn inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-slate-900 dark:text-white overflow-hidden relative"
+          >
+            <span className="relative z-10 pb-1 border-b-2 border-slate-900 dark:border-white transition-colors group-hover/btn:border-blue-600 dark:group-hover/btn:border-blue-400">
+              View Project
+            </span>
+            <ArrowUpRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 text-blue-600 dark:text-blue-400" />
+          </Link>
 
           {project.github && (
             <Link
