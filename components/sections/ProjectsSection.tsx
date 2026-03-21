@@ -7,10 +7,8 @@ import Link from "next/link";
 import { useRef } from "react";
 import { projects as rawProjects } from "@/data/projects";
 
-const projects = rawProjects.map((project) => ({
-  ...project,
-  slug: project.title.toLowerCase().replace(/\s+/g, "-"),
-}));
+// Filter featured projects and ensure they use the correct slug from the data
+const featuredProjects = rawProjects.filter(project => project.featured);
 
 const ProjectCard = ({ project, index }: { project: any; index: number }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -137,7 +135,7 @@ export default function ProjectsSection() {
         </div>
 
         <div className="flex flex-col gap-16 lg:gap-24 mb-16 lg:mb-24">
-          {projects.slice(0, 4).map((project, index) => (
+          {featuredProjects.map((project, index) => (
             <ProjectCard key={project.slug} project={project} index={index} />
           ))}
         </div>
