@@ -193,7 +193,7 @@ export default function BlogPostPage() {
         <p className="mb-10 text-slate-500 font-light text-lg">{error}</p>
         <Link href="/blog">
           <button className="px-8 py-4 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold tracking-widest uppercase hover:scale-105 transition-transform duration-300">
-             Return to Vault
+             Return to Blog
           </button>
         </Link>
       </main>
