@@ -9,7 +9,6 @@ import {
   useTransform,
 } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ModeToggle } from "@/components/theme/mode-toggle";
 import { Menu, X, ChevronRight, Moon, Sun } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "next-themes"
@@ -22,30 +21,30 @@ const navItems = [
   { name: "Journey", href: "#journey" },
   { name: "Testimonials", href: "#testimonials" },
   { name: "Blog", href: "/blog" },
-  { name: "Latest Articles", href: "#articles" },
   { name: "Contact", href: "#contact" },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-   const { theme, setTheme } = useTheme()
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const { theme, setTheme } = useTheme()
   const [activeSection, setActiveSection] = useState("home");
+  
   const [sectionPositions, setSectionPositions] = useState<{
     [key: string]: number;
   }>({});
+  
   const headerRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
   const { scrollY, scrollYProgress } = useScroll();
 
-  // Calculate progress for the horizontal progress bar
+  // Progress Bar
   const horizontalProgress = useTransform(scrollYProgress, [0, 1], [0, 100]);
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
-
-      // Find the active section based on scroll position
       const sections = navItems
         .filter((item) => item.href.startsWith("#"))
         .map((item) => item.href.substring(1));
@@ -53,22 +52,16 @@ export default function Header() {
       const currentSection = sections.find((section) => {
         const element = document.getElementById(section);
         if (!element) return false;
-
         const rect = element.getBoundingClientRect();
-        const headerHeight = headerRef.current?.offsetHeight || 0;
-        return rect.top <= 100 + headerHeight && rect.bottom >= 100;
+        return rect.top <= 200 && rect.bottom >= 100;
       });
 
-      if (currentSection) {
-        setActiveSection(currentSection);
-      }
+      if (currentSection) setActiveSection(currentSection);
     };
 
-    // Calculate section positions for the progress indicator
     const calculateSectionPositions = () => {
       const positions: { [key: string]: number } = {};
       const totalHeight = document.body.scrollHeight - window.innerHeight;
-
       navItems
         .filter((item) => item.href.startsWith("#"))
         .forEach((item) => {
@@ -78,171 +71,249 @@ export default function Header() {
             positions[item.href.substring(1)] = Math.min(position, 100);
           }
         });
-
       setSectionPositions(positions);
     };
 
     window.addEventListener("scroll", handleScroll);
     calculateSectionPositions();
     window.addEventListener("resize", calculateSectionPositions);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", calculateSectionPositions);
     };
   }, []);
 
-  // Prevent body scrolling when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (mobileMenuOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+    return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
 
+  // Framer Variants
   const logoVariants = {
     initial: { opacity: 0, scale: 0.8 },
-    animate: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5 },
-    },
-    hover: {
-      scale: 1.05,
-      rotate: [0, -5, 5, -5, 0],
-      transition: { duration: 0.5 },
-    },
+    animate: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+    hover: { scale: 1.05, transition: { duration: 0.3 } },
   };
 
-  const navItemVariants = {
-    initial: { opacity: 0, y: -10 },
-    animate: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.3,
-        delay: 0.1 * i,
-      },
-    }),
-    hover: {
-      y: -3,
-      color: "hsl(var(--primary))",
-      transition: { duration: 0.2 },
-    },
-  };
-
-  // Updated mobile menu variants to slide from right
   const mobileMenuVariants = {
     closed: {
-      x: "100%",
+      y: "-100%",
       opacity: 0,
-      transition: {
-        duration: 0.3,
-        when: "afterChildren",
-        staggerChildren: 0.05,
-        staggerDirection: -1,
-      },
+      transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] }
     },
     open: {
-      x: "0%",
+      y: "0%",
       opacity: 1,
-      transition: {
-        duration: 0.3,
-        when: "beforeChildren",
-        staggerChildren: 0.05,
-        delayChildren: 0.1,
-      },
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1], staggerChildren: 0.05, delayChildren: 0.1 }
     },
   };
 
   const mobileItemVariants = {
-    closed: { opacity: 0, x: 20 }, // Changed to slide from right
-    open: { opacity: 1, x: 0 },
-  };
-
-  // Backdrop variants for the semi-transparent overlay
-  const backdropVariants = {
-    closed: {
-      opacity: 0,
-      transition: {
-        duration: 0.3,
-      },
-    },
-    open: {
-      opacity: 1,
-      transition: {
-        duration: 0.3,
-      },
-    },
+    closed: { opacity: 0, y: 20 },
+    open: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } },
   };
 
   return (
-    <header
-      ref={headerRef}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled
-          ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-lg shadow-lg py-3"
-          : "bg-transparent py-5"
-      }`}
-    >
-      {/* Horizontal progress bar at the top */}
+    <>
+      {/* Universal Progress Line (absolute top) */}
       <motion.div
-        className="absolute top-0 left-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 z-50"
+        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 z-[60]"
         style={{ width: horizontalProgress.get() + "%" }}
       />
 
-      {/* Vertical progress indicator (fixed on the right side) */}
-      <div className="fixed top-0 right-8 h-screen z-50 hidden lg:flex items-center">
-        <div className="relative h-[70vh] flex flex-col justify-center items-center">
-          {/* Vertical line */}
-          <div className="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+      {/* The Magnetic Floating Dock (Desktop & Mobile Wrapper) */}
+      <header
+        ref={headerRef}
+        className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-[0.16,1,0.3,1] ${
+          isScrolled 
+            ? "top-2 sm:top-4 lg:top-6" 
+            : "top-4 sm:top-6 lg:top-8"
+        }`}
+      >
+        <div className="flex justify-center w-full px-4 pointer-events-none">
+           <div className={`pointer-events-auto flex items-center justify-between transition-all duration-500 rounded-full px-4 sm:px-6 py-2.5 sm:py-3 w-full lg:w-max mx-auto shadow-2xl border ${
+             isScrolled
+               ? "bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-slate-200/50 dark:border-slate-800/50 shadow-slate-900/5 dark:shadow-black/20"
+               : "bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border-slate-200/30 dark:border-slate-800/30 shadow-black/5"
+           }`}>
+             
+             {/* Architectural Logo Node */}
+             <Link href="/" className="flex items-center space-x-2 z-10 mr-4 lg:mr-8 flex-shrink-0" onClick={() => setMobileMenuOpen(false)}>
+               <motion.div variants={logoVariants} initial="initial" animate="animate" whileHover="hover">
+                 <span className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
+                   EA.
+                 </span>
+               </motion.div>
+             </Link>
 
-          {/* Progress overlay */}
+             {/* Dynamic Magnetic Desktop Navigation */}
+             <nav className="hidden lg:flex items-center gap-1.5 relative px-2">
+               {navItems.map((item, i) => {
+                 const isActive = activeSection === item.href.substring(1) && item.href.startsWith("#");
+                 const isHovered = hoveredIndex === i;
+                 return (
+                   <motion.div
+                     key={item.name}
+                     initial={{ opacity: 0, y: -10 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ duration: 0.4, delay: 0.05 * i }}
+                     onMouseEnter={() => setHoveredIndex(i)}
+                     onMouseLeave={() => setHoveredIndex(null)}
+                     className="relative"
+                   >
+                     <Link
+                       href={item.href}
+                       scroll={item.href.startsWith("#") ? false : true}
+                       className={`relative z-20 px-4 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 block ${
+                         isActive || isHovered
+                           ? "text-slate-900 dark:text-white"
+                           : "text-slate-500 dark:text-slate-400"
+                       }`}
+                       onClick={(e) => {
+                         if (item.href.startsWith("#")) {
+                           e.preventDefault();
+                           document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
+                           setActiveSection(item.href.substring(1));
+                         }
+                       }}
+                     >
+                       {item.name}
+                     </Link>
+                     
+                     {/* The Target Pill (Hover state) */}
+                     {isHovered && (
+                       <motion.div
+                         layoutId="nav-hover-pill"
+                         className="absolute inset-0 z-10 bg-slate-200/50 dark:bg-slate-800/50 rounded-full"
+                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                       />
+                     )}
+                     
+                     {/* The Active Marker (Dot below) */}
+                     {isActive && !isHovered && (
+                       <motion.div
+                         layoutId="nav-active-dot"
+                         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 z-10"
+                         transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                       />
+                     )}
+                   </motion.div>
+                 );
+               })}
+             </nav>
+
+             {/* Utility End Nodes */}
+             <div className="flex items-center gap-2 lg:gap-3 lg:ml-6 flex-shrink-0 z-10">
+               {/* Theme Injector */}
+               <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.4 }}>
+                 <Button
+                   variant="ghost"
+                   size="icon"
+                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                   className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-transparent hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                   aria-label="Toggle structural theme"
+                 >
+                   <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-slate-800" />
+                   <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-slate-200" />
+                 </Button>
+               </motion.div>
+               
+               {/* Mobile Trigger */}
+               <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.5 }} className="lg:hidden">
+                 <Button
+                   variant="ghost"
+                   size="icon"
+                   className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 cursor-pointer"
+                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                   aria-label="Toggle Command Center"
+                 >
+                   {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+                 </Button>
+               </motion.div>
+             </div>
+             
+           </div>
+        </div>
+      </header>
+
+      {/* The Master Mobile Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
           <motion.div
-            className="absolute top-0 w-0.5 bg-gradient-to-b from-blue-600 via-purple-500 to-blue-600 rounded-full origin-top"
+            variants={mobileMenuVariants}
+            initial="closed"
+            animate="open"
+            exit="closed"
+            className="fixed inset-0 z-40 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl flex flex-col justify-center w-full h-[100dvh]"
+          >
+             <div className="flex flex-col gap-6 px-10">
+                <motion.span variants={mobileItemVariants} className="text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 mb-4">
+                   System Navigation
+                </motion.span>
+                {navItems.map((item) => {
+                  const isActive = activeSection === item.href.substring(1) && item.href.startsWith("#");
+                  return (
+                    <motion.div key={item.name} variants={mobileItemVariants} className="w-full">
+                       <Link
+                         href={item.href}
+                         className={`group flex items-center justify-between text-4xl font-bold tracking-tighter ${
+                           isActive 
+                             ? "text-slate-900 dark:text-white" 
+                             : "text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                         } transition-colors duration-300 block`}
+                         onClick={(e) => {
+                           if (item.href.startsWith("#")) {
+                             e.preventDefault();
+                             document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
+                             setActiveSection(item.href.substring(1));
+                             setMobileMenuOpen(false);
+                           } else {
+                             setMobileMenuOpen(false);
+                           }
+                         }}
+                       >
+                         {item.name}
+                         {isActive && <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400" />}
+                       </Link>
+                    </motion.div>
+                  );
+                })}
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Legacy Right-Side Tracker (Keeping it because it's cool, but adjusting z-index and colors to match new theme) */}
+      <div className="fixed top-0 right-8 h-screen z-30 hidden xl:flex items-center pointer-events-none">
+        <div className="relative h-[60vh] flex flex-col justify-center items-center pointer-events-auto">
+          <div className="absolute h-full w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+          <motion.div
+            className="absolute top-0 w-[1px] bg-blue-600 dark:bg-blue-400 origin-top"
             style={{ height: scrollYProgress.get() * 100 + "%" }}
           />
-
-          {/* Navigation dots */}
-          {navItems
-            .filter((item) => item.href.startsWith("#"))
-            .map((item, index) => {
+          {navItems.filter((item) => item.href.startsWith("#")).map((item, index) => {
               const isActive = activeSection === item.href.substring(1);
-              const sectionPosition =
-                sectionPositions[item.href.substring(1)] ||
-                (index * 100) / navItems.length;
-
+              const sectionPosition = sectionPositions[item.href.substring(1)] || (index * 100) / navItems.length;
               return (
                 <motion.div
                   key={item.name}
                   initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{
-                    scale: isActive ? 1.2 : 1,
-                    opacity: 1,
-                  }}
+                  animate={{ scale: isActive ? 1.5 : 1, opacity: 1 }}
                   whileHover={{ scale: 1.5 }}
                   className="absolute group cursor-pointer z-10"
                   style={{ top: `${sectionPosition}%` }}
                   onClick={() => {
-                    document.querySelector(item.href)?.scrollIntoView({
-                      behavior: "smooth",
-                    });
+                    document.querySelector(item.href)?.scrollIntoView({ behavior: "smooth" });
                     setActiveSection(item.href.substring(1));
                   }}
                 >
-                  <div
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? "bg-blue-600 dark:bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                        : "bg-gray-300 dark:bg-gray-600"
+                  <div className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      isActive ? "bg-blue-600 dark:bg-blue-400" : "bg-slate-300 dark:bg-slate-700"
                     }`}
                   />
-                  <div className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="bg-white dark:bg-gray-800 text-sm font-medium py-1 px-2 rounded shadow-lg whitespace-nowrap">
+                  <div className="absolute right-full mr-4 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-bold tracking-[0.2em] uppercase py-2 px-3 rounded-lg whitespace-nowrap shadow-xl">
                       {item.name}
                     </div>
                   </div>
@@ -251,224 +322,6 @@ export default function Header() {
             })}
         </div>
       </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2 z-10">
-            <motion.div
-              variants={logoVariants}
-              initial="initial"
-              animate="animate"
-              whileHover="hover"
-            >
-              <span className="text-2xl font-bold gradient-text">
-                Emmanuel Adoum
-              </span>
-            </motion.div>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {navItems.map((item, i) => (
-              <motion.div
-                key={item.name}
-                custom={i}
-                variants={navItemVariants}
-                initial="initial"
-                animate="animate"
-                whileHover="hover"
-              >
-                <Link
-                  href={item.href}
-                  className={`relative px-3 py-2 text-sm font-medium transition-colors ${
-                    activeSection === item.href.substring(1) &&
-                    item.href.startsWith("#")
-                      ? "text-blue-600 dark:text-blue-400"
-                      : "text-gray-700 dark:text-gray-300"
-                  }`}
-                  onClick={(e) => {
-                    if (item.href.startsWith("#")) {
-                      e.preventDefault();
-                      document.querySelector(item.href)?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                      setActiveSection(item.href.substring(1));
-                    }
-                  }}
-                >
-                  {item.name}
-                  {activeSection === item.href.substring(1) &&
-                    item.href.startsWith("#") && (
-                      <motion.div
-                        className="absolute bottom-0 left-0 h-0.5 bg-blue-600 dark:bg-blue-400"
-                        layoutId="activeSection"
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 300,
-                          damping: 30,
-                        }}
-                      />
-                    )}
-                </Link>
-              </motion.div>
-            ))}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-              whileHover={{ rotate: 180 }}
-              className="ml-2"
-            >
-              {/* <ModeToggle /> */}
-               {/* Theme toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
-              aria-label="Toggle theme"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
-            </Button>
-            </motion.div>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <div className="flex items-center md:hidden">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-              whileHover={{ rotate: 180 }}
-            >
-              {/* <ModeToggle /> */}
-               {/* <ModeToggle /> */}
-               {/* Theme toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="rounded-full h-10 w-10 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer"
-              aria-label="Toggle theme"
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-amber-500" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-indigo-400" />
-            </Button>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              <Button
-                variant="ghost"
-                size="icon"
-                className="ml-2"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation - Redesigned to slide from right */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            {/* Semi-transparent backdrop */}
-            <motion.div
-              variants={backdropVariants}
-              initial="closed"
-              animate="open"
-              exit="closed"
-              className="md:hidden fixed inset-0 bg-black/20 dark:bg-black/50 backdrop-blur-sm z-40"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-
-            {/* Sliding menu panel */}
-            <motion.div
-              variants={mobileMenuVariants}
-              initial="closed"
-              animate="open"
-              exit="closed"
-              className="md:hidden fixed top-0 right-0 bottom-0 w-[75%] max-w-xs bg-white dark:bg-gray-900 shadow-xl z-50 flex flex-col"
-              style={{ height: "100vh" }} // Ensure full viewport height
-            >
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
-                <span className="font-bold text-lg">Menu</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <X size={20} />
-                </Button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto py-2">
-                {navItems.map((item, i) => (
-                  <motion.div
-                    key={item.name}
-                    variants={mobileItemVariants}
-                    custom={i}
-                    className="block"
-                  >
-                    <Link
-                      href={item.href}
-                      className={`flex items-center justify-between py-3 px-4 mx-2 my-1 text-base font-medium rounded-lg ${
-                        activeSection === item.href.substring(1) &&
-                        item.href.startsWith("#")
-                          ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                          : "hover:bg-gray-100 dark:hover:bg-gray-800"
-                      }`}
-                      onClick={(e) => {
-                        if (item.href.startsWith("#")) {
-                          e.preventDefault();
-                          document.querySelector(item.href)?.scrollIntoView({
-                            behavior: "smooth",
-                          });
-                          setActiveSection(item.href.substring(1));
-                          setMobileMenuOpen(false);
-                        } else {
-                          setMobileMenuOpen(false);
-                        }
-                      }}
-                    >
-                      <span>{item.name}</span>
-                      <motion.div
-                        whileHover={{ x: 5 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 400,
-                          damping: 10,
-                        }}
-                      >
-                        <ChevronRight className="h-4 w-4" />
-                      </motion.div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                <Button
-                  variant="outline"
-                  className="w-full justify-center"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Close Menu
-                </Button>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </header>
+    </>
   );
 }
