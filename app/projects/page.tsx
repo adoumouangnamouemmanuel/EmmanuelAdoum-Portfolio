@@ -7,11 +7,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-// Add slugs dynamically
-const typedProjects = projects.map((project) => ({
-  ...project,
-  slug: project.title.toLowerCase().replace(/\s+/g, "-"),
-}));
+// Use slugs directly from data
+const typedProjects = projects;
 
 export default function ProjectsPage() {
   const ref = useRef(null);
@@ -158,38 +155,66 @@ export default function ProjectsPage() {
              </AnimatePresence>
           </div>
 
-          {/* Desktop Filter Nodes */}
+          {/* Desktop Filter Dropdown */}
           <div className="hidden lg:block mb-16">
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => setSelectedTechnologies([])}
-                className={`px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-                  selectedTechnologies.length === 0
-                    ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
-                    : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
-                }`}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-700 dark:text-slate-300 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
               >
-                All Index
-              </motion.button>
-
-              {allTechnologies.map((tech, index) => (
-                <motion.button
-                  key={index}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => toggleTechnology(tech)}
-                  className={`px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-                    selectedTechnologies.includes(tech)
-                      ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
-                      : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
-                  }`}
+                <Filter className="w-4 h-4 text-blue-600" />
+                Filter by Tech {selectedTechnologies.length > 0 && <span className="ml-1 px-2 py-0.5 rounded-full bg-blue-600 text-white text-[9px]">{selectedTechnologies.length}</span>}
+                {isFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+              {selectedTechnologies.length > 0 && (
+                <button
+                  onClick={() => setSelectedTechnologies([])}
+                  className="text-[10px] font-bold tracking-widest uppercase text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
-                  {tech}
-                </motion.button>
-              ))}
+                  Clear All
+                </button>
+              )}
             </div>
+            <AnimatePresence>
+              {isFilterOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, y: -10 }}
+                  animate={{ opacity: 1, height: "auto", y: 0 }}
+                  exit={{ opacity: 0, height: 0, y: -10 }}
+                  className="overflow-hidden mt-3"
+                >
+                  <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-wrap gap-2 shadow-sm">
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setSelectedTechnologies([])}
+                      className={`px-5 py-2.5 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                        selectedTechnologies.length === 0
+                          ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
+                          : "bg-slate-100 dark:bg-slate-800 text-slate-500 hover:border-slate-300"
+                      }`}
+                    >
+                      All
+                    </motion.button>
+                    {allTechnologies.map((tech, index) => (
+                      <motion.button
+                        key={index}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => toggleTechnology(tech)}
+                        className={`px-5 py-2.5 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                          selectedTechnologies.includes(tech)
+                            ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 hover:border-slate-300"
+                        }`}
+                      >
+                        {tech}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* The Magic Hover Grid */}

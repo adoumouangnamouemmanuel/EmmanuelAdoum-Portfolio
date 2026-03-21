@@ -18,7 +18,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Project = {
   title: string;
@@ -45,10 +45,11 @@ type Project = {
 export default function ProjectDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const slug = params.slug as string;
+  const slug = params?.slug as string | undefined;
 
-  const [project, setProject] = useState<Project | undefined>(
-    projects.find((p) => p.slug === slug) as Project
+  const project = useMemo<Project | undefined>(
+    () => (slug ? (projects.find((p) => p.slug === slug) as Project) : undefined),
+    [slug]
   );
   
   const { scrollYProgress } = useScroll();
@@ -56,10 +57,11 @@ export default function ProjectDetailPage() {
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   useEffect(() => {
-    if (!project) {
+    // Only redirect once slug is defined and no project is found
+    if (slug && !project) {
       router.push("/projects");
     }
-  }, [project, router]);
+  }, [slug, project, router]);
 
   if (!project) return null;
 
@@ -91,14 +93,22 @@ export default function ProjectDetailPage() {
               </button>
             </Link>
           )}
-          {project.demo && (
+          {project.demo && project.demo !== project.github ? (
             <Link href={project.demo} target="_blank" rel="noopener noreferrer">
               <button className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[9px] sm:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 shadow-lg shadow-blue-600/20">
                 Live Demo
                 <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             </Link>
-          )}
+          ) : project.github ? (
+            <Link href={project.github} target="_blank" rel="noopener noreferrer">
+              <button className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-700 hover:bg-slate-600 text-white text-[9px] sm:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 shadow-lg">
+                View on GitHub
+                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
+              </button>
+            </Link>
+          ) : null}
+
         </div>
       </motion.div>
 
