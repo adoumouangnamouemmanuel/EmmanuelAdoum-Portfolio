@@ -309,7 +309,7 @@ export default function ContactPage() {
                     <div>
                        <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-8 flex items-center gap-3">
                           <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                          Node Telemetry
+                          Contact Information
                        </h3>
                        <div className="flex flex-col gap-4">
                           {contactInfo.map((node, i) => (

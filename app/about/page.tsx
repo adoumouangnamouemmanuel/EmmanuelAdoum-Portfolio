@@ -265,7 +265,7 @@ export default function AboutPage() {
             ) : postsError || recentPosts.length === 0 ? (
                <div className="py-20 text-center border border-dashed border-slate-300 dark:border-slate-700 rounded-3xl">
                   <h4 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Null Data Read</h4>
-                  <p className="text-slate-500 dark:text-slate-400">Vault systems are currently returning empty arrays.</p>
+                  <p className="text-slate-500 dark:text-slate-400">No blog posts published yet.</p>
                </div>
             ) : (
                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

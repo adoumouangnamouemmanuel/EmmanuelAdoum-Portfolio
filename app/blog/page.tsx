@@ -227,7 +227,7 @@ export default function BlogPage() {
             {session && (
                <Link href="/blog/create" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-md">
                  <Plus className="w-4 h-4" />
-                 Initialize Publication
+                 Create Post
                </Link>
             )}
           </motion.div>
