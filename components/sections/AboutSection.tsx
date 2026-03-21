@@ -10,25 +10,24 @@ import { useRef } from "react";
 export default function AboutSection() {
   const ref = useRef(null);
   const textRef = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.3 });
-  const isTextInView = useInView(textRef, { once: true, amount: 0.3 });
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isTextInView = useInView(textRef, { once: true, amount: 0.2 });
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   });
 
   // Parallax and rotation effects
-  const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
-  const x = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 5]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 1.1]);
+  const y = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const x = useTransform(scrollYProgress, [0, 1], [0, -20]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 3]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.15,
       },
     },
   };
@@ -39,8 +38,8 @@ export default function AboutSection() {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5,
-        ease: "easeOut",
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1],
       },
     },
   };
@@ -49,50 +48,49 @@ export default function AboutSection() {
     "Artificial Intelligence",
     "Responsive Web Design",
     "Frontend Development",
-    "Backend Development",
+    "Backend Architecture",
     "Database Management",
     "Deep Learning",
-    "API Development",
-    "UI/UX Design",
-    "Performance Optimization",
+    "API Engineering",
+    "UI/UX Implementation",
+    "Performance Tuning",
     "DevOps & Deployment",
   ];
 
   return (
     <section
       id="about"
-      className="py-24 bg-gradient-to-b from-white to-blue-50 dark:from-gray-950 dark:to-gray-900 overflow-hidden"
+      className="py-24 lg:py-32 bg-slate-50 dark:bg-slate-950 overflow-hidden relative"
     >
-      <div className="section-container px-4 sm:px-6 lg:px-8">
+      <div className="section-container px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <motion.div
           ref={ref}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-16 xl:gap-24 items-center"
         >
-          {/* Left side with image - keeping this untouched as requested */}
-          <div className="relative mx-auto lg:mx-0">
+          {/* Left side with image */}
+          <div className="relative mx-auto lg:mx-0 w-full max-w-lg lg:max-w-none">
             <motion.div
               variants={itemVariants}
-              className="relative z-10"
+              className="relative z-10 w-full aspect-square md:aspect-[4/5] lg:aspect-square"
               style={{ y, rotate }}
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl group  w-[300px] sm:h-[300px] sm:w-[300px] md:h-[400px] md:w-[400px] lg:h-[500px] lg:w-[500px] xl:h-[600px] xl:w-[600px]">
+              <div className="relative w-full h-full rounded-[2rem] overflow-hidden shadow-2xl shadow-blue-900/20 dark:shadow-blue-900/10 group border border-slate-200/50 dark:border-slate-800/50">
                 <Image
                   src="/images/emma-hero.png"
                   alt="Developer portrait"
-                  width={600}
-                  height={600}
-                  className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110"
+                  fill
+                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <h3 className="text-white text-xl font-bold">
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute bottom-0 left-0 right-0 p-8 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                    <h3 className="text-white text-2xl font-bold tracking-tight">
                       Emmanuel Adoum
                     </h3>
-                    <p className="text-blue-300">
-                      Full-Stack Developer & AI Enthousiast
+                    <p className="text-blue-300 font-medium mt-1">
+                      Full-Stack & AI Engineer
                     </p>
                   </div>
                 </div>
@@ -100,35 +98,31 @@ export default function AboutSection() {
 
               {/* Experience badge */}
               <motion.div
-                className="absolute -top-6 -right-6 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm sm:text-base"
-                initial={{ scale: 0, rotate: -10 }}
+                className="absolute -top-6 -right-6 lg:-top-8 lg:-right-8 bg-slate-900 dark:bg-blue-600 text-white px-5 py-3 rounded-2xl shadow-xl border border-slate-800 dark:border-blue-500 text-sm sm:text-base font-semibold tracking-tight"
+                initial={{ scale: 0, rotate: -15 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: 0.5, type: "spring" }}
-                whileHover={{ scale: 1.1, rotate: 5 }}
+                transition={{ delay: 0.6, type: "spring", stiffness: 200, damping: 15 }}
+                whileHover={{ scale: 1.05, rotate: 5 }}
               >
                 3+ Years Experience
               </motion.div>
 
               {/* Floating card */}
               <motion.div
-                className="absolute -bottom-8 -left-8 bg-white dark:bg-gray-800 p-3 sm:p-4 rounded-lg shadow-xl max-w-[150px] sm:max-w-[200px]"
-                initial={{ opacity: 0, y: 20 }}
+                className="absolute -bottom-8 -left-6 lg:-bottom-10 lg:-left-10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200/50 dark:border-slate-800 max-w-[200px] sm:max-w-[240px]"
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                whileHover={{
-                  y: -5,
-                  boxShadow:
-                    "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                whileHover={{ y: -5 }}
               >
-                <div className="flex items-start space-x-2">
-                  <span className="text-3xl sm:text-4xl">🚀</span>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl sm:text-4xl drop-shadow-md">🚀</span>
                   <div>
-                    <h4 className="font-bold text-xs sm:text-sm">
-                      Passionate about creating
+                    <h4 className="font-bold text-slate-900 dark:text-white text-sm">
+                      Impact Driven
                     </h4>
-                    <p className="text-xs text-muted-foreground">
-                      Turning ideas into reality through code
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                      Code that solves real problems
                     </p>
                   </div>
                 </div>
@@ -137,243 +131,101 @@ export default function AboutSection() {
 
             {/* Decorative elements */}
             <motion.div
-              className="absolute -bottom-12 -right-12 w-48 sm:w-64 h-48 sm:h-64 bg-blue-400/10 rounded-full -z-10 blur-3xl"
-              style={{ x, scale }}
-              animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.5, 0.7, 0.5],
-              }}
-              transition={{
-                repeat: Number.POSITIVE_INFINITY,
-                duration: 8,
-              }}
+              className="absolute -bottom-16 -right-16 w-64 h-64 bg-blue-300/20 dark:bg-blue-600/10 rounded-full blur-[80px] -z-10"
+              style={{ x }}
             />
-
             <motion.div
-              className="absolute -top-12 -left-12 w-36 sm:w-48 h-36 sm:h-48 bg-purple-500/10 rounded-full -z-10 blur-3xl"
-              style={{ x: useTransform(scrollYProgress, [0, 1], [0, 50]) }}
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 0.7, 0.5],
-              }}
-              transition={{
-                repeat: Number.POSITIVE_INFINITY,
-                duration: 6,
-                delay: 1,
-              }}
+              className="absolute -top-16 -left-16 w-64 h-64 bg-indigo-300/20 dark:bg-indigo-600/10 rounded-full blur-[80px] -z-10"
+              style={{ x: useTransform(scrollYProgress, [0, 1], [0, 30]) }}
             />
           </div>
 
-          {/* Right side with text - enhancing this part */}
+          {/* Right side with text */}
           <motion.div
             ref={textRef}
             variants={containerVariants}
-            className="relative"
+            className="relative lg:pl-10"
           >
-            {/* Subtle background elements */}
-            <div className="absolute -z-10 top-1/4 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-blue-100/30 dark:bg-blue-900/10 rounded-full blur-3xl" />
-            <div className="absolute -z-10 bottom-0 left-1/4 w-36 sm:w-48 h-36 sm:h-48 bg-purple-100/30 dark:bg-purple-900/10 rounded-full blur-3xl" />
-
-            <motion.span
-              variants={itemVariants}
-              className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 shadow-md mb-4"
-              whileHover={{ scale: 1.05 }}
-              animate={{
-                boxShadow: [
-                  "0 2px 4px rgba(59, 130, 246, 0.2)",
-                  "0 4px 8px rgba(59, 130, 246, 0.3)",
-                  "0 2px 4px rgba(59, 130, 246, 0.2)",
-                ],
-              }}
-              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 3 }}
-            >
-              About Me
-            </motion.span>
+            <motion.div variants={itemVariants} className="mb-6">
+              <p className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 shadow-sm dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-blue-400">
+                Behind The Code
+              </p>
+            </motion.div>
 
             <motion.h2
               variants={itemVariants}
-              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6"
-              whileHover={{ scale: 1.01 }}
+              className="text-4xl sm:text-5xl md:text-[3.5rem] font-bold tracking-tighter mb-8 text-slate-900 dark:text-white leading-[1.1]"
             >
-              Passionate Developer with a{" "}
-              <motion.span
-                className="gradient-text"
-                animate={{
-                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
-                }}
-              >
-                Creative Edge
-              </motion.span>
+              Engineering with{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+                Purpose
+              </span>{" "}
+              & Precision.
             </motion.h2>
 
             <motion.div
               variants={itemVariants}
-              className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-lg p-4 sm:p-6 border border-blue-100/50 dark:border-blue-900/50 shadow-sm mb-6"
+              className="space-y-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-10"
             >
-              <motion.p className="text-muted-foreground mb-4 leading-relaxed text-sm sm:text-base">
-                <motion.span
-                  className="text-blue-600 dark:text-blue-400 font-medium"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  Emmanuel Adoum
-                </motion.span>{" "}
-                is a tech enthusiast from Chad, focused on using innovation to
-                tackle community challenges. With skills in computer science and
-                engineering, he works on projects that improve education and
-                sustainability.
-              </motion.p>
-
-              <motion.p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
-                A strong leader, Emmanuel combines{" "}
-                <motion.span
-                  className="relative inline-block"
-                  whileHover={{
-                    color: "hsl(var(--primary))",
-                  }}
-                >
-                  technical expertise
-                  <motion.span
-                    className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500"
-                    initial={{ width: 0 }}
-                    whileHover={{ width: "100%" }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.span>{" "}
-                with a passion for{" "}
-                <motion.span
-                  className="relative inline-block"
-                  whileHover={{
-                    color: "hsl(var(--primary))",
-                  }}
-                >
-                  social impact
-                  <motion.span
-                    className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500"
-                    initial={{ width: 0 }}
-                    whileHover={{ width: "100%" }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.span>
-                , aiming to solve real-world problems through creative
-                solutions.
-              </motion.p>
+              <p>
+                <strong className="text-slate-900 dark:text-white font-semibold">I am a software engineer from Chad</strong> with a singular focus: leveraging deep technical expertise to build systems that create meaningful impact. I don't just write code—I architect scalable Web and AI solutions that tackle real-world challenges, particularly in education and sustainability.
+              </p>
+              <p>
+                With over 3 years of experience spanning full-stack development and artificial intelligence, I bridge the gap between complex engineering and flawless user experiences. My philosophy is simple: build products that are <strong className="text-slate-900 dark:text-white font-semibold">blazingly fast, structurally sound, and purpose-driven</strong>.
+              </p>
             </motion.div>
 
-            {/* Skills section - enhanced with animation and styling */}
+            {/* Skills section */}
             <motion.div
               variants={itemVariants}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-12"
             >
-              <div className="space-y-2 sm:space-y-3">
-                <h3 className="text-base sm:text-lg font-semibold mb-2 flex items-center">
-                  <motion.span
-                    className="w-4 sm:w-6 h-0.5 bg-blue-600 inline-block mr-2"
-                    animate={{
-                      width: ["24px", "12px", "24px"],
-                    }}
-                    transition={{
-                      repeat: Number.POSITIVE_INFINITY,
-                      duration: 2,
-                    }}
-                  />
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="w-6 h-1 bg-blue-600 rounded-full" />
                   Key Skills
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {skills.slice(0, 5).map((skill, index) => (
                     <motion.li
                       key={index}
-                      className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-1.5 sm:p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm text-xs sm:text-sm"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.5 + index * 0.1 }}
-                      whileHover={{
-                        x: 5,
-                        backgroundColor: "rgba(59, 130, 246, 0.1)",
-                        borderColor: "rgba(59, 130, 246, 0.3)",
-                      }}
+                      className="flex items-center text-slate-700 dark:text-slate-300 font-medium text-sm sm:text-base group"
                     >
-                      <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 mr-1.5 sm:mr-2 flex-shrink-0" />
-                      <span>{skill}</span>
+                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-500 mr-3 flex-shrink-0 transition-transform group-hover:scale-125" />
+                      <span className="group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{skill}</span>
                     </motion.li>
                   ))}
                 </ul>
               </div>
 
-              <div className="space-y-2 sm:space-y-3">
-                <h3 className="text-base sm:text-lg font-semibold mb-2 flex items-center">
-                  <motion.span
-                    className="w-4 sm:w-6 h-0.5 bg-blue-600 inline-block mr-2"
-                    animate={{
-                      width: ["24px", "12px", "24px"],
-                    }}
-                    transition={{
-                      repeat: Number.POSITIVE_INFINITY,
-                      duration: 2,
-                      delay: 0.5,
-                    }}
-                  />
+              <div className="space-y-4">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="w-6 h-1 bg-indigo-600 rounded-full" />
                   Expertise
                 </h3>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {skills.slice(5).map((skill, index) => (
                     <motion.li
                       key={index}
-                      className="flex items-center text-muted-foreground bg-white/50 dark:bg-gray-800/50 p-1.5 sm:p-2 rounded-md border border-gray-100 dark:border-gray-700 shadow-sm text-xs sm:text-sm"
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.9 + index * 0.1 }}
-                      whileHover={{
-                        x: 5,
-                        backgroundColor: "rgba(59, 130, 246, 0.1)",
-                        borderColor: "rgba(59, 130, 246, 0.3)",
-                      }}
+                      className="flex items-center text-slate-700 dark:text-slate-300 font-medium text-sm sm:text-base group"
                     >
-                      <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 mr-1.5 sm:mr-2 flex-shrink-0" />
-                      <span>{skill}</span>
+                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-600 dark:text-indigo-500 mr-3 flex-shrink-0 transition-transform group-hover:scale-125" />
+                      <span className="group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">{skill}</span>
                     </motion.li>
                   ))}
                 </ul>
               </div>
             </motion.div>
 
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              animate={{
-                boxShadow: [
-                  "0 4px 6px rgba(59, 130, 246, 0.1)",
-                  "0 10px 15px rgba(59, 130, 246, 0.2)",
-                  "0 4px 6px rgba(59, 130, 246, 0.1)",
-                ],
-              }}
-              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 3 }}
-            >
+            <motion.div variants={itemVariants}>
               <Button
-                size="lg"
-                className="bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all group relative overflow-hidden text-sm sm:text-base w-full sm:w-auto"
                 asChild
+                size="lg"
+                className="group h-14 rounded-full bg-slate-900 text-white px-8 text-base shadow-xl shadow-slate-900/10 transition-all hover:scale-105 hover:bg-slate-800 dark:bg-blue-600 dark:shadow-blue-900/20 dark:hover:bg-blue-500 w-full sm:w-auto"
               >
                 <Link href="#projects">
-                  <span className="relative z-10">View My Work</span>
-                  <ArrowRight className="relative z-10 ml-2 h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
-                  <motion.span
-                    className="absolute inset-0 bg-blue-700"
-                    initial={{ x: "-100%" }}
-                    whileHover={{ x: 0 }}
-                    transition={{
-                      type: "tween",
-                      ease: "easeInOut",
-                      duration: 0.3,
-                    }}
-                  />
+                  View My Work
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
             </motion.div>
