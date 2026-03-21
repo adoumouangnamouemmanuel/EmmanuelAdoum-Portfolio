@@ -65,80 +65,85 @@
 </details>
 
 <div align="center">
+
+## 🚀 Featured Projects
+
 <table>
   <tr>
     <td width="50%">
-      <h3 align="center">Moussey Digital dictionary</h3>
+      <h3 align="center">🇬🇭 Ghana Road Transport Network</h3>
       <div align="center">
-        <a href="https://zamigo.tech" target="_blank">
-          <img src="https://github.com/adoumouangnamouemmanuel/Chad-education-system/blob/main/public/images/place-de-la-nation.png" width="100%" alt="Moussey dictionary"/>
+        <a href="https://ghana-transport-network-2026.vercel.app" target="_blank">
+          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/ghana-transport-cover.png" width="100%" alt="Ghana Road Transport Network"/>
         </a>
         <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/moussey-french-translator" target="_blank">
+          <a href="https://github.com/adoumouangnamouemmanuel/ghana-transport-network-2026" target="_blank">
             <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
           </a>
-          <a href="https://github.com/adoumouangnamouemmanuel" target="_blank">
+          <a href="https://ghana-transport-network-2026.vercel.app" target="_blank">
             <img src="https://img.shields.io/badge/Demo-22C55E?style=for-the-badge&logo=vercel" alt="Live Demo"/>
           </a>
         </p>
-        <p><strong>React native, postgreSQL</strong> - A digital dictionary created to preserve Moussey Language and culture.</p>
+        <p><strong>Java 17 · Spring Boot · Next.js · Dijkstra · Yen's K-Shortest Paths</strong><br/>
+        Full-stack graph solution to the Ashesi CS Challenge 2026 — models Ghana's intercity road network with shortest path finding, cost analysis, and an interactive force-directed map.</p>
       </div>
     </td>
     <td width="50%">
-      <h3 align="center">Tchad Education</h3>
+      <h3 align="center">🧬 Tumor-Immune Dynamics Model</h3>
       <div align="center">
-        <a href="#" target="_blank">
-          <img src="https://github.com/adoumouangnamouemmanuel/Chad-education-system/blob/main/public/images/place-de-la-nation.png" width="100%" alt="AI Image Generator"/>
-        </a>
-        <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/Chad-education-system" target="_blank">
-            <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
-          </a>
-          <a href="#" target="_blank">
-            <img src="https://img.shields.io/badge/Demo-22C55E?style=for-the-badge&logo=vercel" alt="Live Demo"/>
-          </a>
-        </p>
-        <p><strong>React, framer motion, MongoDB, NodejS, expressJS, PostgreSQL</strong> - A platform designed to centralized education data and improve education in Tchad.</p>
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <h3 align="center">Card Image Classification Model</h3>
-      <div align="center">
-        <a href="https://github.com/adoumouangnamouemmanuel/Card_image_recognition_image" target="_blank">
-          <img src="https://github.com/adoumouangnamouemmanuel/Chad-education-system/blob/main/public/images/place-de-la-nation.png" width="100%" alt="Personal Blog"/>
-        </a>
-        <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/Card_image_recognition_image" target="_blank">
-            <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
-          </a>
-          <a href="https://emmanueladoum.me" target="_blank">
-            <img src="https://img.shields.io/badge/Demo-22C55E?style=for-the-badge&logo=vercel" alt="Live Demo"/>
-          </a>
-        </p>
-        <p><strong>Python, Pytorch</strong> A deeplearning model to recognize cards </p>
-      </div>
-    </td>
-    <td width="50%">
-      <h3 align="center">Cancer Model Using Differential Equations</h3>
-      <div align="center">
-        <a href="#" target="_blank">
-          <img src="https://github.com/adoumouangnamouemmanuel/Chad-education-system/blob/main/public/images/place-de-la-nation.png" width="100%" alt="E-Commerce Platform"/>
+        <a href="https://tumor-model-differential-equations.vercel.app" target="_blank">
+          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/tumor-model-cover.png" width="100%" alt="Tumor-Immune Dynamics Model"/>
         </a>
         <p>
           <a href="https://github.com/adoumouangnamouemmanuel/tumor_model_differential_equations" target="_blank">
             <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
           </a>
-          <a href="#" target="_blank">
+          <a href="https://tumor-model-differential-equations.vercel.app" target="_blank">
             <img src="https://img.shields.io/badge/Demo-22C55E?style=for-the-badge&logo=vercel" alt="Live Demo"/>
           </a>
         </p>
-        <p><strong>React, Next Js, Framer Motion</strong> - Website designed to solve cancer using differential equations and matlab</p>
+        <p><strong>Next.js 14 · React · MathJax · Canvas API · Framer Motion</strong><br/>
+        Interactive web platform exploring the NTIUNHDM mathematical model — visualizing tumor-immune cell dynamics through differential equations, real-time simulations, and ODE solvers.</p>
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3 align="center">🪐 Solar System Simulation</h3>
+      <div align="center">
+        <a href="https://github.com/adoumouangnamouemmanuel/solar-system-simulation" target="_blank">
+          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/solar-system-cover.png" width="100%" alt="Solar System Simulation"/>
+        </a>
+        <p>
+          <a href="https://github.com/adoumouangnamouemmanuel/solar-system-simulation" target="_blank">
+            <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
+          </a>
+        </p>
+        <p><strong>Python · Pygame · OOP · Physics Simulation · CSV I/O</strong><br/>
+        Real-time solar system simulation implementing Newton's law of universal gravitation, Kepler's orbital mechanics, multi-body physics, moon support, and CSV data export.</p>
+      </div>
+    </td>
+    <td width="50%">
+      <h3 align="center">💼 Developer Portfolio</h3>
+      <div align="center">
+        <a href="https://emmanueladoum.com" target="_blank">
+          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/portfolio-cover.png" width="100%" alt="Developer Portfolio"/>
+        </a>
+        <p>
+          <a href="https://github.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio" target="_blank">
+            <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
+          </a>
+          <a href="https://emmanueladoum.com" target="_blank">
+            <img src="https://img.shields.io/badge/Demo-22C55E?style=for-the-badge&logo=vercel" alt="Live Demo"/>
+          </a>
+        </p>
+        <p><strong>Next.js 15 · TypeScript · Firebase · NextAuth.js · Framer Motion</strong><br/>
+        Cinematic full-stack portfolio and blog platform — featuring Google OAuth, nested comments, an admin dashboard, glassmorphism UI, and smooth physics-based animations.</p>
       </div>
     </td>
   </tr>
 </table>
+
 </div>
 
 ## <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="30"> GitHub Stats
