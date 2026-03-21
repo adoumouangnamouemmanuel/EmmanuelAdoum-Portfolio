@@ -249,7 +249,7 @@ export default function AboutPage() {
                      Log 03
                   </h2>
                   <h3 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white">
-                     Vault Transmissions.
+                     Blog Transmissions.
                   </h3>
                </div>
                <Link href="/blog" className="group flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-white dark:bg-slate-950 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 text-xs font-bold tracking-[0.2em] uppercase hover:bg-emerald-50 dark:hover:bg-emerald-900/20 hover:border-emerald-200 dark:hover:border-emerald-800 transition-colors shadow-sm">
