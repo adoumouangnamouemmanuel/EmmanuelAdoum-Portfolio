@@ -132,7 +132,7 @@ export default function AboutPage() {
                         <a href="https://github.com/adoumouangnamouemmanuel" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-white hover:text-slate-900 transition-all shadow-lg hover:-translate-y-2">
                            <Github className="w-5 h-5" />
                         </a>
-                        <a href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-transparent transition-all shadow-lg hover:-translate-y-2">
+                        <a href="https://www.linkedin.com/in/emmanueladoum" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-blue-600 hover:border-transparent transition-all shadow-lg hover:-translate-y-2">
                            <Linkedin className="w-5 h-5" />
                         </a>
                         <a href="https://x.com/adoumouangnamou" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black hover:border-transparent transition-all shadow-lg hover:-translate-y-2">

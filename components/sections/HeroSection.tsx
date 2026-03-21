@@ -139,7 +139,7 @@ export default function HeroSection() {
             </Link>
             <span className="h-5 w-px bg-slate-300 dark:bg-slate-700" />
             <Link
-              href="https://www.linkedin.com/in/ouang-namou-emmanuel-adoum/"
+              href="https://www.linkedin.com/in/emmanueladoum/"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:text-[#0A66C2] dark:hover:text-blue-400"

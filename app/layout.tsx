@@ -85,7 +85,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Emmanuel Adoum",
-      url: "https://www.linkedin.com/in/ouang-namou-emmanuel-adoum",
+      url: "https://www.linkedin.com/in/emmanueladoum",
     },
   ],
   creator: "Emmanuel Adoum",
@@ -94,7 +94,7 @@ export const metadata: Metadata = {
     title: "Emmanuel Adoum | Portfolio",
     description:
       "A professional portfolio showcasing my skills and projects as a web developer.",
-    url: "https://adoumouangnamouemmanuel.vercel.app",
+    url: "https://emmanueladoum.com",
     siteName: "Emmanuel Adoum | Portfolio",
     images: [
       {

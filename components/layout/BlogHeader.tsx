@@ -214,7 +214,7 @@ export default function BlogHeader() {
                       {session.user.role === "admin" && (
                         <DropdownMenuItem asChild className="rounded-xl px-4 py-3 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-900/50 font-medium text-slate-700 dark:text-slate-300 transition-colors">
                           <Link href="/admin" className="flex items-center gap-3">
-                            <Shield className="h-4 w-4 text-rose-500" /> Executive Access
+                           <Shield className="h-4 w-4 text-rose-500" /> Admin Panel
                           </Link>
                         </DropdownMenuItem>
                       )}
@@ -230,7 +230,7 @@ export default function BlogHeader() {
                           signOut({ callbackUrl: "/blog" })
                         }}
                       >
-                        <LogOut className="mr-3 h-4 w-4" /> Disconnect Session
+                         <LogOut className="mr-3 h-4 w-4" /> Sign Out
                       </DropdownMenuItem>
                     </div>
                   </DropdownMenuContent>
@@ -253,7 +253,7 @@ export default function BlogHeader() {
                    size="icon"
                    className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer border border-slate-200 dark:border-slate-800"
                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                   aria-label="Toggle Command Center"
+                   aria-label="Toggle Mobile Menu"
                  >
                    {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
                  </Button>
@@ -284,7 +284,7 @@ export default function BlogHeader() {
 
              <div className="flex flex-col gap-6 px-10">
                 <motion.span variants={mobileItemVariants} className="text-[10px] font-bold tracking-[0.2em] uppercase text-emerald-600 dark:text-emerald-400 mb-4">
-                   Blog Access Matrix
+                   Blog Navigation
                 </motion.span>
                 {navItems.map((item) => {
                   const active = isActive(item.href)
@@ -316,7 +316,7 @@ export default function BlogHeader() {
                 <motion.div variants={mobileItemVariants} className="mt-8 pt-8 border-t border-slate-200 dark:border-slate-800">
                   {status === "unauthenticated" && (
                     <Link href="/auth/login" onClick={() => setIsMobileMenuOpen(false)} className="block py-4 text-lg font-medium text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-                      Authenticate
+                       Sign In
                     </Link>
                   )}
                 </motion.div>
