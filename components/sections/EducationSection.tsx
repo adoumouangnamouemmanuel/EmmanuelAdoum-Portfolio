@@ -1,88 +1,57 @@
 "use client";
 
-import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import Image from "next/image";
+import { useRef } from "react";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Calendar,
-  MapPin,
-  ExternalLink,
-  GraduationCap,
-  Award,
-  BadgeIcon as Certificate,
-} from "lucide-react";
 import { education } from "@/data/education";
 
 export default function EducationSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
   };
 
-  // Filter education by type
   const degrees = education.filter((item) => item.type === "degree");
-  const certifications = education.filter(
-    (item) => item.type === "certification"
-  );
+  const certifications = education.filter((item) => item.type === "certification");
 
   return (
-    <section
-      id="education"
-      className="py-24 bg-gradient-to-b from-white to-blue-50 dark:from-gray-950 dark:to-gray-900 overflow-hidden"
-    >
-      <div className="section-container">
-        <div className="text-center mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
+    <section id="education" className="py-20 lg:py-32 bg-white dark:bg-slate-900 relative overflow-hidden">
+      <div className="section-container pl-4 pr-10 sm:pl-6 sm:pr-12 md:pr-16 lg:pl-8 lg:pr-24 xl:pr-32 max-w-7xl mx-auto">
+        
+        <div className="flex flex-col items-start mb-16 lg:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 shadow-md mb-4"
+            className="mb-4 lg:mb-5"
           >
-            Education
-          </motion.span>
+            <p className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 shadow-sm dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-blue-400">
+              Education
+            </p>
+          </motion.div>
+          
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white"
           >
-            Academic <span className="gradient-text">Background</span>
+            Academic{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
+              Background
+            </span>
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            viewport={{ once: true }}
-            className="text-muted-foreground max-w-2xl mx-auto"
-          >
-            My educational journey and professional certifications that have
-            shaped my knowledge and expertise.
-          </motion.p>
         </div>
 
         <motion.div
@@ -90,245 +59,121 @@ export default function EducationSection() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={containerVariants}
-          className="relative"
+          className="flex flex-col"
         >
-          {/* Academic Degrees */}
-          <div className="mb-20">
-            <div className="flex items-center justify-center mb-10">
-              <GraduationCap className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
-              <h3 className="text-2xl font-bold">Academic Degrees</h3>
-            </div>
+          {degrees.map((item, index) => (
+            <motion.div
+              key={`degree-${index}`}
+              variants={itemVariants}
+              className="group relative flex flex-col lg:flex-row gap-4 lg:gap-12 py-10 lg:py-16 border-t border-slate-200 dark:border-slate-800/60 first:border-0"
+            >
+              {/* Left Column: Dates */}
+              <div className="lg:w-1/4 flex-shrink-0">
+                <p className="text-xs sm:text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-2 mt-1 lg:mt-2 lg:sticky lg:top-8">
+                  {item.startDate} — {item.endDate}
+                </p>
+              </div>
 
-            {/* Timeline line */}
-            <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-[7rem] bottom-[22rem] w-0.5 bg-gradient-to-b from-blue-600 via-purple-500 to-blue-600 dark:from-blue-500 dark:via-purple-400 dark:to-blue-500"></div>
+              {/* Right Column: Details */}
+              <div className="lg:w-3/4 flex flex-col">
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1 lg:mb-2 leading-tight">
+                  {item.degree}
+                </h3>
+                <h4 className="text-base sm:text-lg font-bold tracking-wide uppercase text-blue-600 dark:text-blue-400 mb-6 lg:mb-8">
+                  {item.institution}
+                </h4>
 
-            {degrees.map((item, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-                custom={index}
-                className={`relative mb-16 md:mb-20 md:w-1/2 ${
-                  index % 2 === 0 ? "md:pr-10 md:ml-0" : "md:pl-10 md:ml-auto"
-                }`}
-              >
-                {/* Timeline dot */}
-                <motion.div
-                  className={`absolute top-6 ${
-                    index % 2 === 0
-                      ? "right-0 md:-right-3"
-                      : "left-0 md:-left-3"
-                  } w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center z-10 shadow-lg`}
-                  whileHover={{ scale: 1.2 }}
-                >
-                  <div className="w-2.5 h-2.5 rounded-full bg-white"></div>
-                </motion.div>
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
+                  {item.description}
+                </p>
 
-                <motion.div
-                  className="relative p-5 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-blue-100 dark:border-blue-900/30 overflow-hidden group"
-                  whileHover={{
-                    y: -5,
-                    boxShadow:
-                      "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                  }}
-                >
-                  {/* Background gradient on hover */}
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/10 dark:to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                  />
-
-                  <div className="relative z-10">
-                    <div className="flex items-start gap-4">
-                      <motion.div
-                        className="w-14 h-14 relative flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-2 shadow-md"
-                        whileHover={{ rotate: 5 }}
-                      >
-                        <Image
-                          src={
-                            item.logo || "/placeholder.svg?height=48&width=48"
-                          }
-                          alt={item.institution}
-                          fill
-                          className="object-contain p-1"
-                        />
-                      </motion.div>
-
-                      <div>
-                        <h3 className="text-xl font-bold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                          {item.degree}
-                        </h3>
-                        <p className="text-blue-600 dark:text-blue-400 font-medium">
-                          {item.institution}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1 mb-3">
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-50 dark:bg-blue-900/20 shadow-sm flex items-center"
-                          >
-                            <Calendar className="w-3 h-3 mr-1" />
-                            {item.startDate} - {item.endDate}
-                          </Badge>
-                          {item.location && (
-                            <span className="text-sm text-muted-foreground flex items-center">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              {item.location}
-                            </span>
+                {item.courses && item.courses.length > 0 && (
+                  <div className="flex flex-col mb-8 lg:mb-12">
+                     <p className="text-xs font-bold tracking-widest uppercase text-slate-900 dark:text-white mb-4">Relevant Coursework</p>
+                     <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                      {item.courses.map((course: string, courseIndex: number) => (
+                        <div key={courseIndex} className="flex items-center">
+                          <span className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {course}
+                          </span>
+                          {courseIndex < item.courses.length - 1 && (
+                            <span className="mx-2 sm:mx-3 text-slate-200 dark:text-slate-800">·</span>
                           )}
                         </div>
-                        <p className="text-muted-foreground text-sm">
-                          {item.description}
-                        </p>
-
-                        {item.courses && (
-                          <motion.div
-                            className="mt-4 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{
-                              opacity: 1,
-                              height: "auto",
-                              transition: { delay: 0.3, duration: 0.3 },
-                            }}
-                          >
-                            <h4 className="font-semibold mb-2 text-blue-800 dark:text-blue-300">
-                              Relevant Courses:
-                            </h4>
-                            <div className="flex flex-wrap gap-2">
-                              {item.courses.map((course, courseIndex) => (
-                                <motion.div
-                                  key={courseIndex}
-                                  initial={{ opacity: 0, scale: 0.8 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  transition={{
-                                    delay: 0.5 + courseIndex * 0.05,
-                                  }}
-                                  whileHover={{ y: -2, scale: 1.05 }}
-                                >
-                                  <Badge
-                                    variant="secondary"
-                                    className="shadow-sm text-xs"
-                                  >
-                                    {course}
-                                  </Badge>
-                                </motion.div>
-                              ))}
-                            </div>
-                          </motion.div>
-                        )}
-
-                        {item.website && (
-                          <motion.div
-                            className="mt-4"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="group"
-                              asChild
-                            >
-                              <Link
-                                href={item.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                Visit Website
-                                <ExternalLink className="ml-2 h-3 w-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                              </Link>
-                            </Button>
-                          </motion.div>
-                        )}
-                      </div>
+                      ))}
                     </div>
                   </div>
-                </motion.div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Certifications */}
-          <div>
-            <div className="flex items-center justify-center mb-10">
-              <Certificate className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-2" />
-              <h3 className="text-2xl font-bold">Certifications & Training</h3>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {certifications.map((cert, index) => (
-                <motion.div
-                  key={index}
-                  variants={itemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  transition={{ delay: 0.7 + index * 0.1 }}
-                  whileHover={{
-                    y: -5,
-                    boxShadow:
-                      "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-                  }}
-                  className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-lg border border-blue-100 dark:border-blue-900/30 group"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <motion.div
-                      className="w-12 h-12 relative flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-1 shadow-md"
-                      whileHover={{ rotate: 5 }}
+                )}
+                
+                {item.website && (
+                  <div className="mt-auto inline-flex">
+                    <Link
+                      href={item.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/btn inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white overflow-hidden relative"
                     >
-                      <Image
-                        src={cert.logo || "/placeholder.svg?height=32&width=32"}
-                        alt={cert.institution}
-                        fill
-                        className="object-contain p-1"
-                      />
-                    </motion.div>
-                    <div>
-                      <h4 className="font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {cert.degree}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {cert.institution}
-                      </p>
-                    </div>
+                      <span className="relative z-10 pb-1 border-b-2 border-slate-900 dark:border-white transition-colors group-hover/btn:border-blue-600 dark:group-hover/btn:border-blue-400">
+                        Institution Website
+                      </span>
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 text-blue-600 dark:text-blue-400" />
+                    </Link>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className="mb-2 bg-blue-50 dark:bg-blue-900/20 shadow-sm flex items-center w-fit"
-                  >
-                    <Calendar className="w-3 h-3 mr-1" />
-                    {cert.endDate}
-                  </Badge>
-                  <p className="text-sm text-muted-foreground">
-                    {cert.description}
-                  </p>
+                )}
+              </div>
+            </motion.div>
+          ))}
 
-                  {cert.website && (
-                    <motion.div
-                      className="mt-4"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+          {certifications.length > 0 && (
+             <motion.div variants={itemVariants} className="pt-16 pb-6 border-t border-slate-200 dark:border-slate-800/60">
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mt-10">Certifications & Training</h3>
+             </motion.div>
+          )}
+
+          {certifications.map((item, index) => (
+            <motion.div
+              key={`cert-${index}`}
+              variants={itemVariants}
+              className="group relative flex flex-col lg:flex-row gap-4 lg:gap-12 py-10 lg:py-16 border-t border-slate-200 dark:border-slate-800/60"
+            >
+              <div className="lg:w-1/4 flex-shrink-0">
+                <p className="text-xs sm:text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-2 mt-1 lg:mt-2 lg:sticky lg:top-8">
+                  {item.endDate}
+                </p>
+              </div>
+
+              <div className="lg:w-3/4 flex flex-col">
+                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-1 lg:mb-2 leading-tight">
+                  {item.degree}
+                </h3>
+                <h4 className="text-sm sm:text-base font-bold tracking-wide uppercase text-blue-600 dark:text-blue-400 mb-6 lg:mb-8">
+                  {item.institution}
+                </h4>
+
+                <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
+                  {item.description}
+                </p>
+                
+                {item.website && (
+                  <div className="mt-auto inline-flex">
+                    <Link
+                      href={item.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group/btn inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white overflow-hidden relative"
                     >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="group"
-                        asChild
-                      >
-                        <Link
-                          href={cert.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          View Certificate
-                          <ExternalLink className="ml-2 h-3 w-3 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                        </Link>
-                      </Button>
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-          </div>
+                      <span className="relative z-10 pb-1 border-b-2 border-slate-900 dark:border-white transition-colors group-hover/btn:border-blue-600 dark:group-hover/btn:border-blue-400">
+                        View Certificate
+                      </span>
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 text-blue-600 dark:text-blue-400" />
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          ))}
         </motion.div>
+
       </div>
     </section>
   );
