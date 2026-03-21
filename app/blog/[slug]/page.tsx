@@ -304,8 +304,8 @@ export default function BlogPostPage() {
          <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between py-4">
             <Link href="/blog" className="inline-flex items-center text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group">
                <ArrowLeft className="mr-3 h-4 w-4 group-hover:-translate-x-2 transition-transform duration-300" />
-               <span className="hidden sm:inline">Return to Journal</span>
-               <span className="inline sm:hidden">Vault</span>
+               <span className="hidden sm:inline">Return to Blog</span>
+               <span className="inline sm:hidden">Blog</span>
             </Link>
             
             <div className="flex items-center gap-2 sm:gap-4">
@@ -313,7 +313,7 @@ export default function BlogPostPage() {
                  <Link href={`/blog/edit/${post.slug}`}>
                    <button className="flex flex-row items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-widest uppercase hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
                      <Edit className="w-4 h-4" />
-                     <span className="hidden sm:inline">Modify</span>
+                     <span className="hidden sm:inline">Edit Post</span>
                    </button>
                  </Link>
                )}
@@ -424,7 +424,7 @@ export default function BlogPostPage() {
               <div className="mb-20">
                  <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-10 flex items-center gap-3">
                     <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                    Community Log
+                    Comments
                  </h3>
                  <CommentSection postSlug={slug} />
               </div>
@@ -436,7 +436,7 @@ export default function BlogPostPage() {
                <div className="sticky top-32">
                   <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400 mb-8 flex items-center gap-3">
                      <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                     Document Index
+                     Table of Contents
                   </h3>
                   <div className="pl-6 border-l border-slate-200 dark:border-slate-800/60">
                      <TableOfContents />
@@ -449,7 +449,7 @@ export default function BlogPostPage() {
           {/* Mastermind Architectural Related Posts */}
           {relatedPosts.length > 0 && (
             <div className="pt-24 border-t border-slate-200 dark:border-slate-800/60">
-              <h3 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white mb-12 text-center sm:text-left">Related Indexes</h3>
+              <h3 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white mb-12 text-center sm:text-left">Related Posts</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost, index) => (
                   <motion.div

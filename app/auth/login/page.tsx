@@ -1,12 +1,9 @@
 "use client"
 
 import type React from "react"
-
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/components/ui/use-toast"
 import { motion } from "framer-motion"
 import { ArrowLeft, KeyRound, Loader2, Lock, Mail } from 'lucide-react'
@@ -39,22 +36,22 @@ export default function LoginPage() {
 
       if (result?.error) {
         toast({
-          title: "Error",
+          title: "Access Denied",
           description: "Invalid email or password. Please try again.",
           variant: "destructive",
         })
       } else {
         toast({
-          title: "Success",
-          description: "Successfully logged in!",
+          title: "Access Granted",
+          description: "Successfully logged in.",
           variant: "default",
         })
         router.push(callbackUrl)
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: "System Error",
+        description: "An error occurred. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -70,8 +67,8 @@ export default function LoginPage() {
       await signIn("google", { callbackUrl })
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to sign in with Google. Please try again.",
+        title: "OAuth Error",
+        description: "Google sign-in failed. Please try again.",
         variant: "destructive",
       })
       setIsLoading(false)
@@ -79,127 +76,95 @@ export default function LoginPage() {
     }
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10,
-      },
-    },
-  }
-
   return (
-    <main className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-purple-50 to-white dark:from-gray-900 dark:to-gray-950">
-      <div className="w-full max-w-md">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex justify-start mb-8"
-        >
-          <motion.div whileHover={{ scale: 1.05, x: -5 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              variant="outline"
-              size="sm"
-              className="shadow-md group bg-white dark:bg-gray-800"
-              asChild
-            >
-              <Link href="/blog">
-                <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform duration-300" />
-                Back to Blog
-              </Link>
-            </Button>
-          </motion.div>
-        </motion.div>
+    <main className="min-h-screen relative flex flex-col justify-center items-center px-6 py-12 bg-slate-50 dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 overflow-hidden">
+      
+      {/* Ambient Cinematic Background */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[600px] sm:h-[800px] bg-blue-600/10 dark:bg-blue-500/10 blur-[100px] sm:blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] dark:opacity-[0.02] mix-blend-overlay pointer-events-none" />
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-        >
-          <Card className="border-none shadow-2xl overflow-hidden bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-blue-500/5 pointer-events-none"></div>
-            
-            <CardHeader className="space-y-1 pb-2">
-              <motion.div variants={itemVariants}>
-                <CardTitle className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
-                  Welcome Back
-                </CardTitle>
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <CardDescription className="text-center">
-                  Sign in to your account to continue
-                </CardDescription>
-              </motion.div>
-            </CardHeader>
-            
-            <CardContent className="space-y-6">
-              <motion.div className="grid grid-cols-1 gap-4 place-items-center" variants={itemVariants}>
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full">
-                  <Button
-                    variant="outline"
-                    className="w-full relative overflow-hidden group bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700"
-                    onClick={handleGoogleSignIn}
-                    disabled={isLoading}
-                  >
-                    <div className="absolute inset-0 w-3 bg-gradient-to-r from-red-500 to-yellow-500 group-hover:w-full transition-all duration-300 opacity-80 group-hover:opacity-20"></div>
-                    {isLoading && authProvider === "google" ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                      <svg
-                        className="mr-2 h-4 w-4"
-                        aria-hidden="true"
-                        focusable="false"
-                        data-prefix="fab"
-                        data-icon="google"
-                        role="img"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 488 512"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                        ></path>
-                      </svg>
-                    )}
-                    <span className="relative z-10">Google</span>
-                  </Button>
-                </motion.div>
-              </motion.div>
+      {/* Top Left Return Button */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute top-8 left-6 sm:left-12 z-20"
+      >
+        <Link href="/blog" className="group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200/50 dark:border-slate-800/50 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm hover:shadow-md">
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Blog
+        </Link>
+      </motion.div>
 
-              <motion.div className="relative" variants={itemVariants}>
-                <div className="absolute inset-0 flex items-center">
-                  <Separator className="w-full" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
-                </div>
-              </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        className="w-full max-w-[440px] relative z-10"
+      >
+        {/* Glassmorphic Node */}
+        <div className="relative rounded-[2.5rem] bg-white/60 dark:bg-slate-900/40 backdrop-blur-3xl border border-white/40 dark:border-slate-800/60 shadow-2xl overflow-hidden shadow-black/5 dark:shadow-black/40">
+          
+          {/* Top Edge Highlight */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
 
-              <motion.form
-                onSubmit={handleSubmit}
-                className="space-y-4"
-                variants={itemVariants}
+          <div className="p-8 sm:p-12">
+            <div className="mb-10 text-center">
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tighter text-slate-900 dark:text-white mb-3">
+                Welcome Back<span className="text-blue-600 dark:text-blue-400">.</span>
+              </h1>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-light translate-y-2">
+                Sign in to access your account.
+              </p>
+            </div>
+
+            {/* Google OAuth Access */}
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="mb-8">
+              <button
+                onClick={handleGoogleSignIn}
+                disabled={isLoading}
+                className="w-full relative group overflow-hidden rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 flex items-center justify-center gap-3 font-bold tracking-widest text-[10px] sm:text-xs uppercase transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="flex items-center text-sm font-medium">
-                    <Mail className="h-4 w-4 mr-2 text-purple-500 dark:text-purple-400" />
-                    Email
-                  </Label>
+                {isLoading && authProvider === "google" ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <svg className="w-4 h-4" viewBox="0 0 24 24">
+                    <path
+                      fill="currentColor"
+                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    />
+                  </svg>
+                )}
+                <span className="relative z-10">Sign in with Google</span>
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            </motion.div>
+
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
+              <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-slate-400">Or continue with email</span>
+              <div className="h-px bg-slate-200 dark:bg-slate-800 flex-1" />
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="flex items-center text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 ml-2">
+                  <Mail className="w-3 h-3 mr-2" />
+                  Email Address
+                </Label>
+                <div className="relative">
                   <Input
                     id="email"
                     type="email"
@@ -207,87 +172,61 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="border-gray-200 dark:border-gray-700 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500 transition-colors"
+                    className="w-full px-6 py-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all font-light"
                   />
                 </div>
-                
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="flex items-center text-sm font-medium">
-                      <Lock className="h-4 w-4 mr-2 text-purple-500 dark:text-purple-400" />
-                      Password
-                    </Label>
-                    <Link
-                      href="/auth/forgot-password"
-                      className="text-xs text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
-                    >
-                      Forgot password?
-                    </Link>
-                  </div>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="border-gray-200 dark:border-gray-700 focus:border-purple-500 dark:focus:border-purple-500 focus:ring-purple-500 dark:focus:ring-purple-500 transition-colors"
-                  />
-                </div>
-                
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md"
-                    disabled={isLoading}
-                  >
-                    {isLoading && authProvider === "credentials" ? (
-                      <div className="flex items-center">
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </div>
-                    ) : (
-                      <>
-                        <KeyRound className="mr-2 h-4 w-4" /> Sign in with Email
-                      </>
-                    )}
-                  </Button>
-                </motion.div>
-              </motion.form>
-            </CardContent>
-            
-            <CardFooter className="flex flex-col space-y-4 pb-6">
-              <motion.div
-                className="text-center text-sm"
-                variants={itemVariants}
-              >
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/auth/signup"
-                  className="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 font-medium"
-                >
-                  Sign up
-                </Link>
-              </motion.div>
+              </div>
               
-              <motion.div
-                className="text-center text-xs text-muted-foreground"
-                variants={itemVariants}
-              >
-                By continuing, you agree to our{" "}
-                <Link href="/terms" className="underline underline-offset-4 hover:text-primary">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link href="/privacy" className="underline underline-offset-4 hover:text-primary">
-                  Privacy Policy
-                </Link>
-                .
+              <div className="space-y-2">
+                <div className="flex items-center justify-between ml-2 mr-2">
+                  <Label htmlFor="password" className="flex items-center text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400">
+                    <Lock className="w-3 h-3 mr-2" />
+                    Password
+                  </Label>
+                  <Link href="/auth/forgot-password" className="text-[10px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
+                    Reset?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  placeholder="••••••••••••"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-6 py-6 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/10 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all font-light"
+                />
+              </div>
+              
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="pt-2">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full rounded-2xl bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 flex items-center justify-center gap-3 font-bold tracking-widest text-[10px] sm:text-xs uppercase transition-all shadow-xl shadow-blue-500/20"
+                >
+                  {isLoading && authProvider === "credentials" ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <KeyRound className="w-4 h-4" /> Sign In
+                    </>
+                  )}
+                </Button>
               </motion.div>
-            </CardFooter>
-          </Card>
-        </motion.div>
-      </div>
+            </form>
+          </div>
+          
+          <div className="bg-slate-50/50 dark:bg-slate-950/50 px-8 py-6 border-t border-slate-200/50 dark:border-slate-800/50 text-center flex flex-col items-center justify-center">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+              Don't have an account?{" "}
+              <Link href="/auth/signup" className="text-blue-600 dark:text-blue-400 font-bold tracking-widest uppercase hover:text-blue-700 dark:hover:text-blue-300 transition-colors ml-2 border-b border-transparent hover:border-blue-500">
+                Sign Up
+              </Link>
+            </span>
+          </div>
+
+        </div>
+      </motion.div>
     </main>
   )
 }
-

@@ -135,9 +135,9 @@ export default async function ProfilePage({
         <div className="mb-12">
           <Link href="/" className="inline-flex items-center text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group">
              <ArrowLeft className="mr-3 h-4 w-4 group-hover:-translate-x-2 transition-transform duration-300" />
-             Return to Global Network
+             Return Home
           </Link>
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tighter text-slate-900 dark:text-white mt-8 mb-4">Command <span className="text-blue-600 dark:text-blue-400">Center.</span></h1>
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tighter text-slate-900 dark:text-white mt-8 mb-4">Your <span className="text-blue-600 dark:text-blue-400">Profile.</span></h1>
         </div>
         
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
@@ -163,13 +163,13 @@ export default async function ProfilePage({
                    
                    <div className="z-10 w-full flex flex-col items-center">
                       <span className="px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-[9px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 mb-4 border border-blue-200 dark:border-blue-800/50">
-                         {userData?.role === 'admin' ? 'System Admin' : 'Authorized User'}
+                         {userData?.role === 'admin' ? 'Admin' : 'User'}
                       </span>
                       <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-3">
                          {userData?.name || session.user.name || "Anonymous ID"}
                       </h2>
                       <p className="text-slate-500 dark:text-slate-400 font-light text-sm mb-8 leading-relaxed">
-                         {userData?.bio || "No clearance bio assigned."}
+                         {userData?.bio || "No bio provided."}
                       </p>
                    </div>
                    
@@ -223,7 +223,7 @@ export default async function ProfilePage({
                             <Calendar className="w-3.5 h-3.5" />
                          </div>
                          <div className="flex flex-col">
-                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Time Indexed</span>
+                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Joined At</span>
                             <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
                                {new Date(userData?.createdAt || new Date().toISOString()).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                             </span>
@@ -238,7 +238,7 @@ export default async function ProfilePage({
                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/20 to-indigo-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                    <div className="relative flex items-center gap-4 z-10">
                       <Edit className="w-4 h-4" />
-                      <span className="text-xs font-bold tracking-[0.2em] uppercase">Configure ID</span>
+                      <span className="text-xs font-bold tracking-[0.2em] uppercase">Edit Profile</span>
                    </div>
                    <ChevronRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
@@ -253,15 +253,15 @@ export default async function ProfilePage({
             <div className="flex bg-slate-200/50 dark:bg-slate-900/50 rounded-2xl p-1.5 mb-12 border border-slate-200 dark:border-slate-800 w-full md:w-fit overflow-x-auto">
                <Link href="/profile?tab=posts" className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-none ${activeTab === 'posts' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
                   <LayoutGrid className="w-4 h-4" />
-                  Written Logs
+                  Posts
                </Link>
                <Link href="/profile?tab=comments" className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-none ${activeTab === 'comments' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
                   <MessageSquare className="w-4 h-4" />
-                  Discourse
+                  Comments
                </Link>
                <Link href="/profile?tab=replies" className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-xs font-bold tracking-widest uppercase transition-all duration-300 shadow-none ${activeTab === 'replies' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
                   <ReplyIcon className="w-4 h-4" />
-                  Echoes
+                  Replies
                </Link>
             </div>
 
@@ -271,12 +271,12 @@ export default async function ProfilePage({
                  posts.length === 0 ? (
                    <div className="py-24 text-center border border-dashed border-slate-300 dark:border-slate-800 rounded-[2.5rem]">
                       <LayoutGrid className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700 mb-6" />
-                      <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">No Documentation Found</h3>
+                      <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">No Posts Found</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 font-light max-w-sm mx-auto mb-8">
-                         You have not indexed any posts onto the Vault. Commence documentation protocols.
+                         You have not published any posts yet.
                       </p>
                       <Link href="/blog/new" className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors">
-                         Initialize Document 
+                         Create Post 
                          <ChevronRight className="w-3.5 h-3.5" />
                       </Link>
                    </div>
@@ -312,12 +312,12 @@ export default async function ProfilePage({
                  comments.length === 0 ? (
                    <div className="py-24 text-center border border-dashed border-slate-300 dark:border-slate-800 rounded-[2.5rem]">
                       <MessageSquare className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700 mb-6" />
-                      <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">Null Communication Array</h3>
+                      <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">No Comments Yet</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 font-light max-w-sm mx-auto mb-8">
-                         You have not deployed any discourse onto the Blog logs.
+                         You haven't posted any comments on the blog yet.
                       </p>
                       <Link href="/blog" className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                         Scan Blog
+                         Read Blog
                       </Link>
                    </div>
                  ) : (
@@ -331,7 +331,7 @@ export default async function ProfilePage({
                            
                            <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-3 mb-3">
-                                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Deployed At</span>
+                                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400">Commented On</span>
                                  <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
                                     {comment.postTitle}
                                  </h4>
@@ -354,9 +354,9 @@ export default async function ProfilePage({
                  replies.length === 0 ? (
                    <div className="py-24 text-center border border-dashed border-slate-300 dark:border-slate-800 rounded-[2.5rem]">
                       <ReplyIcon className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700 mb-6" />
-                      <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">No Network Echoes</h3>
+                      <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">No Replies Yet</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 font-light max-w-sm mx-auto mb-8">
-                         You have not replied or linked into an existing communication node.
+                         You haven't replied to any comments yet.
                       </p>
                    </div>
                  ) : (
@@ -371,9 +371,9 @@ export default async function ProfilePage({
                            
                            <div className="flex-1 min-w-0">
                               <div className="flex flex-col gap-1 mb-4">
-                                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-indigo-600 dark:text-indigo-400">Response Deployed In</span>
+                                 <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-indigo-600 dark:text-indigo-400">Replied On</span>
                                  <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate opacity-60">
-                                    Document: {reply.postTitle}
+                                    Post: {reply.postTitle}
                                  </h4>
                               </div>
                               <p className="text-base sm:text-lg text-slate-800 dark:text-slate-200 font-medium leading-relaxed mb-4">

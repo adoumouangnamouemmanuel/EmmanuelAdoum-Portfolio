@@ -239,7 +239,7 @@ export default function BlogPage() {
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6 leading-[0.95] md:leading-[0.9]"
             >
-              The <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 pb-2">Journal.</span>
+              The <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 pb-2">Blog.</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -259,7 +259,7 @@ export default function BlogPage() {
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
               <input
                 type="text"
-                placeholder="Search the vault index..."
+                placeholder="Search articles..."
                 className="w-full pl-16 pr-6 py-5 rounded-full border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl shadow-sm focus:shadow-md focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 font-light tracking-wide text-sm md:text-base"
                 value={searchQuery}
                 onChange={(e) => {
@@ -288,7 +288,7 @@ export default function BlogPage() {
                   >
                      <div className="flex items-center gap-3">
                         <Filter className="w-4 h-4 text-blue-600" />
-                        Directory Operations {selectedCategories.length > 0 && <span className="text-blue-600">({selectedCategories.length})</span>}
+                        Categories {selectedCategories.length > 0 && <span className="text-blue-600">({selectedCategories.length})</span>}
                      </div>
                      {isFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </button>
@@ -308,7 +308,7 @@ export default function BlogPage() {
                                     selectedCategories.length === 0 ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm translate-x-1" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                                  }`}
                               >
-                                 All Operations
+                                 All Categories
                               </button>
                               {allCategories.map((category, index) => (
                                  <button
@@ -337,7 +337,7 @@ export default function BlogPage() {
                   >
                      <div className="flex items-center gap-3 mb-6">
                         <span className="w-8 h-[2px] bg-blue-600 dark:bg-blue-400" />
-                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">Featured Protocol</span>
+                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">Featured Post</span>
                      </div>
                      
                      <div className="group relative rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-900 aspect-[4/3] sm:aspect-video mb-8 transition-transform hover:-translate-y-2 hover:shadow-2xl duration-700">
@@ -375,7 +375,7 @@ export default function BlogPage() {
 
                <div className="flex items-center gap-4 mb-8">
                   <span className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                     {selectedCategories.length > 0 ? `Index Results` : searchQuery ? `Search Results` : `The Feed`}
+                     {selectedCategories.length > 0 ? `Category Results` : searchQuery ? `Search Results` : `The Feed`}
                   </span>
                   <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800" />
                </div>
@@ -449,9 +449,9 @@ export default function BlogPage() {
                    </div>
                  ) : (
                    <div className="py-24 p-10 text-center border border-dashed border-slate-200 dark:border-slate-800 rounded-3xl">
-                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">Vault Empty.</h3>
+                     <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2 tracking-tight">No Posts Found.</h3>
                      <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm mx-auto">
-                       No architectural logs match the provided parameters inside the index.
+                       No blog posts match your search or filter parameters.
                      </p>
                      <button
                        onClick={() => {
@@ -461,7 +461,7 @@ export default function BlogPage() {
                        }}
                        className="relative z-30 px-6 py-3 rounded-full border border-slate-200 dark:border-slate-800 text-[10px] font-bold tracking-widest uppercase text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
                      >
-                       Reset Index Parameters
+                       Reset Filters
                      </button>
                    </div>
                  )}
@@ -486,7 +486,7 @@ export default function BlogPage() {
                          onClick={() => handlePageChange(currentPage + 1)}
                          className="px-6 py-3 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white dark:hover:bg-slate-800 hover:shadow-sm"
                        >
-                         Next Sequence
+                         Next Page
                        </button>
                      </div>
                    </motion.div>
@@ -501,7 +501,7 @@ export default function BlogPage() {
                   <div>
                      <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-6 flex items-center gap-3">
                         <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                        Directory
+                        Categories
                      </h3>
                      <div className="flex flex-col gap-1">
                         <button
@@ -529,7 +529,7 @@ export default function BlogPage() {
                   <div>
                      <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-6 flex items-center gap-3">
                         <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                        Abstract Filters
+                        Tags
                      </h3>
                      <div className="flex flex-wrap gap-2">
                         {allCategories.map((tag, index) => (
