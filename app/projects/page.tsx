@@ -1,8 +1,8 @@
 "use client";
 
 import { projects } from "@/data/projects";
-import { motion, useInView } from "framer-motion";
-import { ArrowLeft, ExternalLink, Github, Search } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { ArrowLeft, ExternalLink, Github, Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -17,7 +17,10 @@ export default function ProjectsPage() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTechnology, setSelectedTechnology] = useState<string | null>(null);
+  // Upgraded to multi-select array
+  const [selectedTechnologies, setSelectedTechnologies] = useState<string[]>([]);
+  // Mobile Dropdown State
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const allTechnologies = Array.from(
     new Set(typedProjects.flatMap((project) => project.technologies))
@@ -30,10 +33,19 @@ export default function ProjectsPage() {
       project.description.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesTechnology =
-      selectedTechnology === null || project.technologies.includes(selectedTechnology);
+      selectedTechnologies.length === 0 || 
+      selectedTechnologies.some(tech => project.technologies.includes(tech));
 
     return matchesSearch && matchesTechnology;
   });
+
+  const toggleTechnology = (tech: string) => {
+     if (selectedTechnologies.includes(tech)) {
+        setSelectedTechnologies(selectedTechnologies.filter(t => t !== tech));
+     } else {
+        setSelectedTechnologies([...selectedTechnologies, tech]);
+     }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -95,15 +107,66 @@ export default function ProjectsPage() {
       <section className="pb-32">
         <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pt-8">
           
-          {/* Tech Filter Nodes */}
-          <div className="mb-16">
+          {/* Mobile Filter Dropdown */}
+          <div className="block lg:hidden mb-8">
+             <button
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-700 dark:text-slate-300 shadow-sm"
+             >
+                <div className="flex items-center gap-3">
+                   <Filter className="w-4 h-4 text-blue-600" />
+                   Filter Library {selectedTechnologies.length > 0 && <span className="text-blue-600">({selectedTechnologies.length})</span>}
+                </div>
+                {isFilterOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+             </button>
+             
+             <AnimatePresence>
+                {isFilterOpen && (
+                   <motion.div
+                      initial={{ opacity: 0, height: 0, y: -10 }}
+                      animate={{ opacity: 1, height: "auto", y: 0 }}
+                      exit={{ opacity: 0, height: 0, y: -10 }}
+                      className="overflow-hidden mt-3"
+                   >
+                      <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-wrap gap-2 shadow-sm">
+                         <button
+                            onClick={() => setSelectedTechnologies([])}
+                            className={`px-4 py-2 rounded-full text-[9px] font-bold tracking-widest uppercase transition-colors ${
+                               selectedTechnologies.length === 0 
+                               ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm" 
+                               : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                            }`}
+                         >
+                            All Index
+                         </button>
+                         {allTechnologies.map((tech, i) => (
+                            <button
+                               key={i}
+                               onClick={() => toggleTechnology(tech)}
+                               className={`px-4 py-2 rounded-full text-[9px] font-bold tracking-widest uppercase transition-colors ${
+                                  selectedTechnologies.includes(tech)
+                                  ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm" 
+                                  : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                               }`}
+                            >
+                               {tech}
+                            </button>
+                         ))}
+                      </div>
+                   </motion.div>
+                )}
+             </AnimatePresence>
+          </div>
+
+          {/* Desktop Filter Nodes */}
+          <div className="hidden lg:block mb-16">
             <div className="flex flex-wrap gap-2 sm:gap-3">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setSelectedTechnology(null)}
+                onClick={() => setSelectedTechnologies([])}
                 className={`px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-                  selectedTechnology === null
+                  selectedTechnologies.length === 0
                     ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
                     : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                 }`}
@@ -116,9 +179,9 @@ export default function ProjectsPage() {
                   key={index}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setSelectedTechnology(tech)}
+                  onClick={() => toggleTechnology(tech)}
                   className={`px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-                    selectedTechnology === tech
+                    selectedTechnologies.includes(tech)
                       ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
                       : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
                   }`}
@@ -207,7 +270,7 @@ export default function ProjectsPage() {
                   The archive couldn't locate any projects matching your parameters.
                 </p>
                 <button
-                  onClick={() => { setSearchQuery(""); setSelectedTechnology(null); }}
+                  onClick={() => { setSearchQuery(""); setSelectedTechnologies([]); }}
                   className="px-8 py-4 rounded-full border border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-slate-100 dark:hover:bg-slate-950 transition-colors"
                 >
                   Reset Filters
