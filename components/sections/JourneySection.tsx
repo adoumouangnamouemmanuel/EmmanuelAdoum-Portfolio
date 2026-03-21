@@ -12,6 +12,13 @@ export default function JourneySection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [activeTab, setActiveTab] = useState("experience");
+  const [expandedCourses, setExpandedCourses] = useState<number[]>([]);
+
+  const toggleCourses = (index: number) => {
+    setExpandedCourses((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+  };
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -34,10 +41,10 @@ export default function JourneySection() {
   const sortedCerts = [...certifications].sort((a, b) => getYear(b.endDate) - getYear(a.endDate));
 
   return (
-    <section id="journey" className="py-20 lg:py-32 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
+    <section id="journey" className="py-12 lg:py-16 bg-slate-50 dark:bg-slate-950 relative overflow-hidden">
       <div className="section-container pl-4 pr-10 sm:pl-6 sm:pr-12 md:pr-16 lg:pl-8 lg:pr-24 xl:pr-32 max-w-7xl mx-auto">
         
-        <div className="flex flex-col items-center text-center mb-16 lg:mb-20">
+        <div className="flex flex-col items-center text-center mb-8 lg:mb-12">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -69,10 +76,10 @@ export default function JourneySection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mb-12 flex justify-center"
+          className="mb-8 flex justify-center"
         >
           <Tabs defaultValue="experience" className="w-full max-w-5xl" onValueChange={setActiveTab}>
-            <div className="flex justify-center mb-16 px-2 sm:px-0">
+            <div className="flex justify-center mb-10 px-2 sm:px-0">
               <TabsList className="grid grid-cols-3 w-full max-w-[550px] h-14 p-1 bg-slate-200/60 dark:bg-slate-800/60 rounded-2xl shadow-inner border border-slate-300/50 dark:border-slate-700/50">
                 <TabsTrigger 
                   value="experience" 
@@ -102,10 +109,6 @@ export default function JourneySection() {
               <TabsContent value="experience" className="mt-0 opacity-100 transition-opacity duration-500">
                 <div className="flex flex-col">
                   {sortedExperiences.map((experience, index) => {
-                    const currentYear = getYear(experience.endDate);
-                    const previousYear = index > 0 ? getYear(sortedExperiences[index - 1].endDate) : null;
-                    const isSameYear = currentYear === previousYear;
-
                     return (
                     <motion.div
                       key={`exp-${index}`}
@@ -119,29 +122,22 @@ export default function JourneySection() {
                       <div className="hidden lg:block lg:w-1/4 flex-shrink-0 lg:pr-12 lg:text-right relative">
                          <div className="absolute top-[10px] -right-[5px] w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-colors group-hover:bg-blue-500" />
                          
-                         <p className={`text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500 ${isSameYear ? 'lg:opacity-0' : ''}`}>
+                         <p className="text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500">
                           {experience.startDate.slice(-4)} — {experience.endDate.slice(-4) === 'sent' ? 'PRESENT' : experience.endDate.slice(-4)}
                         </p>
                       </div>
 
                       {/* Right Column: Details */}
                       <div className="w-full lg:w-3/4 flex flex-col lg:pl-12">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
-                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {experience.role}
-                          </h3>
-                          {/* Mobile Date Badge */}
-                          <div className="lg:hidden shrink-0 mt-1 mb-2 sm:mb-0">
-                             {!isSameYear && (
-                               <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                                 {experience.startDate.slice(-4)} — {experience.endDate.slice(-4) === 'sent' ? 'PRESENT' : experience.endDate.slice(-4)}
-                               </span>
-                             )}
-                          </div>
-                        </div>
+                        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2 lg:mb-4">
+                          {experience.role}
+                        </h3>
                         
-                        <h4 className="text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6 lg:mb-8">
-                          {experience.company}
+                        <h4 className="flex flex-wrap items-center gap-3 text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6 lg:mb-8">
+                          <span>{experience.company}</span>
+                          <span className="lg:hidden inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                 {experience.startDate.slice(-4)} — {experience.endDate.slice(-4) === 'sent' ? 'PRESENT' : experience.endDate.slice(-4)}
+                          </span>
                         </h4>
 
                         <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
@@ -182,10 +178,6 @@ export default function JourneySection() {
               <TabsContent value="education" className="mt-0 transition-opacity duration-500">
                 <div className="flex flex-col">
                   {sortedDegrees.map((item, index) => {
-                    const currentYear = getYear(item.endDate);
-                    const previousYear = index > 0 ? getYear(sortedDegrees[index - 1].endDate) : null;
-                    const isSameYear = currentYear === previousYear;
-                    
                     return (
                     <motion.div
                       key={`degree-${index}`}
@@ -197,27 +189,21 @@ export default function JourneySection() {
                     >
                       <div className="hidden lg:block lg:w-1/4 flex-shrink-0 lg:pr-12 lg:text-right relative">
                          <div className="absolute top-[10px] -right-[5px] w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 transition-colors group-hover:bg-blue-500" />
-                         <p className={`text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500 ${isSameYear ? 'lg:opacity-0' : ''}`}>
+                         <p className="text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 sticky top-8 transition-colors group-hover:text-blue-500">
                           {item.startDate ? `${item.startDate.slice(-4)} — ` : ""}{item.endDate?.slice(-4)}
                         </p>
                       </div>
 
                       <div className="w-full lg:w-3/4 flex flex-col lg:pl-12">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
-                          <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {item.degree}
-                          </h3>
-                          <div className="lg:hidden shrink-0 mt-1 mb-2 sm:mb-0">
-                             {!isSameYear && (
-                               <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                                 {item.startDate ? `${item.startDate.slice(-4)} — ` : ""}{item.endDate?.slice(-4)}
-                               </span>
-                             )}
-                          </div>
-                        </div>
+                        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2 lg:mb-4">
+                          {item.degree}
+                        </h3>
 
-                        <h4 className="text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6 lg:mb-8">
-                          {item.institution}
+                        <h4 className="flex flex-wrap items-center gap-3 text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6 lg:mb-8">
+                          <span>{item.institution}</span>
+                          <span className="lg:hidden inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                 {item.startDate ? `${item.startDate.slice(-4)} — ` : ""}{item.endDate?.slice(-4)}
+                          </span>
                         </h4>
 
                         <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
@@ -226,8 +212,19 @@ export default function JourneySection() {
 
                         {item.courses && item.courses.length > 0 && (
                           <div className="flex flex-col mb-8 lg:mb-10">
-                             <p className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-900 dark:text-white mb-4">Relevant Coursework</p>
-                             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                             {/* Mobile Toggle Button */}
+                             <button
+                               onClick={() => toggleCourses(index)}
+                               className="lg:hidden flex items-center justify-between w-fit gap-3 py-1.5 mb-3 text-[10px] font-bold tracking-widest uppercase text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800 group/btn"
+                             >
+                               <span>Relevant Coursework</span>
+                               <span className="text-blue-600 dark:text-blue-400 text-lg leading-none font-light group-hover/btn:text-blue-700">{expandedCourses.includes(index) ? '−' : '+'}</span>
+                             </button>
+
+                             {/* Desktop Title */}
+                             <p className="hidden lg:block text-[11px] font-bold tracking-widest uppercase text-slate-900 dark:text-white mb-4">Relevant Coursework</p>
+
+                             <div className={`${expandedCourses.includes(index) ? 'flex' : 'hidden'} lg:flex flex-wrap items-center gap-x-3 gap-y-2`}>
                               {item.courses.map((course: string, courseIndex: number) => (
                                 <div key={courseIndex} className="flex items-center">
                                   <span className="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -287,21 +284,15 @@ export default function JourneySection() {
                       </div>
 
                       <div className="w-full lg:w-3/4 flex flex-col lg:pl-12">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 sm:gap-4 mb-2">
-                          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                            {item.degree}
-                          </h3>
-                          <div className="lg:hidden shrink-0 mt-1 mb-2 sm:mb-0">
-                             {!isSameYear && (
-                               <span className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
-                                 {item.endDate.slice(-4)}
-                               </span>
-                             )}
-                          </div>
-                        </div>
+                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2 lg:mb-4">
+                          {item.degree}
+                        </h3>
 
-                        <h4 className="text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-4 lg:mb-6">
-                          {item.institution}
+                        <h4 className="flex flex-wrap items-center gap-3 text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-4 lg:mb-6">
+                          <span>{item.institution}</span>
+                          <span className="lg:hidden inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800/80 rounded-full text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                 {item.endDate?.slice(-4)}
+                          </span>
                         </h4>
 
                         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">
