@@ -63,7 +63,7 @@ export default function HeroSection() {
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-2xl pt-20 sm:pt-40 lg:pt-0"
+          className="max-w-2xl pt-12 sm:pt-20 lg:pt-0"
         >
 
           {/* Main Typography */}
@@ -79,14 +79,14 @@ export default function HeroSection() {
 
           <motion.h2
             variants={itemVariants}
-            className="mt-6 sm:mt-8 max-w-xl text-balance text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-slate-800 dark:text-slate-200"
+            className="mt-4 sm:mt-6 max-w-xl text-balance text-xl sm:text-2xl md:text-3xl font-medium tracking-tight text-slate-800 dark:text-slate-200"
           >
             I build <span className="font-semibold text-blue-700 dark:text-blue-400">scalable web</span> and <span className="font-semibold text-indigo-700 dark:text-indigo-400">AI-driven</span> products with clean design and strong engineering.
           </motion.h2>
 
           <motion.p
             variants={itemVariants}
-            className="mt-6 max-w-xl text-balance text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300 border-l-[3px] border-blue-600 pl-4 sm:pl-5 dark:border-blue-400"
+            className="mt-4 sm:mt-5 max-w-xl text-balance text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300 border-l-[3px] border-blue-600 pl-4 sm:pl-5 dark:border-blue-400"
           >
             I turn complex ideas into high-performance systems that last.
           </motion.p>
@@ -94,7 +94,7 @@ export default function HeroSection() {
           {/* CTA Buttons */}
           <motion.div
             variants={itemVariants}
-            className="mt-10 sm:mt-12 flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
+            className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
           >
             <Button
               asChild
@@ -126,7 +126,7 @@ export default function HeroSection() {
           {/* Social Links */}
           <motion.div
             variants={itemVariants}
-            className="mt-12 sm:mt-16 flex items-center gap-6 text-slate-500 dark:text-slate-400"
+            className="mt-10 sm:mt-12 flex items-center gap-6 text-slate-500 dark:text-slate-400"
           >
             <Link
               href="https://github.com/adoumouangnamouemmanuel"
