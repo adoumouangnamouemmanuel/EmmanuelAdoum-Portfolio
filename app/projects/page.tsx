@@ -1,15 +1,13 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { projects } from "@/data/projects";
 import { motion, useInView } from "framer-motion";
-import { ArrowLeft, ExternalLink, Github, Search, Tag } from "lucide-react";
+import { ArrowLeft, ExternalLink, Github, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-// Add slugs to projects dynamically
+// Add slugs dynamically
 const typedProjects = projects.map((project) => ({
   ...project,
   slug: project.title.toLowerCase().replace(/\s+/g, "-"),
@@ -19,16 +17,12 @@ export default function ProjectsPage() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTechnology, setSelectedTechnology] = useState<string | null>(
-    null
-  );
+  const [selectedTechnology, setSelectedTechnology] = useState<string | null>(null);
 
-  // Extract all unique technologies
   const allTechnologies = Array.from(
     new Set(typedProjects.flatMap((project) => project.technologies))
   );
 
-  // Filter projects based on search and technology
   const filteredProjects = typedProjects.filter((project) => {
     const matchesSearch =
       searchQuery === "" ||
@@ -36,96 +30,59 @@ export default function ProjectsPage() {
       project.description.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesTechnology =
-      selectedTechnology === null ||
-      project.technologies.includes(selectedTechnology);
+      selectedTechnology === null || project.technologies.includes(selectedTechnology);
 
     return matchesSearch && matchesTechnology;
   });
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.15 } },
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
+    hidden: { y: 30, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
   };
 
   return (
-    <main className="min-h-screen">
-      {/* Hero section */}
-      <section className="bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-950 py-16 relative overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl"></div>
-        </div>
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+      {/* Hyper-Minimalist Hero */}
+      <section className="pt-32 lg:pt-48 pb-16 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-12"
+          >
+            <Link href="/" className="inline-flex items-center text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group">
+              <ArrowLeft className="mr-3 h-4 w-4 group-hover:-translate-x-2 transition-transform duration-300" />
+              Return Home
+            </Link>
+          </motion.div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                variant="outline"
-                size="sm"
-                className="shadow-md group"
-                asChild
-              >
-                <Link href="/">
-                  <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-                  Back to Home
-                </Link>
-              </Button>
-            </motion.div>
-          </div>
-
-          <div className="text-center max-w-3xl mx-auto">
+          <div className="max-w-4xl">
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-4xl md:text-5xl font-bold mb-6"
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="text-6xl sm:text-8xl lg:text-9xl font-bold tracking-tighter text-slate-900 dark:text-white mb-8 leading-[0.9]"
             >
-              My <span className="gradient-text">Projects</span>
+              The <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 border-b-4 border-indigo-600/20 pb-2">Archive.</span>
             </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-lg text-muted-foreground mb-8"
-            >
-              A showcase of my work, side projects, and experiments in web
-              development and design.
-            </motion.p>
-
+            
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative max-w-xl mx-auto"
+              className="relative max-w-xl group mt-16"
             >
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-blue-600 dark:group-focus-within:text-blue-400 transition-colors" />
               <input
                 type="text"
-                placeholder="Search projects..."
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                placeholder="Search the archive..."
+                className="w-full pl-16 pr-6 py-4 rounded-full border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-xl shadow-sm focus:shadow-md focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400 text-sm sm:text-base"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -134,36 +91,37 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Technology filter */}
-          <div className="mb-10">
-            <h3 className="text-lg font-semibold mb-4">Filter by Technology</h3>
-            <div className="flex flex-wrap gap-2">
+      {/* The Gallery Section */}
+      <section className="pb-32">
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pt-8">
+          
+          {/* Tech Filter Nodes */}
+          <div className="mb-16">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               <motion.button
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                  selectedTechnology === null
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedTechnology(null)}
+                className={`px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
+                  selectedTechnology === null
+                    ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
+                    : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                }`}
               >
-                All
+                All Index
               </motion.button>
 
               {allTechnologies.map((tech, index) => (
                 <motion.button
                   key={index}
-                  whileHover={{ y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    selectedTechnology === tech
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-                  }`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedTechnology(tech)}
+                  className={`px-5 py-2.5 rounded-full text-[10px] sm:text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
+                    selectedTechnology === tech
+                      ? "bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-lg"
+                      : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700"
+                  }`}
                 >
                   {tech}
                 </motion.button>
@@ -171,7 +129,7 @@ export default function ProjectsPage() {
             </div>
           </div>
 
-          {/* Projects grid */}
+          {/* The Magic Hover Grid */}
           <motion.div
             ref={ref}
             initial="hidden"
@@ -179,118 +137,62 @@ export default function ProjectsPage() {
             variants={containerVariants}
           >
             {filteredProjects.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 pl-0">
                 {filteredProjects.map((project, index) => (
                   <motion.div
                     key={index}
                     variants={itemVariants}
-                    whileHover={{
-                      y: -10,
-                      transition: {
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 10,
-                      },
-                    }}
-                    className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all border border-gray-100 dark:border-gray-700 group"
+                    className="group relative rounded-3xl overflow-hidden bg-slate-100 dark:bg-slate-900 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] shadow-sm hover:shadow-2xl transition-all duration-700"
                   >
-                    <Link href={`/projects/${project.slug}`} className="block">
-                      <div className="relative h-48 overflow-hidden">
-                        <Image
-                          src={
-                            project.image ||
-                            "/images/posts/blog.png"
-                          }
-                          alt={project.title}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="absolute bottom-0 left-0 right-0 p-4">
-                            <h4 className="text-white font-medium">
-                              View Details
-                            </h4>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    <Image
+                      src={project.image || "/images/posts/blog.png"}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-[1.5s] ease-[0.16,1,0.3,1] group-hover:scale-110"
+                    />
+                    
+                    {/* The Cinematic Glass Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-900/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 backdrop-blur-[2px] pointer-events-none" />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-                    <div className="p-6">
-                      <Link
-                        href={`/projects/${project.slug}`}
-                        className="block group"
-                      >
-                        <h3 className="text-xl font-bold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {/* Hidden Hover Content */}
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-10 opacity-0 translate-y-12 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-[0.16,1,0.3,1]">
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.technologies.slice(0, 3).map((tech, techIndex) => (
+                          <span key={techIndex} className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-white shadow-xl">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      
+                      <Link href={`/projects/${project.slug}`} className="block">
+                        <h3 className="text-3xl sm:text-4xl font-bold text-white mb-3 hover:text-blue-300 transition-colors">
                           {project.title}
                         </h3>
                       </Link>
-
-                      <p className="text-muted-foreground mb-4 line-clamp-2">
+                      
+                      <p className="text-slate-300 text-sm sm:text-base line-clamp-2 mb-8 font-light max-w-md">
                         {project.description}
                       </p>
 
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {project.technologies
-                          .slice(0, 3)
-                          .map((tech, techIndex) => (
-                            <Badge
-                              key={techIndex}
-                              variant="secondary"
-                              className="shadow-sm cursor-pointer"
-                              onClick={() => setSelectedTechnology(tech)}
-                            >
-                              <Tag className="h-3 w-3 mr-1" />
-                              {tech}
-                            </Badge>
-                          ))}
-                        {project.technologies.length > 3 && (
-                          <Badge variant="outline">
-                            +{project.technologies.length - 3}
-                          </Badge>
-                        )}
-                      </div>
-
-                      <div className="flex flex-wrap gap-3">
+                      <div className="flex flex-wrap gap-4">
                         <Link href={`/projects/${project.slug}`}>
-                          <Button
-                            size="sm"
-                            className="bg-blue-600 hover:bg-blue-700"
-                          >
-                            View Project
-                          </Button>
+                          <button className="flex items-center justify-center gap-2 px-6 sm:px-8 py-3 rounded-full bg-white text-slate-900 text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-blue-600 hover:text-white transition-colors duration-300">
+                            Explore Project
+                          </button>
                         </Link>
-
                         {project.github && (
-                          <Link
-                            href={project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="flex items-center gap-1"
-                            >
-                              <Github className="h-4 w-4" />
-                              Code
-                            </Button>
+                          <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                            <button className="flex items-center justify-center p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-slate-900 transition-colors duration-300">
+                              <Github className="w-5 h-5" />
+                            </button>
                           </Link>
                         )}
-
                         {project.demo && (
-                          <Link
-                            href={project.demo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="flex items-center gap-1"
-                            >
-                              <ExternalLink className="h-4 w-4" />
-                              Demo
-                            </Button>
+                          <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                            <button className="flex items-center justify-center p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white hover:text-slate-900 transition-colors duration-300">
+                              <ExternalLink className="w-5 h-5" />
+                            </button>
                           </Link>
                         )}
                       </div>
@@ -299,26 +201,17 @@ export default function ProjectsPage() {
                 ))}
               </div>
             ) : (
-              <motion.div
-                variants={itemVariants}
-                className="bg-white dark:bg-gray-800 rounded-xl p-8 text-center shadow-lg"
-              >
-                <h3 className="text-xl font-semibold mb-2">
-                  No projects found
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  No projects match your current search criteria. Try adjusting
-                  your search or technology filter.
+              <motion.div variants={itemVariants} className="py-32 text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+                <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-4 tracking-tighter">No match found.</h3>
+                <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-sm mx-auto">
+                  The archive couldn't locate any projects matching your parameters.
                 </p>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchQuery("");
-                    setSelectedTechnology(null);
-                  }}
+                <button
+                  onClick={() => { setSearchQuery(""); setSelectedTechnology(null); }}
+                  className="px-8 py-4 rounded-full border border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-slate-100 dark:hover:bg-slate-950 transition-colors"
                 >
                   Reset Filters
-                </Button>
+                </button>
               </motion.div>
             )}
           </motion.div>
