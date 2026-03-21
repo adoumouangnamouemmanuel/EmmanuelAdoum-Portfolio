@@ -314,10 +314,10 @@ export default async function ProfilePage({
                       <MessageSquare className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700 mb-6" />
                       <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white mb-2">Null Communication Array</h3>
                       <p className="text-sm text-slate-500 dark:text-slate-400 font-light max-w-sm mx-auto mb-8">
-                         You have not deployed any discourse onto the Vault logs.
+                         You have not deployed any discourse onto the Blog logs.
                       </p>
                       <Link href="/blog" className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
-                         Scan Vault
+                         Scan Blog
                       </Link>
                    </div>
                  ) : (
