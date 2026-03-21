@@ -98,7 +98,7 @@ export default function BlogHeader() {
             <Link href="/blog" className="flex items-center space-x-2 z-10 mr-4 lg:mr-8 flex-shrink-0">
                <motion.div variants={logoVariants} initial="initial" animate="animate" whileHover="hover">
                  <span className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
-                   EA<span className="text-slate-400 dark:text-slate-500">.Vault</span>
+                   Blog
                  </span>
                </motion.div>
             </Link>
@@ -238,7 +238,7 @@ export default function BlogHeader() {
               ) : (
                 <div className="flex items-center space-x-2">
                   <Link href="/auth/login" className="hidden sm:block px-4 py-2 text-xs font-bold tracking-[0.1em] uppercase text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-                    Access
+                    Login
                   </Link>
                   <Link href="/auth/signup" className="px-5 py-2.5 rounded-full text-xs font-bold tracking-[0.1em] uppercase bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:scale-105 transition-transform shadow-xl">
                     Register
@@ -284,7 +284,7 @@ export default function BlogHeader() {
 
              <div className="flex flex-col gap-6 px-10">
                 <motion.span variants={mobileItemVariants} className="text-[10px] font-bold tracking-[0.2em] uppercase text-emerald-600 dark:text-emerald-400 mb-4">
-                   Vault Access Matrix
+                   Blog Access Matrix
                 </motion.span>
                 {navItems.map((item) => {
                   const active = isActive(item.href)

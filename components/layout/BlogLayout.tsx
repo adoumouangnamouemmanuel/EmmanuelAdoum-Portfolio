@@ -21,7 +21,7 @@ export default function BlogLayout({ children }: BlogLayoutProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex-grow pt-24"
+          className="flex-grow"
         >
           {children}
         </motion.main>

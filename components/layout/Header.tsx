@@ -127,8 +127,8 @@ export default function Header() {
         ref={headerRef}
         className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-[0.16,1,0.3,1] ${
           isScrolled 
-            ? "top-2 sm:top-4 lg:top-6" 
-            : "top-4 sm:top-6 lg:top-8"
+            ? "top-2 sm:top-3 lg:top-3" 
+            : "top-2 sm:top-3 lg:top-3"
         }`}
       >
         <div className="flex justify-center w-full px-4 pointer-events-none">
