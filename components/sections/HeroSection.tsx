@@ -40,19 +40,19 @@ export default function HeroSection() {
         <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white via-white/80 to-transparent lg:hidden dark:from-slate-950 dark:via-slate-950/80 z-10" />
 
         {/* Global Dark Mode Tint */}
-        <div className="hidden dark:block absolute inset-0 bg-slate-950/40 z-10" />
+        <div className="hidden dark:block absolute inset-0 bg-slate-950/0 z-10" />
 
         <motion.div
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
-          className="absolute right-0 top-0 h-full w-full lg:w-[65%] object-cover object-center lg:object-right"
+          className="absolute right-0 top-[10%] lg:top-[12%] h-[90%] lg:h-[88%] w-full lg:w-[65%] object-cover object-center lg:object-right"
         >
           <Image
             src="/images/emmanuel.jpeg"
             alt="Emmanuel Adoum Background"
             fill
-            className="object-cover object-[75%_20%] lg:object-[center_20%] opacity-90 dark:opacity-60 dark:mix-blend-luminosity mix-blend-multiply"
+            className="object-cover object-[75%_15%] lg:object-[center_15%] opacity-100 dark:opacity-100"
             priority
           />
         </motion.div>
