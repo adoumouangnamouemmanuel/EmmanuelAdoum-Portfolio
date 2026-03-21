@@ -2,11 +2,11 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import type React from "react";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   title: "Emmanuel Adoum | Portfolio",
@@ -98,7 +98,7 @@ export const metadata: Metadata = {
     siteName: "Emmanuel Adoum | Portfolio",
     images: [
       {
-        url: "/emma.png",
+        url: "/emmanuel.jpeg",
         width: 1200,
         height: 630,
         alt: "Emmanuel Adoum | Portfolio",
@@ -124,7 +124,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${outfit.variable} font-sans antialiased`}>
         
         <ThemeProvider
           attribute="class"
