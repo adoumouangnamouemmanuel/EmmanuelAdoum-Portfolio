@@ -1,62 +1,33 @@
 export const experiences = [
   {
-    role: "Senior Frontend Developer",
-    company: "TechCorp Inc.",
-    location: "New York, NY",
-    startDate: "Jan 2022",
-    endDate: "Present",
+    role: "Intern – Record to Report & Automation",
+    company: "Nestle Business Services (NBS)",
+    location: "Accra, Ghana",
+    startDate: "Jun 2025",
+    endDate: "Aug 2025",
     description:
-      "Leading the frontend development team in building and maintaining modern web applications with a focus on performance and user experience.",
-    technologies: ["React", "Next.js", "TypeScript", "Tailwind CSS", "GraphQL"],
+      "Streamlined and automated complex financial reporting dashboards and ETL pipelines, significantly reducing manual errors and monthly reporting time while supporting cross-functional finance teams.",
+    technologies: ["Power BI", "Excel", "Power Automate", "Python", "ETL"],
     achievements: [
-      "Reduced page load time by 40% through code splitting and lazy loading techniques",
-      "Implemented a component library that increased development speed by 30%",
-      "Led the migration from a legacy codebase to a modern React architecture",
+      "Built and automated KRI & OLI dashboards connecting engineering and finance data using Power BI, Excel, Power Automate & Python, cutting monthly reporting time by ~99%.",
+      "Built reusable ETL scripts and dashboard templates, reducing manual errors by ~10% and improving KPI accuracy.",
+      "Partnered with 3 cross-functional teams to define metrics and deliver insights used by 100+ finance staff.",
+      "Documented workflows and trained 3 colleagues, ensuring smooth adoption and continuity."
     ],
   },
   {
-    role: "Frontend Developer",
-    company: "InnovateTech",
-    location: "San Francisco, CA",
-    startDate: "Mar 2020",
-    endDate: "Dec 2021",
+    role: "Lead Developer – Freshers Hub",
+    company: "Ashesi University",
+    location: "Berekuso, Ghana",
+    startDate: "Jan 2024",
+    endDate: "Aug 2025",
     description:
-      "Developed responsive and interactive user interfaces for a SaaS platform serving over 50,000 users.",
-    technologies: ["React", "JavaScript", "SCSS", "Redux", "REST API"],
+      "Led the development of a comprehensive campus integration mobile application to securely streamline navigation, communication, and academic support for over 300 students.",
+    technologies: ["React Native", "Expo", "TypeScript", "Socket.io", "Firebase", "PostgreSQL", "Node.js", "Stream Chat"],
     achievements: [
-      "Built a real-time dashboard that increased user engagement by 25%",
-      "Collaborated with UX designers to implement a new design system",
-      "Mentored junior developers and conducted code reviews",
+      "Developed a campus integration mobile app using Expo React Native, TypeScript, Socket.io, and Firebase for a secure, cross-platform experience used by 300+ students.",
+      "Used Stream Chat for messaging, PostgreSQL for the Database, Node.js for APIs & Backend, and GitHub for version control.",
+      "Integrated interactive campus maps, a dedicated support system, real-time chats, and academic session booking into a unified interface."
     ],
-  },
-  {
-    role: "Web Developer",
-    company: "Digital Solutions",
-    location: "Boston, MA",
-    startDate: "Jun 2018",
-    endDate: "Feb 2020",
-    description:
-      "Worked on a variety of client projects, developing websites and web applications from concept to deployment.",
-    technologies: ["JavaScript", "HTML", "CSS", "jQuery", "PHP", "WordPress"],
-    achievements: [
-      "Delivered 15+ client projects on time and within budget",
-      "Improved website performance scores by an average of 30%",
-      "Implemented responsive designs that worked across all device types",
-    ],
-  },
-  {
-    role: "Junior Developer",
-    company: "WebStart Agency",
-    location: "Chicago, IL",
-    startDate: "Aug 2017",
-    endDate: "May 2018",
-    description:
-      "Assisted senior developers in building websites for small to medium-sized businesses.",
-    technologies: ["HTML", "CSS", "JavaScript", "Bootstrap", "WordPress"],
-    achievements: [
-      "Developed and maintained 10+ WordPress websites",
-      "Created custom themes and plugins to meet client requirements",
-      "Participated in client meetings and requirement gathering sessions",
-    ],
-  },
+  }
 ];
