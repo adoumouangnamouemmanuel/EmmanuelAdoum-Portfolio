@@ -138,12 +138,12 @@ export default function BlogHeader() {
     <>
       <header
         className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-[0.16,1,0.3,1] ${
-          isScrolled ? "top-2 sm:top-4 lg:top-6" : "top-4 sm:top-6 lg:top-8"
+          isScrolled ? "top-2 sm:top-3 lg:top-4" : "top-3 sm:top-4 lg:top-5"
         }`}
       >
         <div className="flex justify-center w-full px-4 pointer-events-none">
           <div
-            className={`pointer-events-auto flex items-center justify-between transition-all duration-500 rounded-full px-4 sm:px-6 py-2.5 sm:py-3 w-full lg:w-max mx-auto shadow-2xl border ${
+            className={`pointer-events-auto flex items-center justify-between transition-all duration-500 rounded-full px-3 sm:px-4 py-2 w-full lg:w-max mx-auto shadow-xl border ${
               isScrolled
                 ? "bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-slate-200/50 dark:border-slate-800/50 shadow-slate-900/5 dark:shadow-black/20"
                 : "bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border-slate-200/30 dark:border-slate-800/30 shadow-black/5"
@@ -152,7 +152,7 @@ export default function BlogHeader() {
             {/* Architectural Logo Node */}
             <Link
               href={`${basePath}/blog`}
-              className="flex items-center space-x-2 z-10 mr-4 lg:mr-8 flex-shrink-0"
+              className="flex items-center space-x-2 z-10 mr-3 lg:mr-6 flex-shrink-0"
             >
               <motion.div
                 variants={logoVariants}
@@ -160,14 +160,14 @@ export default function BlogHeader() {
                 animate="animate"
                 whileHover="hover"
               >
-                <span className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
+                <span className="text-xl sm:text-[1.35rem] font-black tracking-tighter text-slate-900 dark:text-white">
                   Blog
                 </span>
               </motion.div>
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex flex-1 justify-center space-x-1 relative px-2">
+            <nav className="hidden lg:flex flex-1 justify-center space-x-1 relative px-1">
               {navItems.map((item, i) => {
                 const active = isActive(item.href);
                 const isHovered = hoveredIndex === i;
@@ -183,7 +183,7 @@ export default function BlogHeader() {
                   >
                     <Link
                       href={item.href}
-                      className={`relative z-20 px-4 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 block ${
+                      className={`relative z-20 px-3 py-1.5 text-[11px] font-bold tracking-[0.12em] uppercase transition-colors duration-300 block ${
                         active || isHovered
                           ? "text-slate-900 dark:text-white"
                           : "text-slate-500 dark:text-slate-400"

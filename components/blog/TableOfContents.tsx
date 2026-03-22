@@ -7,7 +7,6 @@ interface TOCItem {
   id: string;
   text: string;
   level: number;
-  element: HTMLElement;
 }
 
 interface TableOfContentsProps {
@@ -58,7 +57,6 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
           id: finalId,
           text: element.textContent || "",
           level: Number.parseInt(element.tagName.substring(1), 10),
-          element,
         };
       });
 
@@ -88,14 +86,18 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
   }, [content]);
 
   const handleClick = (heading: TOCItem) => {
-    const targetElement =
-      document.getElementById(heading.id) ||
-      heading.element ||
-      (document.querySelector(`[id="${heading.id}"]`) as HTMLElement | null);
+    const articleElement = document.querySelector(
+      ".blog-content",
+    ) as HTMLElement | null;
+
+    const escapedId = heading.id.replace(/"/g, '\\"');
+    const targetElement = articleElement?.querySelector(
+      `[id="${escapedId}"]`,
+    ) as HTMLElement | null;
 
     if (!targetElement) return;
 
-    const fixedHeaderOffset = 112;
+    const fixedHeaderOffset = 152;
     const targetTop =
       targetElement.getBoundingClientRect().top +
       window.scrollY -
@@ -113,7 +115,7 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/70 backdrop-blur-md p-5 shadow-[0_12px_35px_-20px_rgba(30,41,59,0.45)] dark:text-white sticky top-24 w-full max-w-[350px] overflow-hidden">
+    <div className="rounded-2xl border border-slate-200/70 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/70 backdrop-blur-md p-5 shadow-[0_12px_35px_-20px_rgba(30,41,59,0.45)] dark:text-white w-full max-w-[350px] overflow-hidden">
       <nav>
         <ul className="space-y-2 text-sm">
           {headings.map((heading) => (

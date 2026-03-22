@@ -319,9 +319,9 @@ export default function BlogPostPage() {
   })();
 
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pb-24 overflow-x-hidden">
+    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pt-24 sm:pt-28 pb-24 overflow-x-hidden">
       {/* 1. Cinematic Edge-to-Edge Cover */}
-      <section className="relative w-full h-[60vh] sm:h-[70vh] lg:h-[85vh] overflow-hidden bg-slate-950">
+      <section className="relative w-full h-[46vh] sm:h-[54vh] lg:h-[62vh] overflow-hidden bg-slate-950">
         <motion.div
           className="absolute inset-0 z-0 origin-top"
           style={{ opacity: heroOpacity, y: heroY, scale: 1.05 }}
@@ -413,7 +413,7 @@ export default function BlogPostPage() {
 
       {/* 2. Glassmorphic Apple-Style Floating Bar */}
       <motion.div
-        className="sticky top-0 z-40 w-full border-b border-transparent transition-all backdrop-blur-0"
+        className="sticky top-14 sm:top-16 lg:top-20 z-40 w-full border-b border-transparent transition-all backdrop-blur-0"
         style={{
           backgroundColor:
             typeof window !== "undefined" &&
@@ -610,12 +610,12 @@ export default function BlogPostPage() {
 
             {/* Sticky Table of Contents Sidebar */}
             <aside className="hidden lg:block lg:w-4/12 xl:w-3/12 relative">
-              <div className="sticky top-32">
+              <div className="lg:sticky lg:top-36 xl:top-40 lg:self-start lg:w-full lg:max-w-[340px] lg:ml-auto">
                 <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400 mb-8 flex items-center gap-3">
                   <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
                   {t.tableOfContents}
                 </h3>
-                <div className="pl-6 border-l border-slate-200 dark:border-slate-800/60">
+                <div className="pl-6 border-l border-slate-200 dark:border-slate-800/60 overflow-y-auto pr-1 max-h-[calc(100vh-16rem)]">
                   <TableOfContents content={post.content} />
                 </div>
               </div>
