@@ -1,6 +1,14 @@
 import { authOptions } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { postModel, userModel } from "@/lib/firebase/models";
+import {
+  isPrivilegedRole,
+  normalizeCoverImage,
+  sanitizeBlogHtml,
+  sanitizeCategories,
+  sanitizePlainText,
+  sanitizeSlug,
+} from "@/lib/security/content";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -8,10 +16,20 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const published = searchParams.get("published") === "true";
+    const publishedParam = searchParams.get("published");
+    const published =
+      publishedParam === null ? true : publishedParam === "true";
+    const wantsUnpublished = publishedParam === "false";
     const category = searchParams.get("category") || undefined;
     const limit = parseInt(searchParams.get("limit") || "10");
     const page = parseInt(searchParams.get("page") || "1");
+
+    if (wantsUnpublished) {
+      const session = await getServerSession(authOptions);
+      if (!session?.user || !isPrivilegedRole(session.user.role)) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+      }
+    }
 
     // Get posts from Firestore
     const { posts, total } = await postModel.findAll({
@@ -27,30 +45,41 @@ export async function GET(req: NextRequest) {
         let author = null;
         if (post.authorId) {
           author = await userModel.findById(post.authorId);
-    }
+        }
         // Count likes
-        const likesSnapshot = await adminDb.collection("likes").where("postId", "==", post.id).get();
+        const likesSnapshot = await adminDb
+          .collection("likes")
+          .where("postId", "==", post.id)
+          .get();
         // Count comments
-        const commentsSnapshot = await adminDb.collection("comments").where("postId", "==", post.id).get();
-      return {
-        ...post,
-          author: author ? {
-            id: author.id,
-            name: author.displayName || author.name || 'Unknown',
-            image: author.photoURL || author.image || null,
-            bio: author.bio || author.description || '',
-            social: {
-              github: author.github || '',
-              twitter: author.twitter || '',
-              linkedin: author.linkedin || '',
-            }
-          } : null,
-        _count: {
+        const commentsSnapshot = await adminDb
+          .collection("comments")
+          .where("postId", "==", post.id)
+          .get();
+        return {
+          ...post,
+          title: sanitizePlainText(post.title || "", 180),
+          excerpt: sanitizePlainText(post.excerpt || "", 500),
+          content: sanitizeBlogHtml(post.content || ""),
+          author: author
+            ? {
+                id: author.id,
+                name: author.displayName || author.name || "Unknown",
+                image: author.photoURL || author.image || null,
+                bio: author.bio || author.description || "",
+                social: {
+                  github: author.github || "",
+                  twitter: author.twitter || "",
+                  linkedin: author.linkedin || "",
+                },
+              }
+            : null,
+          _count: {
             likes: likesSnapshot.size,
             comments: commentsSnapshot.size,
-          }
-      };
-      })
+          },
+        };
+      }),
     );
 
     return NextResponse.json({
@@ -61,7 +90,7 @@ export async function GET(req: NextRequest) {
     console.error("Error fetching posts:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -73,55 +102,93 @@ export async function POST(req: NextRequest) {
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { title, slug, excerpt, content, coverImage, categories, published } = await req.json();
+
+    const canPublish = isPrivilegedRole(session.user.role);
+    const { title, slug, excerpt, content, coverImage, categories, published } =
+      await req.json();
     if (!title || !slug || !content) {
-      return NextResponse.json({ error: "Title, slug, and content are required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Title, slug, and content are required" },
+        { status: 400 },
+      );
     }
+
+    const safeTitle = sanitizePlainText(title, 180);
+    const safeSlug = sanitizeSlug(slug || title);
+    const safeExcerpt = sanitizePlainText(excerpt || "", 500);
+    const safeContent = sanitizeBlogHtml(content);
+    const safeCoverImage = normalizeCoverImage(coverImage);
+    const safeCategories = sanitizeCategories(categories);
+
+    if (!safeTitle || !safeSlug || !safeContent) {
+      return NextResponse.json(
+        { error: "Invalid post content" },
+        { status: 400 },
+      );
+    }
+
     // Generate a unique slug
-    let baseSlug = slug;
+    let baseSlug = safeSlug;
     let uniqueSlug = baseSlug;
     let counter = 2;
-    let existing = await adminDb.collection("posts").where("slug", "==", uniqueSlug).get();
+    let existing = await adminDb
+      .collection("posts")
+      .where("slug", "==", uniqueSlug)
+      .get();
     while (!existing.empty) {
       uniqueSlug = `${baseSlug}-${counter}`;
-      existing = await adminDb.collection("posts").where("slug", "==", uniqueSlug).get();
+      existing = await adminDb
+        .collection("posts")
+        .where("slug", "==", uniqueSlug)
+        .get();
       counter++;
     }
 
     // Create the post
     const newPost = {
-      title,
+      title: safeTitle,
       slug: uniqueSlug,
-      excerpt: excerpt || "",
-      content,
-      coverImage: coverImage || "/placeholder.svg?height=600&width=1200",
-      published: published || false,
+      excerpt: safeExcerpt,
+      content: safeContent,
+      coverImage: safeCoverImage,
+      published: canPublish ? Boolean(published) : false,
       views: 0,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       authorId: session.user.id,
-      categories: categories?.length ? categories : ["Uncategorized"],
+      categories: safeCategories,
       _count: { comments: 0, likes: 0 },
     };
     const docRef = await adminDb.collection("posts").add(newPost);
     // Get author details
-    const authorDoc = await adminDb.collection("users").doc(session.user.id).get();
-    const author = authorDoc.exists ? {
-      id: authorDoc.id,
-      name: authorDoc.data()?.name || session.user.name || "Unknown",
-      image: authorDoc.data()?.image || session.user.image || null,
-    } : {
-      id: session.user.id,
-      name: session.user.name || "Unknown",
-      image: session.user.image || null,
-    };
-    return NextResponse.json({
-      id: docRef.id,
+    const authorDoc = await adminDb
+      .collection("users")
+      .doc(session.user.id)
+      .get();
+    const author = authorDoc.exists
+      ? {
+          id: authorDoc.id,
+          name: authorDoc.data()?.name || session.user.name || "Unknown",
+          image: authorDoc.data()?.image || session.user.image || null,
+        }
+      : {
+          id: session.user.id,
+          name: session.user.name || "Unknown",
+          image: session.user.image || null,
+        };
+    return NextResponse.json(
+      {
+        id: docRef.id,
         ...newPost,
-      author,
-    }, { status: 201 });
+        author,
+      },
+      { status: 201 },
+    );
   } catch (error) {
     console.error("Error creating post:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

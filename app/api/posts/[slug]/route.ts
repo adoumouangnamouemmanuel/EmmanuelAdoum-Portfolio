@@ -1,20 +1,36 @@
 import { authOptions } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { postModel, userModel } from "@/lib/firebase/models";
+import {
+  isPrivilegedRole,
+  normalizeCoverImage,
+  sanitizeBlogHtml,
+  sanitizeCategories,
+  sanitizePlainText,
+  sanitizeSlug,
+} from "@/lib/security/content";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
 // GET /api/posts/[slug] - Get a single post
 export async function GET(
   req: NextRequest,
-  context: { params: { slug: string } }
+  context: { params: { slug: string } },
 ) {
   try {
+    const session = await getServerSession(authOptions);
     const { slug } = await context.params;
 
     // Find the post
     const post = await postModel.findBySlug(slug);
     if (!post) {
+      return NextResponse.json({ error: "Post not found" }, { status: 404 });
+    }
+
+    const isOwner = session?.user?.id === post.authorId;
+    const isPrivilegedUser = isPrivilegedRole(session?.user?.role);
+
+    if (!post.published && !isOwner && !isPrivilegedUser) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
@@ -26,16 +42,16 @@ export async function GET(
 
     // Get comments count
     const commentsSnapshot = await adminDb
-      .collection('comments')
-      .where('postId', '==', post.id)
+      .collection("comments")
+      .where("postId", "==", post.id)
       .count()
       .get();
     const commentsCount = commentsSnapshot.data().count;
 
     // Get likes count
     const likesSnapshot = await adminDb
-      .collection('likes')
-      .where('postId', '==', post.id)
+      .collection("likes")
+      .where("postId", "==", post.id)
       .count()
       .get();
     const likesCount = likesSnapshot.data().count;
@@ -43,21 +59,29 @@ export async function GET(
     // Format the response
     const response = {
       ...post,
+      title: sanitizePlainText(post.title || "", 180),
+      excerpt: sanitizePlainText(post.excerpt || "", 500),
+      content: sanitizeBlogHtml(post.content || ""),
       _count: {
         comments: commentsCount,
-        likes: likesCount
+        likes: likesCount,
       },
-      author: author ? {
-        id: author.id,
-        name: author.displayName || author.name || 'Unknown',
-        image: author.photoURL || author.image || '/placeholder.svg?height=40&width=40',
-        bio: author.bio || author.description || '',
-        social: {
-          github: author.github || '',
-          twitter: author.twitter || '',
-          linkedin: author.linkedin || '',
-        }
-      } : null
+      author: author
+        ? {
+            id: author.id,
+            name: author.displayName || author.name || "Unknown",
+            image:
+              author.photoURL ||
+              author.image ||
+              "/placeholder.svg?height=40&width=40",
+            bio: author.bio || author.description || "",
+            social: {
+              github: author.github || "",
+              twitter: author.twitter || "",
+              linkedin: author.linkedin || "",
+            },
+          }
+        : null,
     };
 
     return NextResponse.json(response);
@@ -65,7 +89,7 @@ export async function GET(
     console.error("Error fetching post:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -73,7 +97,7 @@ export async function GET(
 // PUT /api/posts/[slug] - Update a post
 export async function PUT(
   req: NextRequest,
-  context: { params: { slug: string } }
+  context: { params: { slug: string } },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -84,7 +108,8 @@ export async function PUT(
     }
 
     const { slug } = await context.params;
-    const { title, newSlug, excerpt, content, coverImage, categories } = await req.json();
+    const { title, newSlug, excerpt, content, coverImage, categories } =
+      await req.json();
 
     // Find the post by slug
     const post = await postModel.findBySlug(slug);
@@ -97,25 +122,39 @@ export async function PUT(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const safeTitle =
+      title !== undefined ? sanitizePlainText(title, 180) : undefined;
+    const safeSlug = newSlug !== undefined ? sanitizeSlug(newSlug) : undefined;
+    const safeExcerpt =
+      excerpt !== undefined ? sanitizePlainText(excerpt, 500) : undefined;
+    const safeContent =
+      content !== undefined ? sanitizeBlogHtml(content) : undefined;
+    const safeCoverImage =
+      coverImage !== undefined ? normalizeCoverImage(coverImage) : undefined;
+    const safeCategories =
+      categories !== undefined ? sanitizeCategories(categories) : undefined;
+
     // Check if new slug is unique (if changed)
-    if (newSlug && newSlug !== slug) {
-      const existingPost = await postModel.findBySlug(newSlug);
+    if (safeSlug && safeSlug !== slug) {
+      const existingPost = await postModel.findBySlug(safeSlug);
       if (existingPost) {
         return NextResponse.json(
           { error: "A post with this slug already exists" },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
 
     // Update the post in Firestore
     const updatedPost = await postModel.update(post.id, {
-      title: title || post.title,
-      slug: newSlug || post.slug,
-      excerpt: excerpt !== undefined ? excerpt : post.excerpt,
-      content: content || post.content,
-      coverImage: coverImage || post.coverImage,
-      categories: categories || post.categories,
+      title: safeTitle || post.title,
+      slug: safeSlug || post.slug,
+      excerpt: safeExcerpt !== undefined ? safeExcerpt : post.excerpt,
+      content: safeContent !== undefined ? safeContent : post.content,
+      coverImage:
+        safeCoverImage !== undefined ? safeCoverImage : post.coverImage,
+      categories:
+        safeCategories !== undefined ? safeCategories : post.categories,
     });
 
     // Get author details
@@ -126,11 +165,19 @@ export async function PUT(
 
     const responsePost = {
       ...updatedPost,
-      author: author ? {
-        id: author.id,
-        name: author.displayName || author.name || 'Unknown',
-        image: author.photoURL || author.image || '/placeholder.svg?height=40&width=40',
-      } : null,
+      title: sanitizePlainText(updatedPost.title || "", 180),
+      excerpt: sanitizePlainText(updatedPost.excerpt || "", 500),
+      content: sanitizeBlogHtml(updatedPost.content || ""),
+      author: author
+        ? {
+            id: author.id,
+            name: author.displayName || author.name || "Unknown",
+            image:
+              author.photoURL ||
+              author.image ||
+              "/placeholder.svg?height=40&width=40",
+          }
+        : null,
     };
 
     return NextResponse.json(responsePost);
@@ -138,7 +185,7 @@ export async function PUT(
     console.error("Error updating post:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -146,7 +193,7 @@ export async function PUT(
 // DELETE /api/posts/[slug] - Delete a post
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: { slug: string } },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -177,7 +224,7 @@ export async function DELETE(
     console.error("Error deleting post:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

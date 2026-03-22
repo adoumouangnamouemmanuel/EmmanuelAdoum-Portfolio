@@ -12,10 +12,21 @@ import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
+const getSafeCallbackUrl = (callbackUrl: string | null): string => {
+  if (!callbackUrl) return "/blog"
+
+  // Only allow same-origin relative paths.
+  if (!callbackUrl.startsWith("/") || callbackUrl.startsWith("//") || callbackUrl.startsWith("/\\")) {
+    return "/blog"
+  }
+
+  return callbackUrl
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/blog"
+  const callbackUrl = getSafeCallbackUrl(searchParams.get("callbackUrl"))
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)

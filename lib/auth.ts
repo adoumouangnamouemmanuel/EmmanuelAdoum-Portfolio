@@ -115,6 +115,23 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Allow only same-origin redirects.
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+
+      try {
+        const target = new URL(url);
+        if (target.origin === baseUrl) {
+          return url;
+        }
+      } catch {
+        // Ignore malformed URLs and fall back to base URL.
+      }
+
+      return baseUrl;
+    },
     async signIn({ user, account, profile }) {
       if (account?.provider === "google") {
         try {
