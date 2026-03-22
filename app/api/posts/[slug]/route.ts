@@ -40,21 +40,14 @@ export async function GET(
       author = await userModel.findById(post.authorId);
     }
 
-    // Get comments count
-    const commentsSnapshot = await adminDb
-      .collection("comments")
-      .where("postId", "==", post.id)
-      .count()
-      .get();
-    const commentsCount = commentsSnapshot.data().count;
-
-    // Get likes count
-    const likesSnapshot = await adminDb
-      .collection("likes")
-      .where("postId", "==", post.id)
-      .count()
-      .get();
-    const likesCount = likesSnapshot.data().count;
+    // Use snapshot size for compatibility with Firestore Admin versions
+    // that don't support the aggregation `count()` API.
+    const [commentsSnapshot, likesSnapshot] = await Promise.all([
+      adminDb.collection("comments").where("postId", "==", post.id).get(),
+      adminDb.collection("likes").where("postId", "==", post.id).get(),
+    ]);
+    const commentsCount = commentsSnapshot.size;
+    const likesCount = likesSnapshot.size;
 
     // Format the response
     const response = {

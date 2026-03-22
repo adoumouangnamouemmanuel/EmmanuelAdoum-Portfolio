@@ -8,7 +8,13 @@ const handler = NextAuth(authOptions);
 // Export the handler as GET and POST
 export { handler as GET };
 
-export async function POST(req: Request) {
+type NextAuthRouteContext = {
+  params: {
+    nextauth: string[];
+  };
+};
+
+export async function POST(req: Request, context: NextAuthRouteContext) {
   const limited = enforceRateLimit(req, {
     key: "auth-nextauth-post",
     windowMs: 10 * 60 * 1000,
@@ -17,5 +23,5 @@ export async function POST(req: Request) {
   });
   if (limited) return limited;
 
-  return handler(req);
+  return handler(req, context);
 }
