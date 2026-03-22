@@ -22,6 +22,7 @@ import {
   Linkedin,
   Share2,
   Twitter,
+  X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
@@ -79,6 +80,7 @@ export default function BlogPostPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showCoverViewer, setShowCoverViewer] = useState(false);
 
   const t = isFr
     ? {
@@ -102,6 +104,8 @@ export default function BlogPostPage() {
         tableOfContents: "Table des matières",
         relatedPosts: "Articles associés",
         read: "Lire",
+        viewCover: "Voir l'image",
+        closeViewer: "Fermer",
       }
     : {
         notFound: "Record Not Found",
@@ -124,6 +128,8 @@ export default function BlogPostPage() {
         tableOfContents: "Table of Contents",
         relatedPosts: "Related Posts",
         read: "Read",
+        viewCover: "View Cover",
+        closeViewer: "Close",
       };
 
   const { scrollY } = useScroll();
@@ -351,16 +357,26 @@ export default function BlogPostPage() {
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.1,
               }}
-              className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8"
+              className="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8"
             >
-              {displayCategories.map((category, index) => (
-                <span
-                  key={index}
-                  className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
-                >
-                  {category}
-                </span>
-              ))}
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                {displayCategories.map((category, index) => (
+                  <span
+                    key={index}
+                    className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
+                  >
+                    {category}
+                  </span>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCoverViewer(true)}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-white/30 bg-black/30 text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-black/45 transition-colors"
+              >
+                <Eye className="w-4 h-4" />
+                {t.viewCover}
+              </button>
             </motion.div>
 
             <motion.h1
@@ -426,6 +442,35 @@ export default function BlogPostPage() {
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {showCoverViewer && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[80] bg-black/90 backdrop-blur-sm"
+          >
+            <button
+              type="button"
+              onClick={() => setShowCoverViewer(false)}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 z-10 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/25 bg-black/35 text-white text-xs font-bold tracking-widest uppercase hover:bg-black/55 transition-colors"
+            >
+              <X className="w-4 h-4" />
+              {t.closeViewer}
+            </button>
+            <div className="relative w-full h-full p-6 sm:p-12 md:p-16">
+              <Image
+                src={post.coverImage || "/images/posts/blog.avif"}
+                alt={post.title}
+                fill
+                priority
+                className="object-contain"
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 2. Glassmorphic Apple-Style Floating Bar */}
       <motion.div

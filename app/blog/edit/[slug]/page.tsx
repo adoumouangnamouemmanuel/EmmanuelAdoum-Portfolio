@@ -211,10 +211,32 @@ export default function EditBlogPost() {
   // Add a category to the list
   const addCategory = () => {
     const normalizedCategory = category.trim();
-    if (normalizedCategory && !categories.includes(normalizedCategory)) {
+    if (
+      normalizedCategory &&
+      !categories.some(
+        (cat) => cat.toLowerCase() === normalizedCategory.toLowerCase(),
+      )
+    ) {
       setCategories([...categories, normalizedCategory]);
       setCategory("");
     }
+  };
+
+  const toggleCategory = (selectedCategory: string) => {
+    const exists = categories.some(
+      (cat) => cat.toLowerCase() === selectedCategory.toLowerCase(),
+    );
+
+    if (exists) {
+      setCategories(
+        categories.filter(
+          (cat) => cat.toLowerCase() !== selectedCategory.toLowerCase(),
+        ),
+      );
+      return;
+    }
+
+    setCategories([...categories, selectedCategory]);
   };
 
   // Remove a category from the list
@@ -682,10 +704,39 @@ export default function EditBlogPost() {
 
                   <div className="space-y-2">
                     <Label htmlFor="categories">Categories</Label>
+                    <p className="text-sm text-muted-foreground">
+                      Select one or more categories, or add your own.
+                    </p>
+                    <div className="flex flex-wrap gap-2 rounded-md border p-3 max-h-40 overflow-y-auto">
+                      {availableCategories.length === 0 && (
+                        <span className="text-sm text-muted-foreground">
+                          No predefined categories available.
+                        </span>
+                      )}
+                      {availableCategories.map((cat) => {
+                        const isSelected = categories.some(
+                          (selected) =>
+                            selected.toLowerCase() === cat.toLowerCase(),
+                        );
+
+                        return (
+                          <Button
+                            key={cat}
+                            type="button"
+                            size="sm"
+                            variant={isSelected ? "default" : "outline"}
+                            onClick={() => toggleCategory(cat)}
+                            className="h-8"
+                          >
+                            {cat}
+                          </Button>
+                        );
+                      })}
+                    </div>
                     <div className="flex space-x-2">
                       <Input
                         id="categories"
-                        placeholder="Add a category"
+                        placeholder="Add a custom category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
                         onKeyDown={(e) => {
@@ -694,13 +745,7 @@ export default function EditBlogPost() {
                             addCategory();
                           }
                         }}
-                        list="category-options"
                       />
-                      <datalist id="category-options">
-                        {availableCategories.map((cat) => (
-                          <option key={cat} value={cat} />
-                        ))}
-                      </datalist>
                       <Button
                         type="button"
                         onClick={addCategory}
