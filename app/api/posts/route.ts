@@ -9,6 +9,7 @@ import {
   sanitizePlainText,
   sanitizeSlug,
 } from "@/lib/security/content";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { getServerSession } from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
 
@@ -97,6 +98,14 @@ export async function GET(req: NextRequest) {
 
 // POST /api/posts - Create a new post
 export async function POST(req: NextRequest) {
+  const limited = enforceRateLimit(req, {
+    key: "posts-create",
+    windowMs: 10 * 60 * 1000,
+    maxRequests: 10,
+    message: "Too many post creation attempts. Please wait and try again.",
+  });
+  if (limited) return limited;
+
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {

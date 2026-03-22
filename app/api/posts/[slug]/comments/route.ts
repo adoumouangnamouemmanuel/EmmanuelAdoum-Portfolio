@@ -1,13 +1,14 @@
 import { authOptions } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
 import { postModel } from "@/lib/firebase/models";
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 // GET /api/posts/[slug]/comments - Get comments for a post
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const { slug } = await params;
@@ -60,7 +61,7 @@ export async function GET(
               ...reply,
               author,
             };
-          })
+          }),
         );
 
         // Get author details for main comment
@@ -88,7 +89,7 @@ export async function GET(
           author,
           replies,
         };
-      })
+      }),
     );
 
     return NextResponse.json(comments);
@@ -96,7 +97,7 @@ export async function GET(
     console.error("Error fetching comments:", error);
     return NextResponse.json(
       { error: "Failed to fetch comments" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -104,15 +105,20 @@ export async function GET(
 // POST /api/posts/[slug]/comments - Create a new comment
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string }> },
 ) {
+  const limited = enforceRateLimit(request, {
+    key: "posts-comments-create",
+    windowMs: 5 * 60 * 1000,
+    maxRequests: 20,
+    message: "Too many comment attempts. Please wait before posting again.",
+  });
+  if (limited) return limited;
+
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { slug } = await params;
@@ -121,7 +127,7 @@ export async function POST(
     if (!content?.trim()) {
       return NextResponse.json(
         { error: "Content is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -140,7 +146,7 @@ export async function POST(
       if (!parentComment.exists) {
         return NextResponse.json(
           { error: "Parent comment not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
     }
@@ -171,10 +177,10 @@ export async function POST(
           image: authorDoc.data()?.image || session.user.image || null,
         }
       : {
-        id: session.user.id,
-        name: session.user.name || "Anonymous",
+          id: session.user.id,
+          name: session.user.name || "Anonymous",
           email: session.user.email,
-        image: session.user.image || null,
+          image: session.user.image || null,
         };
 
     return NextResponse.json(
@@ -183,13 +189,13 @@ export async function POST(
         ...commentData,
         author,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Error creating comment:", error);
     return NextResponse.json(
       { error: "Failed to create comment" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,9 +1,19 @@
 import { app } from "@/lib/firebase"; // Ensure this points to your Firebase initialization file
+import { enforceRateLimit } from "@/lib/security/rate-limit";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { doc, getFirestore, setDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
+  const limited = enforceRateLimit(req, {
+    key: "auth-register",
+    windowMs: 15 * 60 * 1000,
+    maxRequests: 6,
+    message:
+      "Too many registration attempts. Please try again in a few minutes.",
+  });
+  if (limited) return limited;
+
   try {
     const { name, email, password } = await req.json();
 
@@ -11,7 +21,7 @@ export async function POST(req: Request) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -22,7 +32,7 @@ export async function POST(req: Request) {
     const userCredential = await createUserWithEmailAndPassword(
       auth,
       email,
-      password
+      password,
     );
 
     const user = userCredential.user;
@@ -36,7 +46,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "User registered successfully", userId: user.uid },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error: any) {
     console.error("Error registering user:", error);
