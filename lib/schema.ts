@@ -6,9 +6,9 @@ export const personSchema = {
   image: "https://emmanueladoum.com/images/emma-head.png",
   jobTitle: "Full Stack Developer | AI Engineer | Software Engineer",
   sameAs: [
-    "https://github.com/yourgithub",
-    "https://linkedin.com/in/yourilinkedin",
-    "https://twitter.com/yourtwitter",
+    "https://github.com/adoumouangnamouemmanuel",
+    "https://linkedin.com/in/emmanueladoum",
+    "https://twitter.com/emmanueladoum",
   ],
   description:
     "Full Stack Developer & AI Engineer specializing in React, Next.js, Node.js, Python, Machine Learning, and cloud technologies. Building scalable web applications and intelligent AI solutions with modern tech stack.",
