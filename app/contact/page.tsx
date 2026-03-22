@@ -15,11 +15,75 @@ import {
     Twitter
 } from "lucide-react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import Script from "next/script"
 import { useEffect, useRef, useState } from "react"
 import { useScroll, useTransform } from "framer-motion"
 
 export default function ContactPage() {
+  const pathname = usePathname()
+  const isFr = pathname?.startsWith("/fr")
+  const basePath = pathname?.startsWith("/fr") ? "/fr" : ""
+    const t = isFr
+      ? {
+          toastInitTitle: "Liaison interrompue.",
+          toastInitDesc: "Le service d'envoi n'est pas initialisé. Réessayez.",
+          toastFailTitle: "Envoi échoué.",
+          toastFailDesc: "La transmission a échoué. Merci de me contacter via les réseaux.",
+          backHome: "Retour accueil",
+          heroLead: "Initier la",
+          heroAccent: "connexion.",
+          heroBody:
+            "Disponible pour des missions freelance, des échanges d'architecture système et des collaborations full-stack à fort impact.",
+          successTitle: "Message envoyé.",
+          successBody: "Le message a bien été transmis. Vous recevrez une réponse rapidement.",
+          namePlaceholder: "Entrez votre nom",
+          emailPlaceholder: "Entrez votre e-mail",
+          subjectPlaceholder: "Objet de la demande",
+          messagePlaceholder: "Décrivez le besoin...",
+          idLabel: "01. Identification",
+          returnLabel: "02. Retour",
+          headerLabel: "03. Objet",
+          payloadLabel: "04. Message",
+          sending: "Transmission",
+          initializing: "Initialisation API",
+          send: "Envoyer",
+          contactInfo: "Informations de contact",
+          mapTitle: "Carte",
+          mailTitle: "E-mail",
+          phoneTitle: "Ligne directe",
+          coordinatesTitle: "Coordonnées",
+        }
+      : {
+          toastInitTitle: "Link Terminated.",
+          toastInitDesc: "Communication backend fails to mount. Retry initialization.",
+          toastFailTitle: "Message Failed.",
+          toastFailDesc: "The packet dropped. Please ping socials directly.",
+          backHome: "Return Home",
+          heroLead: "Initiate",
+          heroAccent: "Connection.",
+          heroBody:
+            "Currently entertaining freelance projects, system architecture inquiries, and high-impact full-stack collaborations.",
+          successTitle: "Message Sent.",
+          successBody: "The communication packet was successfully routed. You will receive a response shortly.",
+          namePlaceholder: "Enter your name",
+          emailPlaceholder: "Enter your email",
+          subjectPlaceholder: "Inquiry Subject",
+          messagePlaceholder: "Outline the architecture...",
+          idLabel: "01. Identification",
+          returnLabel: "02. Return Protocol",
+          headerLabel: "03. Header",
+          payloadLabel: "04. Payload",
+          sending: "Transmitting",
+          initializing: "Initializing API",
+          send: "Send Payload",
+          contactInfo: "Contact Information",
+          mapTitle: "Map Base",
+          mailTitle: "Electronic Mail",
+          phoneTitle: "Direct Line",
+          coordinatesTitle: "Coordinates",
+        }
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,8 +126,8 @@ export default function ContactPage() {
 
     if (!emailJSLoaded) {
       toast({
-        title: "Link Terminated.",
-        description: "Communication backend fails to mount. Retry initialization.",
+        title: t.toastInitTitle,
+        description: t.toastInitDesc,
         variant: "destructive",
       })
       return
@@ -91,8 +155,8 @@ export default function ContactPage() {
     } catch (error) {
       console.error("Submission Error:", error)
       toast({
-        title: "Message Failed.",
-        description: "The packet dropped. Please ping socials directly.",
+        title: t.toastFailTitle,
+        description: t.toastFailDesc,
         variant: "destructive",
       })
     } finally {
@@ -103,19 +167,19 @@ export default function ContactPage() {
   const contactInfo = [
     {
       icon: <Mail className="w-5 h-5 sm:w-6 sm:h-6" />,
-      title: "Electronic Mail",
+      title: t.mailTitle,
       value: "emmanuel.adoum@ashesi.edu.gh",
       link: "mailto:emmanuel.adoum@ashesi.edu.gh",
     },
     {
       icon: <Phone className="w-5 h-5 sm:w-6 sm:h-6" />,
-      title: "Direct Line",
+      title: t.phoneTitle,
       value: "+233 50 367 3195",
       link: "tel:+233503673195",
     },
     {
       icon: <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />,
-      title: "Coordinates",
+      title: t.coordinatesTitle,
       value: "Accra, Ghana",
       link: "https://maps.google.com/?q=Accra,Ghana",
     },
@@ -146,9 +210,9 @@ export default function ContactPage() {
            
            <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 w-full">
               <motion.div style={{ opacity, y }} className="relative z-10 w-full">
-                  <Link href="/" className="inline-flex items-center text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group mb-12 sm:mb-16">
+                  <Link href={basePath || "/"} className="inline-flex items-center text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group mb-12 sm:mb-16">
                      <ArrowLeft className="mr-3 h-4 w-4 group-hover:-translate-x-2 transition-transform duration-300" />
-                     Return Home
+                     {t.backHome}
                   </Link>
                   
                   <motion.h1 
@@ -157,7 +221,7 @@ export default function ContactPage() {
                      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                      className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-slate-900 dark:text-white leading-[0.9] max-w-5xl mb-12 lg:mb-20"
                   >
-                     Initiate <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Connection.</span>
+                     {t.heroLead} <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">{t.heroAccent}</span>
                   </motion.h1>
 
                   <motion.div 
@@ -167,7 +231,7 @@ export default function ContactPage() {
                      className="flex flex-col sm:flex-row gap-8 sm:gap-16 border-l-2 border-blue-600 dark:border-blue-400 pl-6 sm:pl-10"
                   >
                      <p className="text-xl sm:text-2xl text-slate-600 dark:text-slate-300 font-light max-w-2xl leading-relaxed">
-                        Currently entertaining freelance projects, system architecture inquiries, and high-impact full-stack collaborations.
+                        {t.heroBody}
                      </p>
                      
                      <div className="flex gap-4 sm:gap-6 items-end">
@@ -208,9 +272,9 @@ export default function ContactPage() {
                           <div className="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mb-8">
                              <CheckCircle2 className="w-12 h-12 text-emerald-500" />
                           </div>
-                          <h2 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">Message Sent.</h2>
+                          <h2 className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6">{t.successTitle}</h2>
                           <p className="text-lg text-slate-500 dark:text-slate-400 font-light max-w-md">
-                            The communication packet was successfully routed. You will receive a response shortly.
+                            {t.successBody}
                           </p>
                         </motion.div>
                       ) : (
@@ -228,12 +292,12 @@ export default function ContactPage() {
                                  type="text"
                                  name="name"
                                  required
-                                 placeholder="Enter your name"
+                                 placeholder={t.namePlaceholder}
                                  value={formData.name}
                                  onChange={handleChange}
                                  className="w-full bg-transparent border-b-2 border-slate-200 dark:border-slate-800 py-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 outline-none focus:border-blue-600 dark:focus:border-blue-400 transition-colors"
                                />
-                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">01. Identification</span>
+                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">{t.idLabel}</span>
                              </div>
 
                              <div className="group relative">
@@ -241,12 +305,12 @@ export default function ContactPage() {
                                  type="email"
                                  name="email"
                                  required
-                                 placeholder="Enter your email"
+                                 placeholder={t.emailPlaceholder}
                                  value={formData.email}
                                  onChange={handleChange}
                                  className="w-full bg-transparent border-b-2 border-slate-200 dark:border-slate-800 py-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 outline-none focus:border-blue-600 dark:focus:border-blue-400 transition-colors"
                                />
-                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">02. Return Protocol</span>
+                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">{t.returnLabel}</span>
                              </div>
 
                              <div className="group relative">
@@ -254,25 +318,25 @@ export default function ContactPage() {
                                  type="text"
                                  name="subject"
                                  required
-                                 placeholder="Inquiry Subject"
+                                 placeholder={t.subjectPlaceholder}
                                  value={formData.subject}
                                  onChange={handleChange}
                                  className="w-full bg-transparent border-b-2 border-slate-200 dark:border-slate-800 py-6 text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 outline-none focus:border-blue-600 dark:focus:border-blue-400 transition-colors"
                                />
-                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">03. Header</span>
+                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">{t.headerLabel}</span>
                              </div>
 
                              <div className="group relative">
                                <textarea
                                  name="message"
                                  required
-                                 placeholder="Outline the architecture..."
+                                 placeholder={t.messagePlaceholder}
                                  value={formData.message}
                                  onChange={handleChange}
                                  rows={4}
                                  className="w-full bg-transparent border-b-2 border-slate-200 dark:border-slate-800 py-6 text-xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-700 outline-none focus:border-blue-600 dark:focus:border-blue-400 transition-colors resize-none leading-relaxed"
                                />
-                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">04. Payload</span>
+                               <span className="absolute left-0 -top-6 text-[10px] font-bold tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400">{t.payloadLabel}</span>
                              </div>
 
                              <div className="pt-8">
@@ -284,13 +348,13 @@ export default function ContactPage() {
                                    {isSubmitting ? (
                                       <>
                                          <div className="w-5 h-5 rounded-full border-2 border-white/30 dark:border-slate-900/30 border-t-white dark:border-t-slate-900 animate-spin" />
-                                         Transmitting
+                                         {t.sending}
                                       </>
                                    ) : !emailJSLoaded ? (
-                                      "Initializing API"
+                                      t.initializing
                                    ) : (
                                       <>
-                                         Send Payload
+                                         {t.send}
                                          <Send className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
                                       </>
                                    )}
@@ -309,15 +373,15 @@ export default function ContactPage() {
                     <div>
                        <h3 className="text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase text-slate-400 mb-8 flex items-center gap-3">
                           <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                          Contact Information
+                          {t.contactInfo}
                        </h3>
                        <div className="flex flex-col gap-4">
                           {contactInfo.map((node, i) => (
                              <a 
                                key={i} 
                                href={node.link} 
-                               target={node.title === "Coordinates" ? "_blank" : undefined}
-                               rel={node.title === "Coordinates" ? "noopener noreferrer" : undefined}
+                               target={node.title === t.coordinatesTitle ? "_blank" : undefined}
+                               rel={node.title === t.coordinatesTitle ? "noopener noreferrer" : undefined}
                                className="group flex flex-col p-8 sm:p-10 rounded-3xl bg-slate-100 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 transition-all duration-300 shadow-sm hover:shadow-xl"
                              >
                                 <div className="p-4 sm:p-5 rounded-full bg-white dark:bg-slate-950 text-blue-600 dark:text-blue-400 mb-6 sm:mb-8 self-start shadow-md group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
@@ -343,7 +407,7 @@ export default function ContactPage() {
                          allowFullScreen
                          loading="lazy"
                          referrerPolicy="no-referrer-when-downgrade"
-                         title="Map Base"
+                         title={t.mapTitle}
                        ></iframe>
                     </div>
 
