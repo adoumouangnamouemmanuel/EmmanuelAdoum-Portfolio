@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
           const userCredential = await signInWithEmailAndPassword(
             auth,
             credentials.email,
-            credentials.password
+            credentials.password,
           );
 
           const user = userCredential.user;
@@ -79,12 +79,16 @@ export const authOptions: NextAuthOptions = {
           // If user document doesn't exist or is missing required fields, create/update it
           if (!userData || !userData.name || !userData.role) {
             const userUpdate = {
-              name: userData?.name || user.displayName || user.email?.split('@')[0] || "User",
+              name:
+                userData?.name ||
+                user.displayName ||
+                user.email?.split("@")[0] ||
+                "User",
               email: user.email,
               image: userData?.image || user.photoURL,
               role: userData?.role || "user",
               updatedAt: new Date().toISOString(),
-              ...(userData ? {} : { createdAt: new Date().toISOString() })
+              ...(userData ? {} : { createdAt: new Date().toISOString() }),
             };
 
             await setDoc(userRef, userUpdate, { merge: true });
@@ -94,7 +98,11 @@ export const authOptions: NextAuthOptions = {
           // Return user object to be stored in the session
           return {
             id: user.uid,
-            name: userData?.name || user.displayName || user.email?.split('@')[0] || "User",
+            name:
+              userData?.name ||
+              user.displayName ||
+              user.email?.split("@")[0] ||
+              "User",
             email: user.email,
             image: userData?.image || user.photoURL,
             role: userData?.role || "user",
@@ -138,14 +146,17 @@ export const authOptions: NextAuthOptions = {
           const db = getFirestore(app);
           const userDoc = await getDoc(doc(db, "users", user.id));
           const userData = userDoc.data();
-          
+
           if (userData) {
             user.name = userData.name;
             user.image = userData.image;
             user.role = userData.role;
           }
         } catch (error) {
-          console.error("Error fetching user data during Google sign in:", error);
+          console.error(
+            "Error fetching user data during Google sign in:",
+            error,
+          );
         }
       }
       return true;
@@ -159,9 +170,27 @@ export const authOptions: NextAuthOptions = {
         session.user.image = token.image;
         session.user.role = token.role || "user";
       }
+
+      // Keep session user data aligned with latest profile values in Firestore.
+      if (session.user?.id) {
+        try {
+          const db = getFirestore(app);
+          const userDoc = await getDoc(doc(db, "users", session.user.id));
+          const userData = userDoc.data();
+
+          if (userData) {
+            session.user.name = userData.name || session.user.name;
+            session.user.image = userData.image || session.user.image;
+            session.user.role = userData.role || session.user.role || "user";
+          }
+        } catch (error) {
+          console.error("Error refreshing session user data:", error);
+        }
+      }
+
       return session;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, trigger, session }) {
       console.log("JWT callback:", { token, user, account });
       if (user) {
         token.id = user.id;
@@ -170,6 +199,17 @@ export const authOptions: NextAuthOptions = {
         token.image = user.image;
         token.role = user.role || "user";
       }
+
+      // Apply client-side session updates (useSession().update) to the JWT.
+      // This keeps header/avatar UI in sync immediately after profile image changes.
+      if (trigger === "update" && session?.user) {
+        token.id = session.user.id || token.id;
+        token.name = session.user.name || token.name;
+        token.email = session.user.email || token.email;
+        token.image = session.user.image || token.image;
+        token.role = session.user.role || token.role || "user";
+      }
+
       return token;
     },
   },
