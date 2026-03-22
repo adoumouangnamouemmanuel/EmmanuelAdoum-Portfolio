@@ -1,5 +1,9 @@
 import { authOptions } from "@/lib/auth";
-import { uploadImageToSupabase, type UploadKind } from "@/lib/supabase/storage";
+import {
+  deleteSupabaseImageByPublicUrl,
+  uploadImageToSupabase,
+  type UploadKind,
+} from "@/lib/supabase/storage";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -20,6 +24,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const file = formData.get("file");
     const kind = parseUploadKind(formData.get("kind"));
+    const previousImageUrl = formData.get("previousImageUrl");
 
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -30,6 +35,17 @@ export async function POST(request: Request) {
       kind,
       userId: session.user.id,
     });
+
+    if (typeof previousImageUrl === "string" && previousImageUrl !== imageUrl) {
+      try {
+        await deleteSupabaseImageByPublicUrl({
+          imageUrl: previousImageUrl,
+          kind,
+        });
+      } catch (cleanupError) {
+        console.error("Failed to clean up previous image:", cleanupError);
+      }
+    }
 
     return NextResponse.json({ imageUrl });
   } catch (error) {

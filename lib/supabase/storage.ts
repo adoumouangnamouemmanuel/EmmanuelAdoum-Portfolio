@@ -78,6 +78,58 @@ function getBucketName(kind: UploadKind): string {
   return process.env.SUPABASE_BUCKET_BLOG_IMAGES || "blog-images";
 }
 
+function getSupabaseProjectHost(): string {
+  const url = requireEnv("SUPABASE_URL");
+  return new URL(url).host;
+}
+
+export async function deleteSupabaseImageByPublicUrl({
+  imageUrl,
+  kind,
+}: {
+  imageUrl: string;
+  kind: UploadKind;
+}) {
+  if (!imageUrl) {
+    return;
+  }
+
+  let parsed: URL;
+  try {
+    parsed = new URL(imageUrl);
+  } catch {
+    return;
+  }
+
+  // Only delete objects from this project's Supabase public storage URL.
+  const projectHost = getSupabaseProjectHost();
+  if (parsed.host !== projectHost) {
+    return;
+  }
+
+  const bucket = getBucketName(kind);
+  const marker = `/storage/v1/object/public/${bucket}/`;
+  const markerIndex = parsed.pathname.indexOf(marker);
+
+  if (markerIndex === -1) {
+    return;
+  }
+
+  const filePath = decodeURIComponent(
+    parsed.pathname.slice(markerIndex + marker.length),
+  );
+  if (!filePath) {
+    return;
+  }
+
+  const supabase = getSupabaseAdminClient();
+  const { error } = await supabase.storage.from(bucket).remove([filePath]);
+
+  if (error) {
+    throw new Error(error.message || "Failed to delete previous image");
+  }
+}
+
 export function validateImageFile(file: File, maxSizeBytes: number) {
   if (!file) {
     throw new Error("No file provided");

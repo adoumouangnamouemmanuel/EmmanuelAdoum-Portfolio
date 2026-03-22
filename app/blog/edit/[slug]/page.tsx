@@ -81,6 +81,10 @@ export default function EditBlogPost() {
   const [preview, setPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [pendingCoverFile, setPendingCoverFile] = useState<File | null>(null);
+  const [pendingCoverPreview, setPendingCoverPreview] = useState<string | null>(
+    null,
+  );
   const [isDeleting, setIsDeleting] = useState(false);
   const [originalPost, setOriginalPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
@@ -325,7 +329,15 @@ export default function EditBlogPost() {
     }
   };
 
-  const handleCoverImageUpload = async (
+  useEffect(() => {
+    return () => {
+      if (pendingCoverPreview) {
+        URL.revokeObjectURL(pendingCoverPreview);
+      }
+    };
+  }, [pendingCoverPreview]);
+
+  const handleCoverImageSelect = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
@@ -341,11 +353,36 @@ export default function EditBlogPost() {
       return;
     }
 
+    if (pendingCoverPreview) {
+      URL.revokeObjectURL(pendingCoverPreview);
+    }
+
+    const localPreviewUrl = URL.createObjectURL(file);
+    setPendingCoverFile(file);
+    setPendingCoverPreview(localPreviewUrl);
+    toast({
+      title: "Image selected",
+      description: "Preview it, then click Confirm Upload.",
+    });
+    event.target.value = "";
+  };
+
+  const handleConfirmCoverUpload = async () => {
+    if (!pendingCoverFile) {
+      toast({
+        title: "No image selected",
+        description: "Please choose an image first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsUploadingCover(true);
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", pendingCoverFile);
       formData.append("kind", "blog");
+      formData.append("previousImageUrl", coverImage || "");
 
       const response = await fetch("/api/uploads/image", {
         method: "POST",
@@ -358,6 +395,11 @@ export default function EditBlogPost() {
       }
 
       setCoverImage(data.imageUrl);
+      if (pendingCoverPreview) {
+        URL.revokeObjectURL(pendingCoverPreview);
+      }
+      setPendingCoverFile(null);
+      setPendingCoverPreview(null);
       toast({
         title: "Image uploaded",
         description: "Cover image uploaded successfully",
@@ -373,8 +415,15 @@ export default function EditBlogPost() {
       });
     } finally {
       setIsUploadingCover(false);
-      event.target.value = "";
     }
+  };
+
+  const handleCancelCoverSelection = () => {
+    if (pendingCoverPreview) {
+      URL.revokeObjectURL(pendingCoverPreview);
+    }
+    setPendingCoverFile(null);
+    setPendingCoverPreview(null);
   };
 
   // Update slug automatically when title changes
@@ -584,12 +633,50 @@ export default function EditBlogPost() {
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={handleCoverImageUpload}
+                        onChange={handleCoverImageSelect}
                       />
                     </div>
+                    {pendingCoverPreview && (
+                      <div className="mt-3 rounded-lg border p-3 space-y-3">
+                        <p className="text-sm font-medium">
+                          Selected image preview
+                        </p>
+                        <div className="relative aspect-video w-full overflow-hidden rounded-md border bg-muted/20">
+                          <img
+                            src={pendingCoverPreview}
+                            alt="Selected cover preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            onClick={handleConfirmCoverUpload}
+                            disabled={isUploadingCover}
+                          >
+                            {isUploadingCover ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Uploading...
+                              </>
+                            ) : (
+                              "Confirm Upload"
+                            )}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleCancelCoverSelection}
+                            disabled={isUploadingCover}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                     <p className="text-sm text-muted-foreground">
-                      Use the image button to upload directly to Supabase
-                      Storage.
+                      Select an image, preview it, then confirm upload to
+                      Supabase Storage.
                     </p>
                   </div>
 
@@ -690,7 +777,11 @@ export default function EditBlogPost() {
                 <div className="prose dark:prose-invert max-w-none">
                   <div className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video">
                     <img
-                      src={coverImage || "/images/posts/blog.avif"}
+                      src={
+                        pendingCoverPreview ||
+                        coverImage ||
+                        "/images/posts/blog.avif"
+                      }
                       alt={title}
                       className="w-full h-full object-cover"
                     />

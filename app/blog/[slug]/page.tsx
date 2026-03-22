@@ -336,78 +336,94 @@ export default function BlogPostPage() {
         </motion.div>
 
         {/* Cinematic Gradients */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/40 to-black/20" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/55 to-black/35" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/65 via-black/20 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-black/20" />
 
         {/* Mastermind Hover Elements Overlay */}
         <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 sm:p-12 lg:p-20 lg:pb-24 max-w-7xl mx-auto w-full">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-            className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8"
-          >
-            {displayCategories.map((category, index) => (
-              <span
-                key={index}
-                className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
-              >
-                {category}
-              </span>
-            ))}
-          </motion.div>
+          <div className="w-fit max-w-4xl rounded-2xl border border-white/15 bg-gradient-to-r from-black/46 via-black/26 to-black/10 p-4 sm:p-6 lg:p-7 shadow-xl backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1,
+              }}
+              className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8"
+            >
+              {displayCategories.map((category, index) => (
+                <span
+                  key={index}
+                  className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
+                >
+                  {category}
+                </span>
+              ))}
+            </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-            className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-6 leading-[1.05] md:leading-[1.1] max-w-5xl"
-          >
-            {post.title}
-          </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.2,
+              }}
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white mb-5 leading-[1.08] md:leading-[1.1] max-w-4xl"
+              style={{ textShadow: "0 3px 22px rgba(0, 0, 0, 0.55)" }}
+            >
+              {post.title}
+            </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-            className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10"
-          >
-            {/* Author Chip Inside Hero */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white/20">
-                <Image
-                  src={author.image || "/images/posts/profile.jpeg"}
-                  alt={author.name}
-                  width={56}
-                  height={56}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <div className="text-white font-medium text-sm sm:text-base">
-                  {author.name}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.3,
+              }}
+              className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10"
+            >
+              {/* Author Chip Inside Hero */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white/20">
+                  <Image
+                    src={author.image || "/images/posts/profile.jpeg"}
+                    alt={author.name}
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <div className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
-                  {t.author}
+                <div>
+                  <div className="text-white font-medium text-sm sm:text-base">
+                    {author.name}
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
+                    {t.author}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Meta Data */}
-            <div className="hidden sm:flex flex-wrap items-center gap-6 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300 border-l border-white/20 pl-10">
-              <span className="flex items-center gap-2 relative z-20">
-                <Calendar className="w-4 h-4 text-blue-400" /> {post.date}
-              </span>
-              <span className="flex items-center gap-2 relative z-20">
-                <Clock className="w-4 h-4 text-purple-400" /> {post.readTime}{" "}
-                {t.minRead}
-              </span>
-              <span className="flex items-center gap-2 relative z-20">
-                <Eye className="w-4 h-4 text-emerald-400" /> {post.views}{" "}
-                {t.views}
-              </span>
-            </div>
-          </motion.div>
+              {/* Meta Data */}
+              <div className="hidden sm:flex flex-wrap items-center gap-6 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300 border-l border-white/20 pl-10">
+                <span className="flex items-center gap-2 relative z-20">
+                  <Calendar className="w-4 h-4 text-blue-400" /> {post.date}
+                </span>
+                <span className="flex items-center gap-2 relative z-20">
+                  <Clock className="w-4 h-4 text-purple-400" /> {post.readTime}{" "}
+                  {t.minRead}
+                </span>
+                <span className="flex items-center gap-2 relative z-20">
+                  <Eye className="w-4 h-4 text-emerald-400" /> {post.views}{" "}
+                  {t.views}
+                </span>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 

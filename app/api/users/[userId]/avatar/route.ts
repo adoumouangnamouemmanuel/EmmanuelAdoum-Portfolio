@@ -1,6 +1,9 @@
 import { authOptions } from "@/lib/auth";
 import { adminDb } from "@/lib/firebase/admin";
-import { uploadImageToSupabase } from "@/lib/supabase/storage";
+import {
+  deleteSupabaseImageByPublicUrl,
+  uploadImageToSupabase,
+} from "@/lib/supabase/storage";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -30,6 +33,12 @@ export async function POST(
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    const userRef = adminDb.collection("users").doc(userId);
+    const userDoc = await userRef.get();
+    const previousImageUrl = userDoc.exists
+      ? (userDoc.data()?.image as string | undefined)
+      : undefined;
+
     const { imageUrl } = await uploadImageToSupabase({
       file,
       kind: "avatar",
@@ -37,10 +46,21 @@ export async function POST(
     });
 
     // Update user profile with new image
-    await adminDb.collection("users").doc(userId).update({
+    await userRef.update({
       image: imageUrl,
       updatedAt: new Date().toISOString(),
     });
+
+    if (previousImageUrl && previousImageUrl !== imageUrl) {
+      try {
+        await deleteSupabaseImageByPublicUrl({
+          imageUrl: previousImageUrl,
+          kind: "avatar",
+        });
+      } catch (cleanupError) {
+        console.error("Failed to delete previous avatar:", cleanupError);
+      }
+    }
 
     return NextResponse.json({ imageUrl });
   } catch (error) {
