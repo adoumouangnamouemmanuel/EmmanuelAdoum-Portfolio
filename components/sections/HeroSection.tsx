@@ -147,7 +147,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
               className="group h-14 w-full sm:w-auto rounded-full border-slate-300 bg-white/80 backdrop-blur-sm px-8 text-base font-medium shadow-sm transition-all hover:scale-105 hover:bg-white dark:border-slate-700 dark:bg-slate-900/80 dark:hover:bg-slate-800 dark:text-white text-slate-900 justify-center"
             >
               <Link
-                href="/resume.pdf"
+                href={locale === "fr" ? "/resume_fr.pdf" : "/resume.pdf"}
                 target="_blank"
                 rel="noopener noreferrer"
               >

@@ -263,7 +263,7 @@ export default function AboutPage() {
                   <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </Link>
                 <a
-                  href="/resume.pdf"
+                  href={isFr ? "/resume_fr.pdf" : "/resume.pdf"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="group flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-slate-200/50 dark:bg-slate-900/50 text-slate-900 dark:text-white text-xs font-bold tracking-[0.2em] uppercase border border-slate-300 dark:border-slate-800 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
