@@ -1,23 +1,24 @@
 "use client";
 
-import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import {
+  BarChart3,
+  BrainCircuit,
   Code2,
   Database,
   Layout,
+  Network,
   Server,
   Smartphone,
-  BrainCircuit,
-  Network,
-  BarChart3,
 } from "lucide-react";
+import { useRef } from "react";
 
-const skills = [
+const skillsEn = [
   {
     title: "Frontend",
     icon: <Layout className="h-5 w-5" />,
-    description: "Building responsive, beautiful, and interactive user interfaces.",
+    description:
+      "Building responsive, beautiful, and interactive user interfaces.",
     technologies: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
   },
   {
@@ -35,20 +36,32 @@ const skills = [
   {
     title: "ML",
     icon: <BrainCircuit className="h-5 w-5" />,
-    description: "Developing intelligent models to solve predictive computing challenges.",
+    description:
+      "Developing intelligent models to solve predictive computing challenges.",
     technologies: ["Scikit-Learn", "TensorFlow", "XGBoost", "NLP", "LLMs"],
   },
   {
     title: "Deep Learning",
     icon: <Network className="h-5 w-5" />,
-    description: "Building complex neural networks for advanced pattern recognition.",
-    technologies: ["PyTorch", "Neural Networks", "Computer Vision", "Transformers"],
+    description:
+      "Building complex neural networks for advanced pattern recognition.",
+    technologies: [
+      "PyTorch",
+      "Neural Networks",
+      "Computer Vision",
+      "Transformers",
+    ],
   },
   {
     title: "Data Analytics",
     icon: <BarChart3 className="h-5 w-5" />,
     description: "Extracting actionable insights from vast datasets.",
-    technologies: ["Pandas", "Data Visualization", "NumPy",  "Statistical Analysis"],
+    technologies: [
+      "Pandas",
+      "Data Visualization",
+      "NumPy",
+      "Statistical Analysis",
+    ],
   },
   {
     title: "Mobile Dev",
@@ -59,14 +72,100 @@ const skills = [
   {
     title: "UI/UX Design",
     icon: <Code2 className="h-5 w-5" />,
-    description: "Crafting intuitive and aesthetically pleasing digital experiences.",
+    description:
+      "Crafting intuitive and aesthetically pleasing digital experiences.",
     technologies: ["Figma", "Design Systems", "Prototyping", "Wireframing"],
   },
 ];
 
-export default function SkillsSection() {
+const skillsFr = [
+  {
+    title: "Frontend",
+    icon: <Layout className="h-5 w-5" />,
+    description:
+      "Création d'interfaces responsives, esthétiques et interactives.",
+    technologies: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+  },
+  {
+    title: "Backend",
+    icon: <Server className="h-5 w-5" />,
+    description:
+      "Conception d'API robustes et de solutions serveur évolutives.",
+    technologies: ["Node.js", "Python", "NestJS", "Express", "Django"],
+  },
+  {
+    title: "Base de Données",
+    icon: <Database className="h-5 w-5" />,
+    description:
+      "Modélisation efficace et optimisation des requêtes de données.",
+    technologies: ["PostgreSQL", "MongoDB", "MySQL"],
+  },
+  {
+    title: "ML",
+    icon: <BrainCircuit className="h-5 w-5" />,
+    description:
+      "Développement de modèles intelligents pour des problèmes prédictifs.",
+    technologies: ["Scikit-Learn", "TensorFlow", "XGBoost", "NLP", "LLMs"],
+  },
+  {
+    title: "Deep Learning",
+    icon: <Network className="h-5 w-5" />,
+    description: "Conception de réseaux neuronaux pour des usages avancés.",
+    technologies: [
+      "PyTorch",
+      "Neural Networks",
+      "Computer Vision",
+      "Transformers",
+    ],
+  },
+  {
+    title: "Analyse de Données",
+    icon: <BarChart3 className="h-5 w-5" />,
+    description:
+      "Extraction d'insights actionnables a partir de grands volumes.",
+    technologies: [
+      "Pandas",
+      "Data Visualization",
+      "NumPy",
+      "Statistical Analysis",
+    ],
+  },
+  {
+    title: "Mobile",
+    icon: <Smartphone className="h-5 w-5" />,
+    description: "Création d'expériences mobiles fluides multi-plateformes.",
+    technologies: ["React Native", "Expo", "Cross-Platform UI"],
+  },
+  {
+    title: "Design UI/UX",
+    icon: <Code2 className="h-5 w-5" />,
+    description: "Conception d'expériences numériques intuitives et élégantes.",
+    technologies: ["Figma", "Design Systems", "Prototyping", "Wireframing"],
+  },
+];
+
+type Locale = "en" | "fr";
+
+export default function SkillsSection({ locale = "en" }: { locale?: Locale }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const skills = locale === "fr" ? skillsFr : skillsEn;
+  const t =
+    locale === "fr"
+      ? {
+          eyebrow: "Capacités",
+          titleLead: "Arsenal",
+          titleAccent: "Technique",
+          description:
+            "Un ensemble de technologies et de domaines maîtrisés pour concevoir, développer et déployer des systèmes complets.",
+        }
+      : {
+          eyebrow: "Capabilities",
+          titleLead: "Technical",
+          titleAccent: "Arsenal",
+          description:
+            "A carefully curated and deeply internalised set of technologies and domains that allow me to architect, build, and deploy complete systems.",
+        };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -91,9 +190,11 @@ export default function SkillsSection() {
   };
 
   return (
-    <section id="skills" className="py-16 lg:py-12 lg:min-h-screen lg:flex lg:items-center bg-white dark:bg-slate-950 relative overflow-hidden">
+    <section
+      id="skills"
+      className="py-16 lg:py-12 lg:min-h-screen lg:flex lg:items-center bg-white dark:bg-slate-950 relative overflow-hidden"
+    >
       <div className="section-container w-full pl-4 pr-6 sm:pl-6 sm:pr-8 lg:pl-8 lg:pr-20 xl:pr-24 max-w-7xl mx-auto">
-        
         <div className="flex flex-col items-center text-center mb-10 lg:mb-12">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -103,10 +204,10 @@ export default function SkillsSection() {
             className="mb-4 lg:mb-5"
           >
             <p className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 shadow-sm dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-blue-400">
-              Capabilities
+              {t.eyebrow}
             </p>
           </motion.div>
-          
+
           <motion.h2
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -114,12 +215,12 @@ export default function SkillsSection() {
             viewport={{ once: true }}
             className="text-4xl sm:text-5xl font-bold tracking-tighter text-slate-900 dark:text-white mb-6"
           >
-            Technical{" "}
+            {t.titleLead}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-              Arsenal
+              {t.titleAccent}
             </span>
           </motion.h2>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -127,7 +228,7 @@ export default function SkillsSection() {
             viewport={{ once: true }}
             className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed"
           >
-            A carefully curated and deeply internalised set of technologies and domains that allow me to architect, build, and deploy complete systems.
+            {t.description}
           </motion.p>
         </div>
 
@@ -152,11 +253,11 @@ export default function SkillsSection() {
                   {skill.title}
                 </h3>
               </div>
-              
+
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mb-5 lg:mb-6 flex-grow leading-relaxed">
                 {skill.description}
               </p>
-              
+
               <div className="flex flex-wrap gap-2 mt-auto">
                 {skill.technologies.map((tech, techIndex) => (
                   <span

@@ -7,7 +7,36 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
-export default function AboutSection() {
+type Locale = "en" | "fr";
+
+export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
+  const t =
+    locale === "fr"
+      ? {
+          eyebrow: "Derrière le code",
+          titleLead: "Ingénierie avec",
+          titleAccent: "Objectif",
+          titleEnd: "et Précision.",
+          paragraph1:
+            "Je suis un ingénieur logiciel spécialisé dans la création de systèmes web évolutifs et de solutions IA pour des problèmes réels.",
+          paragraph2:
+            "Au-delà du code, je mène des initiatives techniques et des projets qui améliorent l'accès à la technologie et aux opportunités, notamment pour les communautés sous-représentées.",
+          cta: "Voir mes projets",
+          role: "Ingénieur Logiciel",
+        }
+      : {
+          eyebrow: "Behind The Code",
+          titleLead: "Engineering with",
+          titleAccent: "Purpose",
+          titleEnd: "& Precision.",
+          paragraph1:
+            "I’m a software engineer focused on building scalable web and AI-driven systems that solve real-world problems.",
+          paragraph2:
+            "Beyond coding, I lead technical initiatives and work on projects aimed at improving access to technology and opportunity, particularly in underserved communities. I’m driven by building solutions that are not just functional, but meaningful and long-lasting.",
+          cta: "View My Work",
+          role: "Software Engineer",
+        };
+
   const ref = useRef(null);
   const textRef = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
@@ -58,13 +87,13 @@ export default function AboutSection() {
               />
               {/* Professional subtle gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-slate-900/10 to-transparent pointer-events-none" />
-              
+
               <div className="absolute bottom-0 left-0 right-0 p-8 pointer-events-none">
                 <h3 className="text-white text-2xl font-bold tracking-tight drop-shadow-md">
                   Emmanuel Adoum
                 </h3>
                 <p className="text-slate-200 font-medium mt-1 drop-shadow-md">
-                  Software Engineer
+                  {t.role}
                 </p>
               </div>
             </motion.div>
@@ -76,9 +105,12 @@ export default function AboutSection() {
             variants={containerVariants}
             className="relative lg:pl-4 text-center lg:text-left flex flex-col items-center lg:items-start"
           >
-            <motion.div variants={itemVariants} className="mb-6 flex justify-center lg:justify-start w-full">
+            <motion.div
+              variants={itemVariants}
+              className="mb-6 flex justify-center lg:justify-start w-full"
+            >
               <p className="inline-flex items-center rounded-full border border-blue-200/60 bg-blue-50/50 backdrop-blur-md px-4 py-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 shadow-sm dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-blue-400">
-                Behind The Code
+                {t.eyebrow}
               </p>
             </motion.div>
 
@@ -86,23 +118,19 @@ export default function AboutSection() {
               variants={itemVariants}
               className="text-4xl sm:text-5xl md:text-[3.5rem] font-bold tracking-tighter mb-8 text-slate-900 dark:text-white leading-[1.1]"
             >
-              Engineering with{" "}
+              {t.titleLead}{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-                Purpose
+                {t.titleAccent}
               </span>{" "}
-              & Precision.
+              {t.titleEnd}
             </motion.h2>
 
             <motion.div
               variants={itemVariants}
               className="space-y-6 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0"
             >
-              <p>
-                I’m a software engineer focused on building scalable web and AI-driven systems that solve real-world problems.
-              </p>
-              <p>
-                Beyond coding, I lead technical initiatives and work on projects aimed at improving access to technology and opportunity, particularly in underserved communities. I’m driven by building solutions that are not just functional, but meaningful and long-lasting.
-              </p>
+              <p>{t.paragraph1}</p>
+              <p>{t.paragraph2}</p>
             </motion.div>
 
             <motion.div variants={itemVariants} className="w-full sm:w-auto">
@@ -112,7 +140,7 @@ export default function AboutSection() {
                 className="group h-14 rounded-full bg-slate-900 text-white px-8 text-base shadow-xl shadow-slate-900/10 transition-all hover:scale-105 hover:bg-slate-800 dark:bg-blue-600 dark:shadow-blue-900/20 dark:hover:bg-blue-500 w-full sm:w-auto"
               >
                 <Link href="#projects">
-                  View My Work
+                  {t.cta}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
