@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     google: "UG8yAiR4WO2SeDElT5EWIWT2TegP2n3CDHk0PLUyoyw",
   },
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+    process.env.NEXT_PUBLIC_SITE_URL || "https://emmanueladoum.com",
   ),
   alternates: {
     canonical: "/",
