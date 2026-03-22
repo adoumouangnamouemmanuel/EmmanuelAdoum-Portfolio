@@ -195,3 +195,79 @@ export const education = [
     type: "certification",
   },
 ];
+
+const educationFrOverrides: Record<
+  string,
+  Partial<(typeof education)[number]>
+> = {
+  "Bachelor of Science in Computer Engineering": {
+    degree: "Licence en Ingénierie Informatique",
+    description:
+      "Le programme d'Ingénierie Informatique d'Ashesi combine les principes de l'électrique et de l'informatique pour former des profils capables de concevoir et développer des systèmes de calcul complets. Le cursus met l'accent sur la résolution de problèmes, l'innovation et l'éthique professionnelle.",
+  },
+  "Bachelor of Science in Artificial Intelligence": {
+    degree: "Licence en Intelligence Artificielle",
+    description:
+      "Le programme IA de l'ADU prépare les étudiants, sur les plans pratique et théorique, à concevoir des systèmes intelligents répondant à des enjeux concrets en agriculture, santé et éducation dans la région du Sahel.",
+  },
+  "Software Engineering Program": {
+    degree: "Programme d'Ingénierie Logicielle",
+    description:
+      "Programme intensif et pratique orientant les apprenants vers l'ingénierie logicielle full-stack via des projets réels, avec un fort accent sur la collaboration et la préparation au monde professionnel.",
+  },
+  "International Affairs Program (Exchange)": {
+    degree: "Programme d'Affaires Internationales (Échange)",
+    description:
+      "Échange académique court focalisé sur les relations internationales, la diplomatie et les politiques globales, avec une exposition aux perspectives européennes de gouvernance.",
+  },
+  "Software Engineering": {
+    degree: "Ingénierie Logicielle",
+    description:
+      "Certification professionnelle en ingénierie logicielle, axée sur les compétences pratiques et les projets réels.",
+  },
+  "Tools of the Trade: Linux and SQL": {
+    degree: "Les essentiels: Linux et SQL",
+    description:
+      "Cours fondamental sur Linux et SQL, axé sur les outils en ligne de commande et la gestion de base de données.",
+  },
+  "Meta React professional certificate": {
+    degree: "Certificat Professionnel React (Meta)",
+    description:
+      "Programme complet couvrant React, JavaScript et les bonnes pratiques de développement front-end.",
+  },
+  "Introduction to Data": {
+    degree: "Introduction aux Données",
+    description:
+      "Cours de base en analyse et visualisation de données, avec un accent sur les applications concrètes.",
+  },
+  "Automate Cybersecurity Tasks with Python": {
+    degree: "Automatiser la Cybersécurité avec Python",
+    description:
+      "Cours d'introduction au scripting Python pour l'automatisation des tâches de cybersécurité.",
+  },
+  "Programming with JavaScript": {
+    degree: "Programmer avec JavaScript",
+    description:
+      "Cours fondamental sur JavaScript pour le développement web et les bonnes pratiques de code.",
+  },
+  "Python for Everybody Specialization": {
+    degree: "Spécialisation Python for Everybody",
+    description:
+      "Programme complet couvrant Python, les structures de données et l'extraction de données web.",
+  },
+  "What is Data Science?": {
+    degree: "Qu'est-ce que la Data Science ?",
+    description:
+      "Cours introductif sur les concepts, outils et méthodes de la data science.",
+  },
+  "Introduction to Front-End Development": {
+    degree: "Introduction au Développement Front-End",
+    description:
+      "Cours de base sur le développement front-end avec HTML, CSS et JavaScript.",
+  },
+};
+
+export const educationFr = education.map((item) => ({
+  ...item,
+  ...(educationFrOverrides[item.degree] || {}),
+}));

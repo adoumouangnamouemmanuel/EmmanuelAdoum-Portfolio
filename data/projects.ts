@@ -345,15 +345,9 @@ export const projects = [
     goal: "To build a flexible, authenticated CLI tool for scraping and exporting tweet data from Twitter/X for research, social media analysis, and data collection use cases.",
     outcome:
       "A fully functional scraper supporting user, hashtag, and query-based scraping with configurable limits, additional data fields, and structured CSV output.",
-    technologies: [
-      "Python",
-      "Selenium",
-      "dotenv",
-      "argparse",
-      "CSV",
-      "CLI",
-    ],
-    github: "https://github.com/adoumouangnamouemmanuel/tweeter_scraper_selenimum",
+    technologies: ["Python", "Selenium", "dotenv", "argparse", "CSV", "CLI"],
+    github:
+      "https://github.com/adoumouangnamouemmanuel/tweeter_scraper_selenimum",
     demo: "https://github.com/adoumouangnamouemmanuel/tweeter_scraper_selenimum",
     featured: false,
     category: "Data & Automation",
@@ -401,7 +395,8 @@ export const projects = [
       "Google Fonts",
       "Vercel",
     ],
-    github: "https://github.com/adoumouangnamouemmanuel/succes-masra-incarceration",
+    github:
+      "https://github.com/adoumouangnamouemmanuel/succes-masra-incarceration",
     demo: "https://succesmasra.vercel.app",
     featured: false,
     category: "Advocacy & Web",
@@ -503,7 +498,8 @@ export const projects = [
       "Vercel",
       "ShadCN UI",
     ],
-    github: "https://github.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio",
+    github:
+      "https://github.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio",
     demo: "https://emmanueladoum.com",
     featured: false,
     category: "Full Stack",
@@ -539,3 +535,159 @@ export const projects = [
     gallery: [],
   },
 ];
+
+const projectsFrOverrides: Record<
+  string,
+  Partial<(typeof projects)[number]>
+> = {
+  "tchad-education-system": {
+    title: "Tchad Education System",
+    description:
+      "Initiative EdTech visant à numériser la gestion scolaire et l'apprentissage au Tchad. La plateforme accompagne écoles, enseignants et élèves avec l'inscription, le suivi des notes et des outils de communication.",
+    goal: "Créer une plateforme éducative complète qui numérise la gestion des établissements et les systèmes d'apprentissage au Tchad.",
+    outcome:
+      "Une plateforme pleinement opérationnelle permettant l'inscription, le suivi des notes et l'amélioration de la communication entre acteurs scolaires.",
+    category: "EdTech",
+    client: "Ministère de l'Éducation - Tchad",
+    challenges: [
+      "Connectivité internet instable dans les zones rurales",
+      "Accès limité aux appareils numériques dans certaines écoles",
+      "Standardisation linguistique et curriculaire",
+    ],
+    solutions: [
+      "Implémentation d'une architecture offline-first avec stockage local et synchronisation différée.",
+      "Création d'une PWA légère avec fallback SMS pour les notifications critiques.",
+      "Mise en place d'un CMS flexible avec support multilingue et programmes personnalisables.",
+    ],
+    developmentProcess: [
+      "Recherche terrain dans 5 régions du Tchad",
+      "Architecture modulaire avec accès par rôles (admin, enseignant, élève)",
+      "Synchronisation temps réel via Firebase",
+      "Déploiement CI/CD avec Vercel et GitHub Actions",
+    ],
+    keyFeatures: [
+      "Authentification multi-role et gestion des permissions",
+      "Dashboard de gestion des écoles et classes",
+      "Suivi en temps réel des notes et présences",
+      "Support mobile offline-first",
+      "Support bilingue (français et arabe)",
+    ],
+  },
+  "moussey-numeric-dictionary": {
+    title: "Dictionnaire Numérique Moussey",
+    description:
+      "Initiative de préservation linguistique pour créer un dictionnaire Moussey numérique avec références, traductions et exemples d'usage.",
+    goal: "Documenter et numériser le vocabulaire Moussey avec des traductions fiables et une catégorisation numérique.",
+    outcome:
+      "Une plateforme interactive proposant un dictionnaire Moussey avec recherche, tri alphabétique et numérique, exemples et traductions.",
+    category: "LanguageTech",
+    client: "Groupe communautaire de preservation de la langue Moussey",
+    challenges: [
+      "Absence de standard établi pour l'orthographe et la grammaire Moussey",
+      "Traductions manquantes ou inexactes dans des sources antérieures",
+      "Disponibilité limitée des locuteurs natifs pour validation",
+      "Nettoyage manuel de centaines d'entrées",
+    ],
+    solutions: [
+      "Mise en place d'un cadre flexible d'orthographe/grammaire avec retour communautaire.",
+      "Validation croisée des traductions à partir de plusieurs sources.",
+      "Ateliers de validation avec locuteurs natifs.",
+      "Automatisation du nettoyage des données pour doublons et incohérences.",
+    ],
+    developmentProcess: [
+      "Collecte du vocabulaire à partir de diverses sources communautaires",
+      "Répartition des revues entre 28 relecteurs via feuilles triées",
+      "Utilisation de Google Sheets comme backend collaboratif",
+      "Construction d'une interface de recherche connectée à Firebase",
+      "Tests de la qualité des traductions avec des locuteurs natifs",
+    ],
+    keyFeatures: [
+      "Organisation alphabétique et numérique",
+      "Traductions français, Moussey et anglais",
+      "Mises à jour en direct via Google Sheets",
+      "Outils de correction et validation des exemples",
+      "UI mobile adaptée aux zones rurales",
+    ],
+  },
+  "tumor-immune-dynamics-model": {
+    title: "Modèle de Dynamique Tumeur-Système Immunitaire",
+    description:
+      "Plateforme web interactive pour explorer le modèle mathématique NTIUNHDM et les interactions complexes entre cellules tumorales, réponse immunitaire et facteurs nutritionnels.",
+    goal: "Rendre accessibles des mathématiques complexes de recherche sur le cancer via des visualisations interactives et des simulations en temps réel.",
+    outcome:
+      "Une plateforme de recherche interactive combinant modélisation rigoureuse et simulation intuitive pour chercheurs, étudiants et public.",
+    category: "Recherche & Mathématiques",
+    client: "MATH221 & CE122 - Ashesi University",
+  },
+  "solar-system-simulation": {
+    title: "Simulation du Système Solaire",
+    description:
+      "Simulation Python avec Pygame pour visualiser en temps réel la mécanique orbitale, les interactions gravitationnelles et les lois physiques célestes.",
+    goal: "Construire un outil éducatif interactif et physiquement cohérent pour explorer la dynamique orbitale.",
+    outcome:
+      "Une simulation Pygame complète avec rendu des planètes, interactions gravitationnelles, support des lunes et export CSV.",
+    category: "Simulation & Physique",
+  },
+  "ghana-road-transport-network": {
+    title: "Réseau Routier du Ghana",
+    description:
+      "Solution full-stack du challenge Ghana Road Transport Network 2026: modélisation graphe, Dijkstra, Yen K-shortest paths, API Spring Boot, CLI Java et frontend Next.js interactif.",
+    goal: "Modéliser le réseau routier interurbain du Ghana et fournir des outils de parcours, estimation de coûts et gestion de connectivité.",
+    outcome:
+      "Système multi-couches robuste couvrant les 10 questions du challenge avec visualisation force-directed et édition en temps réel des routes.",
+    category: "Algorithmes & Structures de Données",
+    client: "Ashesi University - Programming Challenge 2026",
+  },
+  "discrete-learn": {
+    title: "Discrete Learn",
+    description:
+      "Plateforme d'apprentissage en ligne pour maîtriser les mathématiques discrètes, avec accent sur la théorie des ensembles, quiz interactifs et suivi de progression.",
+    goal: "Rendre la théorie des ensembles plus accessible grâce à des leçons guidées et des exercices pratiques interactifs.",
+    outcome:
+      "Plateforme web complete avec authentification, progression, visualisations de Venn et exercices pratiques.",
+    category: "EdTech",
+  },
+  "twitter-x-data-scraper": {
+    title: "Scraper de Données Twitter / X",
+    description:
+      "Outil CLI Python basé sur Selenium pour extraire des tweets par profil, hashtag ou requête, avec authentification flexible et export CSV.",
+    goal: "Construire un outil flexible et authentifié pour collecter des données Twitter/X à des fins d'analyse et de recherche.",
+    outcome:
+      "Un scraper opérationnel avec extraction multi-modes, limites configurables et sortie CSV structurée.",
+    category: "Données & Automatisation",
+  },
+  "succes-masra-incarceration-counter": {
+    title: "Compteur d'Incarcération - Succes Masra",
+    description:
+      "Interface web en français affichant le nombre de jours d'incarcération de Succes Masra depuis le 17 mai 2025, avec compteur animé et statistiques secondaires.",
+    goal: "Créer une plateforme digne et informative pour sensibiliser sur cette incarcération via un design élégant et des données en direct.",
+    outcome:
+      "Application statique responsive avec compteur animé, mise à jour automatique quotidienne et design premium sombre.",
+    category: "Plaidoyer & Web",
+    client: "Société civile / Initiative personnelle",
+  },
+  "custom-printf-c-implementation": {
+    title: "Custom Printf - Implementation C",
+    description:
+      "Réimplementation complète de printf en C, avec gestion de nombreux specifiers et respect des standards Betty sur Ubuntu 20.04.",
+    goal: "Comprendre en profondeur les mécanismes internes de la libc en recréant printf (parseur, conversions, variadique).",
+    outcome:
+      "Implémentation modulaire robuste de printf couvrant 13+ specifiers et compilée avec des flags stricts gcc.",
+    category: "Programmation Système",
+    client: "ALX Africa - Low-Level Programming",
+  },
+  "emmanuel-adoum-developer-portfolio": {
+    title: "Portfolio Développeur - Emmanuel Adoum",
+    description:
+      "Portfolio full-stack cinématographique construit avec Next.js 15 et TypeScript, incluant blog, commentaires Firebase, OAuth Google, dashboard admin et UI premium.",
+    goal: "Construire un portfolio de niveau production qui présente mes projets et un blog complet avec authentification et administration.",
+    outcome:
+      "Plateforme portfolio/blog déployée sur emmanueladoum.com avec animations fluides, commentaires imbriqués et back-office admin.",
+    category: "Full Stack",
+  },
+};
+
+export const projectsFr = projects.map((project) => ({
+  ...project,
+  ...(projectsFrOverrides[project.slug] || {}),
+}));
