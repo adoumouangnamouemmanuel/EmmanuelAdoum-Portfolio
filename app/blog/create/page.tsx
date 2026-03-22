@@ -98,8 +98,9 @@ export default function CreateBlogPost() {
 
   // Add a category to the list
   const addCategory = () => {
-    if (category && !categories.includes(category)) {
-      setCategories([...categories, category]);
+    const normalizedCategory = category.trim();
+    if (normalizedCategory && !categories.includes(normalizedCategory)) {
+      setCategories([...categories, normalizedCategory]);
       setCategory("");
     }
   };
@@ -127,13 +128,20 @@ export default function CreateBlogPost() {
       }
 
       // Create post data
+      const submissionCategories =
+        categories.length > 0
+          ? categories
+          : category.trim()
+            ? [category.trim()]
+            : ["Uncategorized"];
+
       const postData = {
         title,
         slug,
         excerpt,
         content,
         coverImage,
-        categories: categories.length > 0 ? categories : ["Uncategorized"],
+        categories: submissionCategories,
         published: false,
       };
 
@@ -324,6 +332,12 @@ export default function CreateBlogPost() {
                         placeholder="Add a category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === ",") {
+                            e.preventDefault();
+                            addCategory();
+                          }
+                        }}
                         list="category-options"
                       />
                       <datalist id="category-options">

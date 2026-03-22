@@ -3,25 +3,25 @@
 import type React from "react";
 
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -64,7 +64,7 @@ export default function EditBlogPost() {
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [coverImage, setCoverImage] = useState(
-    "/placeholder.svg?height=600&width=1200"
+    "/placeholder.svg?height=600&width=1200",
   );
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
@@ -121,13 +121,11 @@ export default function EditBlogPost() {
         setNewSlug(post.slug);
         setExcerpt(post.excerpt || "");
         setContent(post.content);
-        setCoverImage(
-          post.coverImage || "/images/posts/blog.avif"
-        );
+        setCoverImage(post.coverImage || "/images/posts/blog.avif");
         setCategories(
           post.categories.map((cat: any) =>
-            typeof cat === "string" ? cat : cat.name
-          )
+            typeof cat === "string" ? cat : cat.name,
+          ),
         );
       } catch (error) {
         console.error("Error loading blog post:", error);
@@ -145,9 +143,7 @@ export default function EditBlogPost() {
               setNewSlug(foundPost.slug);
               setExcerpt(foundPost.excerpt || "");
               setContent(foundPost.content);
-              setCoverImage(
-                foundPost.coverImage || "/images/posts/blog.avif"
-              );
+              setCoverImage(foundPost.coverImage || "/images/posts/blog.avif");
               setCategories(foundPost.categories);
               setError(null);
             }
@@ -200,8 +196,9 @@ export default function EditBlogPost() {
 
   // Add a category to the list
   const addCategory = () => {
-    if (category && !categories.includes(category)) {
-      setCategories([...categories, category]);
+    const normalizedCategory = category.trim();
+    if (normalizedCategory && !categories.includes(normalizedCategory)) {
+      setCategories([...categories, normalizedCategory]);
       setCategory("");
     }
   };
@@ -229,13 +226,20 @@ export default function EditBlogPost() {
       }
 
       // Create updated post data
+      const submissionCategories =
+        categories.length > 0
+          ? categories
+          : category.trim()
+            ? [category.trim()]
+            : ["Uncategorized"];
+
       const postData = {
         title,
         newSlug: newSlug !== slug ? newSlug : undefined,
         excerpt,
         content,
         coverImage,
-        categories: categories.length > 0 ? categories : ["Uncategorized"],
+        categories: submissionCategories,
       };
 
       // Send to API
@@ -318,7 +322,7 @@ export default function EditBlogPost() {
         title
           .toLowerCase()
           .replace(/[^\w\s]/gi, "")
-          .replace(/\s+/g, "-")
+          .replace(/\s+/g, "-"),
       );
     }
   }, [title]);
@@ -498,7 +502,12 @@ export default function EditBlogPost() {
                         onChange={(e) => setCoverImage(e.target.value)}
                         required
                       />
-                      <Button type="button" variant="outline" size="icon" disabled>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        disabled
+                      >
                         <ImageIcon className="h-4 w-4" />
                       </Button>
                     </div>
@@ -512,6 +521,12 @@ export default function EditBlogPost() {
                         placeholder="Add a category"
                         value={category}
                         onChange={(e) => setCategory(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === ",") {
+                            e.preventDefault();
+                            addCategory();
+                          }
+                        }}
                         list="category-options"
                       />
                       <datalist id="category-options">

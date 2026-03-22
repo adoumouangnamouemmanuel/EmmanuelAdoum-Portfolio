@@ -127,6 +127,7 @@ export default function BlogPostPage() {
       };
 
   const { scrollY } = useScroll();
+  const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
   const heroY = useTransform(scrollY, [0, 500], [0, 150]);
   const actionBackground = useTransform(
@@ -189,8 +190,21 @@ export default function BlogPostPage() {
         setPost(postData);
 
         // Fetch related posts
+        const categories = Array.isArray(data.categories)
+          ? data.categories
+          : [];
+        const primaryCategory =
+          categories.find(
+            (category: unknown) =>
+              typeof category === "string" &&
+              category.trim() &&
+              category.toLowerCase() !== "uncategorized",
+          ) ||
+          categories[0] ||
+          "";
+
         const relatedResponse = await fetch(
-          `/api/posts?category=${data.categories[0] || ""}&limit=3`,
+          `/api/posts?category=${encodeURIComponent(primaryCategory)}&limit=3`,
         );
         if (relatedResponse.ok) {
           const relatedData = await relatedResponse.json();
@@ -287,8 +301,25 @@ export default function BlogPostPage() {
     social: {},
   };
 
+  const displayCategories = (() => {
+    const cleaned = (post.categories || [])
+      .filter((category) => typeof category === "string")
+      .map((category) => category.trim())
+      .filter(Boolean);
+
+    const nonFallback = cleaned.filter(
+      (category) => category.toLowerCase() !== "uncategorized",
+    );
+
+    return nonFallback.length > 0
+      ? nonFallback
+      : cleaned.length > 0
+        ? cleaned
+        : ["Uncategorized"];
+  })();
+
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pb-24">
+    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pb-24 overflow-x-hidden">
       {/* 1. Cinematic Edge-to-Edge Cover */}
       <section className="relative w-full h-[60vh] sm:h-[70vh] lg:h-[85vh] overflow-hidden bg-slate-950">
         <motion.div
@@ -316,10 +347,10 @@ export default function BlogPostPage() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8"
           >
-            {post.categories.map((category, index) => (
+            {displayCategories.map((category, index) => (
               <span
                 key={index}
-                className="px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
+                className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
               >
                 {category}
               </span>
@@ -393,6 +424,10 @@ export default function BlogPostPage() {
           backdropFilter: "blur(12px)",
         }}
       >
+        <motion.div
+          className="absolute inset-x-0 top-0 h-[2px] origin-left bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500"
+          style={{ scaleX: scrollYProgress }}
+        />
         <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between py-4">
           <Link
             href={`${basePath}/blog`}
@@ -473,7 +508,7 @@ export default function BlogPostPage() {
       </motion.div>
 
       {/* 3. Ergonomic Content Engine */}
-      <section className="py-16 sm:py-24">
+      <section className="py-16 sm:py-24 overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-6 sm:px-12">
           <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
             {/* The Reading Column (Max-width optimal for typography line-length) */}
@@ -581,7 +616,7 @@ export default function BlogPostPage() {
                   {t.tableOfContents}
                 </h3>
                 <div className="pl-6 border-l border-slate-200 dark:border-slate-800/60">
-                  <TableOfContents />
+                  <TableOfContents content={post.content} />
                 </div>
               </div>
             </aside>

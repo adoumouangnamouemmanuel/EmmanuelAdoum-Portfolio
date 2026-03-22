@@ -83,6 +83,17 @@ export const sanitizeSlug = (value: string): string => {
 };
 
 export const sanitizeCategories = (categories: unknown): string[] => {
+  if (typeof categories === "string") {
+    const splitCategories = categories
+      .split(",")
+      .map((category) => sanitizePlainText(category, 60))
+      .filter((category) => Boolean(category));
+
+    return splitCategories.length
+      ? splitCategories.slice(0, 10)
+      : ["Uncategorized"];
+  }
+
   if (!Array.isArray(categories)) return ["Uncategorized"];
 
   const cleaned = categories
