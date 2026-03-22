@@ -12,7 +12,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
   const t =
     locale === "fr"
       ? {
-          greeting: "Salut, je suis",
+          greeting: "Je suis",
           subtitleLead: "Je conçois des produits",
           subtitleTail: "avec un design propre et une ingénierie solide.",
           description:
