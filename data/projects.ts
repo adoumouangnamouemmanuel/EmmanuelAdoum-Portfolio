@@ -581,7 +581,7 @@ const projectsFrOverrides: Record<
     outcome:
       "Une plateforme interactive proposant un dictionnaire Moussey avec recherche, tri alphabétique et numérique, exemples et traductions.",
     category: "LanguageTech",
-    client: "Groupe communautaire de preservation de la langue Moussey",
+    client: "Groupe communautaire de préservation de la langue Moussey",
     challenges: [
       "Absence de standard établi pour l'orthographe et la grammaire Moussey",
       "Traductions manquantes ou inexactes dans des sources antérieures",
@@ -608,6 +608,16 @@ const projectsFrOverrides: Record<
       "Outils de correction et validation des exemples",
       "UI mobile adaptée aux zones rurales",
     ],
+    gallery: [
+      {
+        image: "/images/projects/moussey-dictionary-translate.png",
+        title: "Interface de traduction",
+      },
+      {
+        image: "/images/projects/moussey-dictionary-translate.png",
+        title: "Vue d'accueil",
+      },
+    ],
   },
   "tumor-immune-dynamics-model": {
     title: "Modèle de Dynamique Tumeur-Système Immunitaire",
@@ -618,6 +628,30 @@ const projectsFrOverrides: Record<
       "Une plateforme de recherche interactive combinant modélisation rigoureuse et simulation intuitive pour chercheurs, étudiants et public.",
     category: "Recherche & Mathématiques",
     client: "MATH221 & CE122 - Ashesi University",
+    challenges: [
+      "Visualiser en temps réel le comportement d'équations différentielles complexes",
+      "Rendre accessibles des mathématiques avancées de recherche sur le cancer",
+      "Représenter fidèlement la dynamique multi-variables des populations cellulaires sur canvas",
+    ],
+    solutions: [
+      "Création d'un moteur d'animation Canvas personnalisé pour visualiser les interactions cellulaires en direct.",
+      "Intégration de MathJax pour un rendu clair des équations avec des explications en langage simple.",
+      "Ajout de curseurs interactifs pour observer l'effet des paramètres sur les équilibres tumeur-immunité.",
+    ],
+    developmentProcess: [
+      "Étude du papier NTIUNHDM et traduction des équations en solveurs numériques",
+      "Conception de composants React modulaires pour chaque section (équations, résultats, code)",
+      "Intégration de Framer Motion pour des transitions fluides et des animations pilotées par les données",
+      "Déploiement sur Vercel avec intégration continue via GitHub",
+    ],
+    keyFeatures: [
+      "Simulation cellulaire interactive en temps réel (cellules normales, tumorales et immunitaires)",
+      "Explorateur d'équations différentielles avec paramètres ajustables",
+      "Visualisation interactive des résultats de recherche",
+      "Comparaison de solveurs EDO et analyse d'erreurs",
+      "Bascule mode clair/sombre",
+      "Design entièrement responsive",
+    ],
   },
   "solar-system-simulation": {
     title: "Simulation du Système Solaire",
@@ -627,6 +661,30 @@ const projectsFrOverrides: Record<
     outcome:
       "Une simulation Pygame complète avec rendu des planètes, interactions gravitationnelles, support des lunes et export CSV.",
     category: "Simulation & Physique",
+    challenges: [
+      "Simuler avec précision l'attraction gravitationnelle entre toutes les paires de planètes en temps réel",
+      "Décomposer les vecteurs de force en composantes x/y pour des trajectoires multi-corps",
+      "Maintenir la stabilité de la simulation avec de grandes variations de pas de temps",
+    ],
+    solutions: [
+      "Implémentation de la loi de gravitation universelle de Newton avec décomposition complète des forces via atan2.",
+      "Optimisation de la boucle de simulation pour itérer efficacement sur toutes les paires de planètes.",
+      "Ajout d'un pas de temps configurable pour ralentir ou accélérer la simulation.",
+    ],
+    developmentProcess: [
+      "Conception des classes Planet, Sun, Moon et Star avec méthodes physiques complètes",
+      "Chargement dynamique des données planétaires depuis un fichier CSV structuré",
+      "Ajout de décorateurs de logging pour tracer les entrées/sorties de fonctions et le temps d'exécution",
+      "Création d'une fonctionnalité d'export CSV pour enregistrer les attributs calculés",
+    ],
+    keyFeatures: [
+      "Simulation gravitationnelle en temps réel entre tous les corps",
+      "Calcul précis de la vitesse orbitale et de la période (3e loi de Kepler)",
+      "Support des objets Lune et Étoile",
+      "Calcul de la vitesse d'échappement, gravité de surface et période orbitale par planète",
+      "Export CSV des attributs calculés",
+      "Logging dynamique et gestion d'erreurs",
+    ],
   },
   "ghana-road-transport-network": {
     title: "Réseau Routier du Ghana",
@@ -637,6 +695,32 @@ const projectsFrOverrides: Record<
       "Système multi-couches robuste couvrant les 10 questions du challenge avec visualisation force-directed et édition en temps réel des routes.",
     category: "Algorithmes & Structures de Données",
     client: "Ashesi University - Programming Challenge 2026",
+    challenges: [
+      "6 arêtes bidirectionnelles dupliquées avec poids conflictuels dans le dataset brut",
+      "Trouver efficacement les K meilleurs chemins sans boucle sans modifier le graphe principal",
+      "Relier un backend Java et un frontend Next.js avec CORS et état partagé",
+    ],
+    solutions: [
+      "Utilisation d'un LinkedHashMap avec clés de villes insensibles à la casse; addEdge écrase les doublons pour garder un graphe déterministe.",
+      "Implémentation de l'algorithme de Yen avec un EdgeRemover temporaire pour explorer les spur paths sans mutation permanente.",
+      "Configuration CORS Spring Boot pour localhost:3000 et conception d'un bean singleton de graphe partagé par tous les contrôleurs API.",
+    ],
+    developmentProcess: [
+      "Parsing du dataset routier (557 entrées) avec déduplication vers un ensemble propre d'arêtes bidirectionnelles",
+      "Développement d'un CLI répondant aux 10 questions du challenge (Q1-Q10)",
+      "Exposition de la même logique Java via API REST Spring Boot (endpoints Q1-Q10)",
+      "Création d'un frontend Next.js interactif avec visualisation force-directed",
+      "Ajout de l'édition des routes en temps réel (ajout, mise à jour, suppression)",
+    ],
+    keyFeatures: [
+      "Distance la plus courte et chemin le plus rapide via Dijkstra (Q4, Q5)",
+      "Top-3 chemins les plus courts sans boucle via Yen (Q6)",
+      "Moteur de recommandation de coûts carburant/temps (Q7, Q8)",
+      "Session CLI interactive multi-requêtes (Q9)",
+      "Analyse de complexité de 100 à 5 000 nœuds (Q10)",
+      "Graphe réseau interactif avec mise en évidence des routes",
+      "Édition des routes depuis le navigateur",
+    ],
   },
   "discrete-learn": {
     title: "Discrete Learn",
@@ -644,8 +728,32 @@ const projectsFrOverrides: Record<
       "Plateforme d'apprentissage en ligne pour maîtriser les mathématiques discrètes, avec accent sur la théorie des ensembles, quiz interactifs et suivi de progression.",
     goal: "Rendre la théorie des ensembles plus accessible grâce à des leçons guidées et des exercices pratiques interactifs.",
     outcome:
-      "Plateforme web complete avec authentification, progression, visualisations de Venn et exercices pratiques.",
+      "Plateforme web complète avec authentification, progression, visualisations de Venn et exercices pratiques.",
     category: "EdTech",
+    challenges: [
+      "Concevoir un parcours d'apprentissage engageant pour du contenu mathématique abstrait",
+      "Construire des composants de diagrammes de Venn dynamiques pour les opérations ensemblistes",
+      "Suivre l'état de complétion par leçon entre les sessions via Firebase",
+    ],
+    solutions: [
+      "Création d'une page de cours focalisée avec sidebar sticky pour une navigation fluide.",
+      "Développement de composants interactifs personnalisés pour Venn et identités ensemblistes.",
+      "Utilisation de Firebase pour la persistance de progression et l'authentification utilisateur.",
+    ],
+    developmentProcess: [
+      "Structuration des contenus de leçon via des fichiers JSON",
+      "Développement de composants réutilisables: sidebar, contenu de leçon, contrôles de navigation",
+      "Intégration de Firebase Auth pour login, inscription et reset mot de passe",
+      "Ajout de visualisations interactives: Venn, tables d'opérations, représentations informatiques",
+    ],
+    keyFeatures: [
+      "Leçons guidées de la théorie des ensembles, du niveau fondamental à avancé",
+      "Visualisations interactives de Venn et opérations ensemblistes",
+      "Exercices pratiques avec retour en temps réel",
+      "Suivi de progression avec indicateurs de complétion",
+      "Authentification utilisateur (connexion, inscription, réinitialisation)",
+      "Design responsive optimisé desktop et mobile",
+    ],
   },
   "twitter-x-data-scraper": {
     title: "Scraper de Données Twitter / X",
@@ -655,26 +763,99 @@ const projectsFrOverrides: Record<
     outcome:
       "Un scraper opérationnel avec extraction multi-modes, limites configurables et sortie CSV structurée.",
     category: "Données & Automatisation",
+    challenges: [
+      "Gérer de manière fiable le contenu Twitter dynamique rendu en JavaScript via Selenium",
+      "Concevoir un système d'authentification flexible (variables d'environnement, args CLI, prompt interactif)",
+      "Implémenter une extraction compatible avec les limites de fréquence sans bannissement",
+    ],
+    solutions: [
+      "Utilisation de Selenium WebDriver avec attentes explicites pour stabiliser le rendu dynamique.",
+      "Mise en place d'une authentification en cascade: arguments CLI, puis .env, puis prompt interactif.",
+      "Ajout de limites configurables et d'un mode sans limite pour les collectes volumineuses.",
+    ],
+    developmentProcess: [
+      "Configuration de Selenium avec ChromeDriver pour l'automatisation navigateur",
+      "Conception de l'interface CLI avec argparse et options d'authentification/extraction",
+      "Implémentation des modes d'extraction par profil, hashtag et requête",
+      "Ajout de l'export CSV avec champs étendus optionnels (followers/following)",
+    ],
+    keyFeatures: [
+      "Extraction de tweets par profil, hashtag ou requête",
+      "Authentification flexible: arguments CLI, fichier .env ou prompt interactif",
+      "Limite de tweets configurable (50 par défaut ou illimitée)",
+      "Support des tris latest et top",
+      "Support des requêtes avancées compatibles recherche Twitter",
+      "Export CSV avec métadonnées optionnelles du compte auteur",
+    ],
   },
   "succes-masra-incarceration-counter": {
-    title: "Compteur d'Incarcération - Succes Masra",
+    title: "Compteur d'Incarcération - Succès Masra",
     description:
-      "Interface web en français affichant le nombre de jours d'incarcération de Succes Masra depuis le 17 mai 2025, avec compteur animé et statistiques secondaires.",
+      "Interface web en français affichant le nombre de jours d'incarcération de Succès Masra depuis le 17 mai 2025, avec compteur animé et statistiques secondaires.",
     goal: "Créer une plateforme digne et informative pour sensibiliser sur cette incarcération via un design élégant et des données en direct.",
     outcome:
       "Application statique responsive avec compteur animé, mise à jour automatique quotidienne et design premium sombre.",
     category: "Plaidoyer & Web",
     client: "Société civile / Initiative personnelle",
+    challenges: [
+      "Calculer avec exactitude le nombre de jours d'incarcération à partir d'une date fixe",
+      "Implémenter une animation odomètre fluide uniquement avec CSS et JavaScript natif",
+      "Créer une mise à jour automatique à minuit sans rechargement de page",
+    ],
+    solutions: [
+      "Ancrage du calcul au 17 mai 2025 avec le point de référence public vérifié: Jour 200 = 2 décembre 2025.",
+      "Création d'une animation odomètre via keyframes CSS synchronisées par JavaScript.",
+      "Utilisation de setTimeout pour déclencher un rafraîchissement d'état à la prochaine frontière minuit.",
+    ],
+    developmentProcess: [
+      "Conception d'un layout sombre en glassmorphism avec accents du drapeau tchadien",
+      "Implémentation d'un fond animé de particules flottantes en CSS",
+      "Développement du compteur principal avec transitions animées des chiffres",
+      "Ajout des statistiques secondaires (semaines, mois, années) et d'une barre de progression annuelle",
+      "Déploiement en site statique sans dépendance sur Vercel",
+    ],
+    keyFeatures: [
+      "Compteur de jours animé (style odomètre) depuis le 17 mai 2025",
+      "Statistiques secondaires: semaines, mois et années écoulés",
+      "Barre annuelle aux couleurs du drapeau tchadien",
+      "Rafraîchissement automatique à minuit (sans rechargement manuel)",
+      "Animation de fond par particules flottantes",
+      "Interface 100% française et totalement responsive",
+    ],
   },
   "custom-printf-c-implementation": {
-    title: "Custom Printf - Implementation C",
+    title: "Custom Printf - Implémentation C",
     description:
-      "Réimplementation complète de printf en C, avec gestion de nombreux specifiers et respect des standards Betty sur Ubuntu 20.04.",
+      "Réimplémentation complète de printf en C, avec gestion de nombreux spécificateurs et respect des standards Betty sur Ubuntu 20.04.",
     goal: "Comprendre en profondeur les mécanismes internes de la libc en recréant printf (parseur, conversions, variadique).",
     outcome:
-      "Implémentation modulaire robuste de printf couvrant 13+ specifiers et compilée avec des flags stricts gcc.",
+      "Implémentation modulaire robuste de printf couvrant 13+ spécificateurs et compilée avec des flags stricts gcc.",
     category: "Programmation Système",
     client: "ALX Africa - Low-Level Programming",
+    challenges: [
+      "Parser des chaînes de format incluant combinaisons de flags, largeur, précision et spécificateurs",
+      "Gérer de manière sûre les arguments variadiques pour tous les types pris en charge",
+      "Implémenter des spécificateurs non standards comme %b (binaire), %r (reverse) et %R (ROT13)",
+    ],
+    solutions: [
+      "Conception d'une table de dispatch modulaire associant chaque spécificateur à sa fonction handler.",
+      "Utilisation correcte de va_list, va_start, va_arg et va_end dans toutes les branches de conversion.",
+      "Séparation du code en modules helpers.c, conversion.c et modifiers.c pour la maintenabilité et la conformité Betty.",
+    ],
+    developmentProcess: [
+      "Définition des prototypes et structures dans main.h",
+      "Développement de la boucle centrale de parsing de format dans _printf",
+      "Implémentation de chaque spécificateur via des fonctions réutilisables",
+      "Ajout de la gestion des modificateurs de longueur, largeur de champ, précision et flags dans modifiers.c",
+      "Compilation et tests avec flags gcc stricts sur Ubuntu 20.04 LTS",
+    ],
+    keyFeatures: [
+      "Support de %c, %s, %%, %d, %i, %u, %o, %x, %X, %p, %S, %b, %r, %R",
+      "Structure modulaire (helpers.c, conversion.c, modifiers.c)",
+      "Gestion des modificateurs de longueur, largeur de champ, précision et flags",
+      "Compilation avec -Wall -Werror -Wextra -pedantic -std=gnu89",
+      "Conforme aux guidelines Betty C",
+    ],
   },
   "emmanuel-adoum-developer-portfolio": {
     title: "Portfolio Développeur - Emmanuel Adoum",
@@ -684,6 +865,32 @@ const projectsFrOverrides: Record<
     outcome:
       "Plateforme portfolio/blog déployée sur emmanueladoum.com avec animations fluides, commentaires imbriqués et back-office admin.",
     category: "Full Stack",
+    challenges: [
+      "Construire un système de commentaires imbriqués sécurisé avec réponses et mises à jour en temps réel sur une architecture Next.js static-first",
+      "Implémenter OAuth Google avec NextAuth.js sur domaine personnalisé et URI de redirection correctes",
+      "Obtenir une UI cinématique premium (glassmorphism + Framer Motion) tout en gardant d'excellentes performances",
+    ],
+    solutions: [
+      "Conception d'un modèle Firebase pour commentaires/réponses par article avec documents liés aux utilisateurs.",
+      "Configuration de NextAuth.js avec NEXTAUTH_URL sur le domaine de production et callback URI ajoutée dans Google Cloud Console.",
+      "Utilisation d'animations layout Framer Motion, springs et reveals en cascade pour des interactions fluides sans layout thrash.",
+    ],
+    developmentProcess: [
+      "Construction des sections portfolio: Hero, About, Skills, Projects, Journey, Testimonials, Contact",
+      "Développement d'un blog complet avec catégories, tags, recherche et articles liés",
+      "Implémentation de l'authentification (email + Google OAuth) avec routes protégées et dashboard admin",
+      "Ajout d'un système de commentaires/réponses imbriqués sur Firebase Firestore",
+      "Déploiement sur Vercel avec domaine personnalisé emmanueladoum.com",
+    ],
+    keyFeatures: [
+      "UI cinématique glassmorphism avec animations Framer Motion",
+      "Plateforme blog complète avec catégories, tags, recherche et table des matières",
+      "Système de commentaires et réponses imbriqués avec authentification",
+      "Google OAuth et login email/password via NextAuth.js",
+      "Dashboard admin pour gestion des articles et utilisateurs",
+      "Mode sombre/clair avec détection des préférences système",
+      "Design entièrement responsive",
+    ],
   },
 };
 

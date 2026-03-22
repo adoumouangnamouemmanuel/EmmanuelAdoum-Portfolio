@@ -2,6 +2,16 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Emmanuel Adoum | Portfolio",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/",
+      "fr-FR": "/fr",
+    },
+  },
   icons: {
     icon: "/images/emma-head.png",
     shortcut: "/images/emma-head.png",
@@ -77,7 +87,7 @@ export const metadata: Metadata = {
   authors: [
     {
       name: "Emmanuel Adoum",
-      url: "https://www.linkedin.com/in/ouang-namou-emmanuel-adoum",
+      url: "https://www.linkedin.com/in/emmanueladoum",
     },
   ],
   creator: "Emmanuel Adoum",
@@ -86,8 +96,10 @@ export const metadata: Metadata = {
     title: "Emmanuel Adoum | Portfolio",
     description:
       "A professional portfolio showcasing my skills and projects as a web developer.",
-    url: "https://emmanueladoumemmanuel.vercel.app",
+    url: "/",
     siteName: "Emmanuel Adoum | Portfolio",
+    locale: "en_US",
+    alternateLocale: ["fr_FR"],
     images: [
       {
         url: "/emma.png",

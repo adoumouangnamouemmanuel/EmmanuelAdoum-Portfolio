@@ -1,4 +1,5 @@
 // import Footer from "@/components/layout/Footer";
+import { metadata as sharedMetadata } from "@/app/metadata";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import type { Metadata } from "next";
@@ -8,114 +9,7 @@ import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
-export const metadata: Metadata = {
-  title: "Emmanuel Adoum | Portfolio",
-  icons: {
-    icon: "/images/emma-head.png",
-    shortcut: "/images/emma-head.png",
-  },
-  keywords: [
-    "Emmanuel Adoum",
-    "Adoum Ouang-Namou Emmanuel",
-    "Portfolio",
-    "Web Developer",
-    "Software Engineer",
-    "Frontend Developer",
-    "Backend Developer",
-    "Full Stack Developer",
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Next.js",
-    "Node.js",
-    "Express",
-    "MongoDB",
-    "PostgreSQL",
-    "Tailwind CSS",
-    "CSS",
-    "HTML",
-    "UI/UX Design",
-    "Responsive Design",
-    "Web Design",
-    "Web Development",
-    "Software Development",
-    "Software Engineering",
-    "Agile",
-    "Scrum",
-    "Git",
-    "GitHub",
-    "Version Control",
-    "API Development",
-    "REST",
-    "GraphQL",
-    "Microservices",
-    "Cloud Computing",
-    "AWS",
-    "Azure",
-    "Google Cloud",
-    "DevOps",
-    "CI/CD",
-    "Docker",
-    "Kubernetes",
-    "Testing",
-    "Unit Testing",
-    "Integration Testing",
-    "End-to-End Testing",
-    "Test-Driven Development",
-    "TDD",
-    "Behavior-Driven Development",
-    "AI",
-    "Machine Learning",
-    "Data Science",
-    "Data Analysis",
-    "Data Visualization",
-    "Data Engineering",
-    "Big Data",
-    "Data Mining",
-    "Data Warehousing",
-    "Data Modeling",
-    "Data Architecture",
-    "Data Governance",
-    "Data Quality",
-    "Data Security",
-    "Data Privacy",
-    "Data Ethics",
-    "Data Management",
-  ],
-  authors: [
-    {
-      name: "Emmanuel Adoum",
-      url: "https://www.linkedin.com/in/emmanueladoum",
-    },
-  ],
-  creator: "Emmanuel Adoum",
-  publisher: "Emmanuel Adoum",
-  openGraph: {
-    title: "Emmanuel Adoum | Portfolio",
-    description:
-      "A professional portfolio showcasing my skills and projects as a web developer.",
-    url: "https://emmanueladoum.com",
-    siteName: "Emmanuel Adoum | Portfolio",
-    images: [
-      {
-        url: "/emmanuel.jpeg",
-        width: 1200,
-        height: 630,
-        alt: "Emmanuel Adoum | Portfolio",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Emmanuel Adoum | Portfolio",
-    description:
-      "A professional portfolio showcasing my skills and projects as a web developer.",
-    images: ["/emma.png"],
-    creator: "@emmanueladoum",
-  },
-  description: "A professional portfolio showcasing my skills and projects",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-};
+export const metadata: Metadata = sharedMetadata;
 
 export default function RootLayout({
   children,
@@ -125,15 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${outfit.variable} font-sans antialiased`}>
-        
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <ToastProvider children={children}/>
-          </ThemeProvider>
-          
+          <ToastProvider children={children} />
+        </ThemeProvider>
       </body>
     </html>
   );
