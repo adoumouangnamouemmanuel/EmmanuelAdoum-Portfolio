@@ -129,7 +129,7 @@ export default function HeroSection() {
             className="mt-10 sm:mt-12 flex items-center gap-6 text-slate-500 dark:text-slate-400"
           >
             <Link
-              href="https://github.com/emmanueladoumemmanuel"
+              href="https://github.com/adoumouangnamouemmanuel"
               target="_blank"
               rel="noopener noreferrer"
               className="transition-colors hover:text-slate-900 dark:hover:text-white"
