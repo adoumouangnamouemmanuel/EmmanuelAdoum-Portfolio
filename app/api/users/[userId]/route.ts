@@ -6,25 +6,19 @@ import { type NextRequest, NextResponse } from "next/server";
 // GET /api/users/[userId] - Get user data
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { userId } = params;
+    const { userId } = await params;
     const userDoc = await adminDb.collection("users").doc(userId).get();
 
     if (!userDoc.exists) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const userData = userDoc.data();
@@ -33,7 +27,7 @@ export async function GET(
     console.error("Error fetching user:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -41,22 +35,19 @@ export async function GET(
 // PATCH /api/users/[userId] - Update user data
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { userId } = params;
+    const { userId } = await params;
     if (session.user.id !== userId) {
       return NextResponse.json(
         { error: "Unauthorized to update this user" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -74,7 +65,7 @@ export async function PATCH(
     console.error("Error updating user:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

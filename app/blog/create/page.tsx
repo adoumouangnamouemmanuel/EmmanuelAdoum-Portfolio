@@ -18,7 +18,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
-import { ArrowLeft, Eye, ImageIcon, Plus, Save, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Eye,
+  ImageIcon,
+  Loader2,
+  Plus,
+  Save,
+  X,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -39,6 +47,7 @@ export default function CreateBlogPost() {
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [preview, setPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [saveMessage, setSaveMessage] = useState("");
 
   // Redirect if not authenticated
@@ -182,6 +191,58 @@ export default function CreateBlogPost() {
     }
   };
 
+  const handleCoverImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive",
+      });
+      event.target.value = "";
+      return;
+    }
+
+    setIsUploadingCover(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("kind", "blog");
+
+      const response = await fetch("/api/uploads/image", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to upload cover image");
+      }
+
+      setCoverImage(data.imageUrl);
+      toast({
+        title: "Image uploaded",
+        description: "Cover image uploaded successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Upload failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to upload cover image",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingCover(false);
+      event.target.value = "";
+    }
+  };
+
   // Show loading state while checking authentication
   if (status === "loading") {
     return (
@@ -304,11 +365,11 @@ export default function CreateBlogPost() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="coverImage">Cover Image URL</Label>
+                    <Label htmlFor="coverImage">Cover Image</Label>
                     <div className="flex space-x-2">
                       <Input
                         id="coverImage"
-                        placeholder="/images/posts/blog.avif"
+                        placeholder="Paste an image URL or upload from your device"
                         value={coverImage} //coverImage
                         onChange={(e) => setCoverImage(e.target.value)}
                         required
@@ -317,11 +378,29 @@ export default function CreateBlogPost() {
                         type="button"
                         variant="outline"
                         size="icon"
-                        disabled
+                        onClick={() =>
+                          document.getElementById("cover-image-upload")?.click()
+                        }
+                        disabled={isUploadingCover}
                       >
-                        <ImageIcon className="h-4 w-4" />
+                        {isUploadingCover ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <ImageIcon className="h-4 w-4" />
+                        )}
                       </Button>
+                      <input
+                        id="cover-image-upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleCoverImageUpload}
+                      />
                     </div>
+                    <p className="text-sm text-muted-foreground">
+                      Use the image button to upload directly to Supabase
+                      Storage.
+                    </p>
                   </div>
 
                   <div className="space-y-2">
@@ -432,9 +511,7 @@ export default function CreateBlogPost() {
                 <div className="prose dark:prose-invert max-w-none">
                   <div className="relative rounded-xl overflow-hidden shadow-xl mb-8 aspect-video">
                     <img
-                      src={
-                        "/images/posts/blog.avif" //coverImage
-                      }
+                      src={coverImage || "/images/posts/blog.avif"}
                       alt={title}
                       className="w-full h-full object-cover"
                     />
