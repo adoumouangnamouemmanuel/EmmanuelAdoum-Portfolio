@@ -111,7 +111,7 @@ export const metadata: Metadata = {
     description:
       "A professional portfolio showcasing my skills and projects as a web developer.",
     images: ["/emma.png"],
-    creator: "@AdoumOuangnamou",
+    creator: "@emmanueladoum",
   },
   description: "A professional portfolio showcasing my skills and projects",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),

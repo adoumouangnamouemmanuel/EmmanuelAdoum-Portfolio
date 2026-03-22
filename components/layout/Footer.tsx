@@ -39,7 +39,7 @@ export default function Footer() {
           className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 lg:gap-8 mb-24 lg:mb-32"
         >
           <a
-            href="https://github.com/adoumouangnamouemmanuel"
+            href="https://github.com/emmanueladoumemmanuel"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-900/50 hover:shadow-lg transition-all duration-300 group"
@@ -57,7 +57,7 @@ export default function Footer() {
             <span>LinkedIn</span>
           </a>
           <a
-            href="https://twitter.com/adoumouangnamou"
+            href="https://twitter.com/emmanueladoum"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 rounded-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-900/50 hover:shadow-lg transition-all duration-300 group"
@@ -86,7 +86,7 @@ export default function Footer() {
             <span>© {currentYear}</span>
             <span className="hidden sm:block text-slate-300 dark:text-slate-700">·</span>
             <a 
-              href="https://github.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio"
+              href="https://github.com/emmanueladoumemmanuel/EmmanuelAdoum-Portfolio"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

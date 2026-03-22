@@ -8,19 +8,19 @@
   </p>
   
   <p>
-    <a href="https://x.com/AdoumOuangnamou/adoumouangnamou"><img src="https://img.shields.io/twitter/follow/adoumouangnamou?logo=twitter&style=for-the-badge" alt="Twitter Follow" /></a>
-    <a href="https://github.com/adoumouangnamouemmanuel"><img src="https://img.shields.io/github/followers/adoumouangnamouemmanuel?logo=github&style=for-the-badge" alt="GitHub followers" /></a>
+    <a href="https://x.com/emmanueladoum/emmanueladoum"><img src="https://img.shields.io/twitter/follow/emmanueladoum?logo=twitter&style=for-the-badge" alt="Twitter Follow" /></a>
+    <a href="https://github.com/emmanueladoumemmanuel"><img src="https://img.shields.io/github/followers/emmanueladoumemmanuel?logo=github&style=for-the-badge" alt="GitHub followers" /></a>
   </p>
 </div>
 
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=adoumouangnamouemmanuel&style=for-the-badge&color=6366F1" alt="Profile Views" />
+  <img src="https://komarev.com/ghpvc/?username=emmanueladoumemmanuel&style=for-the-badge&color=6366F1" alt="Profile Views" />
 </div>
 
 <br>
 
 <div align="center">
-  <img src="https://github-widgetbox.vercel.app/api/profile?username=adoumouangnamouemmanuel&data=followers,repositories,stars,commits&theme=nautilus" alt="GitHub Profile Stats" />
+  <img src="https://github-widgetbox.vercel.app/api/profile?username=emmanueladoumemmanuel&data=followers,repositories,stars,commits&theme=nautilus" alt="GitHub Profile Stats" />
 </div>
 
 ## <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="28"> About Me
@@ -74,10 +74,10 @@
       <h3 align="center">🇬🇭 Ghana Road Transport Network</h3>
       <div align="center">
         <a href="https://ghana-transport-network-2026.vercel.app" target="_blank">
-          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/ghana-transport-cover.png" width="100%" alt="Ghana Road Transport Network"/>
+          <img src="https://raw.githubusercontent.com/emmanueladoumemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/ghana-transport-cover.png" width="100%" alt="Ghana Road Transport Network"/>
         </a>
         <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/ghana-transport-network-2026" target="_blank">
+          <a href="https://github.com/emmanueladoumemmanuel/ghana-transport-network-2026" target="_blank">
             <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
           </a>
           <a href="https://ghana-transport-network-2026.vercel.app" target="_blank">
@@ -92,10 +92,10 @@
       <h3 align="center">🧬 Tumor-Immune Dynamics Model</h3>
       <div align="center">
         <a href="https://tumor-model-differential-equations.vercel.app" target="_blank">
-          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/tumor-model-cover.png" width="100%" alt="Tumor-Immune Dynamics Model"/>
+          <img src="https://raw.githubusercontent.com/emmanueladoumemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/tumor-model-cover.png" width="100%" alt="Tumor-Immune Dynamics Model"/>
         </a>
         <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/tumor_model_differential_equations" target="_blank">
+          <a href="https://github.com/emmanueladoumemmanuel/tumor_model_differential_equations" target="_blank">
             <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
           </a>
           <a href="https://tumor-model-differential-equations.vercel.app" target="_blank">
@@ -111,11 +111,11 @@
     <td width="50%">
       <h3 align="center">🪐 Solar System Simulation</h3>
       <div align="center">
-        <a href="https://github.com/adoumouangnamouemmanuel/solar-system-simulation" target="_blank">
-          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/solar-system-cover.png" width="100%" alt="Solar System Simulation"/>
+        <a href="https://github.com/emmanueladoumemmanuel/solar-system-simulation" target="_blank">
+          <img src="https://raw.githubusercontent.com/emmanueladoumemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/solar-system-cover.png" width="100%" alt="Solar System Simulation"/>
         </a>
         <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/solar-system-simulation" target="_blank">
+          <a href="https://github.com/emmanueladoumemmanuel/solar-system-simulation" target="_blank">
             <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
           </a>
         </p>
@@ -127,10 +127,10 @@
       <h3 align="center">💼 Developer Portfolio</h3>
       <div align="center">
         <a href="https://emmanueladoum.com" target="_blank">
-          <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/portfolio-cover.png" width="100%" alt="Developer Portfolio"/>
+          <img src="https://raw.githubusercontent.com/emmanueladoumemmanuel/EmmanuelAdoum-Portfolio/main/public/images/projects/portfolio-cover.png" width="100%" alt="Developer Portfolio"/>
         </a>
         <p>
-          <a href="https://github.com/adoumouangnamouemmanuel/EmmanuelAdoum-Portfolio" target="_blank">
+          <a href="https://github.com/emmanueladoumemmanuel/EmmanuelAdoum-Portfolio" target="_blank">
             <img src="https://img.shields.io/badge/Code-4F46E5?style=for-the-badge&logo=github" alt="GitHub Code"/>
           </a>
           <a href="https://emmanueladoum.com" target="_blank">
@@ -149,16 +149,16 @@
 ## <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="30"> GitHub Stats
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=adoumouangnamouemmanuel&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&bg_color=0D1117" height="200" alt="Emmanuel's GitHub Stats"/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=adoumouangnamouemmanuel&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117" height="200" alt="Emmanuel's Top Languages"/>
+  <img src="https://github-readme-stats.vercel.app/api?username=emmanueladoumemmanuel&show_icons=true&theme=tokyonight&hide_border=true&count_private=true&bg_color=0D1117" height="200" alt="Emmanuel's GitHub Stats"/>
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=emmanueladoumemmanuel&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117" height="200" alt="Emmanuel's Top Languages"/>
 </div>
 
 <div align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=adoumouangnamouemmanuel&theme=tokyonight&hide_border=true&background=0D1117" alt="Emmanuel's GitHub Streak"/>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=emmanueladoumemmanuel&theme=tokyonight&hide_border=true&background=0D1117" alt="Emmanuel's GitHub Streak"/>
 </div>
 
 <div align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=adoumouangnamouemmanuel&theme=tokyo-night&hide_border=true&bg_color=0D1117" alt="Emmanuel's Activity Graph"/>
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=emmanueladoumemmanuel&theme=tokyo-night&hide_border=true&bg_color=0D1117" alt="Emmanuel's Activity Graph"/>
 </div>
 
 ## <img src="https://media.giphy.com/media/LnQjpWaON8nhr21vNW/giphy.gif" width="30"> Connect with me
@@ -167,22 +167,22 @@
   <a href="https://www.linkedin.com/in/emmanueladoum" target="_blank">
     <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
   </a>
-  <a href="https://x.com/AdoumOuangnamou/adoumouangnamou" target="_blank">
+  <a href="https://x.com/emmanueladoum/emmanueladoum" target="_blank">
     <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter"/>
   </a>
-  <a href="https://github.com/adoumouangnamouemmanuel" target="_blank">
+  <a href="https://github.com/emmanueladoumemmanuel" target="_blank">
     <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
   </a>
-  <a href="https://codepen.io/adoumouangnamouemmanuel" target="_blank">
+  <a href="https://codepen.io/emmanueladoumemmanuel" target="_blank">
     <img src="https://img.shields.io/badge/CodePen-000000?style=for-the-badge&logo=codepen&logoColor=white" alt="CodePen"/>
   </a>
   <a href="https://kaggle.com/emmanueladoum" target="_blank">
     <img src="https://img.shields.io/badge/Kaggle-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white" alt="Kaggle"/>
   </a>
-  <a href="https://fb.com/adoumouangnamouemmanuel1" target="_blank">
+  <a href="https://fb.com/emmanueladoumemmanuel1" target="_blank">
     <img src="https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white" alt="Facebook"/>
   </a>
-  <a href="https://instagram.com/adoumouangnamouemmanuel" target="_blank">
+  <a href="https://instagram.com/emmanueladoumemmanuel" target="_blank">
     <img src="https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram"/>
   </a>
   <a href="https://www.youtube.com/c/emmanuelouangnamou" target="_blank">
@@ -212,7 +212,7 @@
 ## <img src="https://media.giphy.com/media/1ynCEtlgMPAeNAqdnu/giphy.gif" width="25"> Coding Activity
 
 <div align="center">
-  <img src="https://wakatime.com/share/@adoumouangnamouemmanuel/d757c83d-c3a9-424e-86f1-ce88190c9840.svg" height="400"/>
+  <img src="https://wakatime.com/share/@emmanueladoumemmanuel/d757c83d-c3a9-424e-86f1-ce88190c9840.svg" height="400"/>
 </div>
 
 <div align="center">
@@ -226,7 +226,7 @@
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/adoumouangnamouemmanuel/adoumouangnamouemmanuel/output/github-contribution-grid-snake-dark.svg" alt="GitHub Snake Animation"/>
+  <img src="https://raw.githubusercontent.com/emmanueladoumemmanuel/emmanueladoumemmanuel/output/github-contribution-grid-snake-dark.svg" alt="GitHub Snake Animation"/>
 </div>
 
 <div align="center">
@@ -234,7 +234,7 @@
 </div>
 
 <div align="center">
-  <img src="https://komarev.com/ghpvc/?username=adoumouangnamouemmanuel&label=Profile%20views&color=0e75b6&style=flat" alt="Profile Views" />
+  <img src="https://komarev.com/ghpvc/?username=emmanueladoumemmanuel&label=Profile%20views&color=0e75b6&style=flat" alt="Profile Views" />
   <br>
   <img src="https://img.shields.io/badge/Made%20with%20%E2%9D%A4%EF%B8%8F%20by-Emmanuel%20Adoum-6366F1" alt="Made with love" />
 </div>

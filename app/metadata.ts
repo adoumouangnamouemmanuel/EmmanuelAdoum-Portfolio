@@ -86,7 +86,7 @@ export const metadata: Metadata = {
     title: "Emmanuel Adoum | Portfolio",
     description:
       "A professional portfolio showcasing my skills and projects as a web developer.",
-    url: "https://adoumouangnamouemmanuel.vercel.app",
+    url: "https://emmanueladoumemmanuel.vercel.app",
     siteName: "Emmanuel Adoum | Portfolio",
     images: [
       {
@@ -103,7 +103,7 @@ export const metadata: Metadata = {
     description:
       "A professional portfolio showcasing my skills and projects as a web developer.",
     images: ["/emma.png"],
-    creator: "@AdoumOuangnamou",
+    creator: "@emmanueladoum",
   },
   description: "A professional portfolio showcasing my skills and projects",
 };

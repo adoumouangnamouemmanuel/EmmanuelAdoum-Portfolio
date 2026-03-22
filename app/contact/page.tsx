@@ -122,10 +122,10 @@ export default function ContactPage() {
   ]
 
   const socialLinks = [
-    { icon: <Github className="w-6 h-6" />, url: "https://github.com/adoumouangnamouemmanuel" },
+    { icon: <Github className="w-6 h-6" />, url: "https://github.com/emmanueladoumemmanuel" },
     { icon: <Linkedin className="w-6 h-6" />, url: "https://www.linkedin.com/in/emmanueladoum" },
-    { icon: <Twitter className="w-6 h-6" />, url: "https://x.com/adoumouangnamou" },
-    { icon: <Facebook className="w-6 h-6" />, url: "https://facebook.com/adoumouangnamouemmanuel" }
+    { icon: <Twitter className="w-6 h-6" />, url: "https://x.com/emmanueladoum" },
+    { icon: <Facebook className="w-6 h-6" />, url: "https://facebook.com/emmanueladoumemmanuel" }
   ]
 
   return (
