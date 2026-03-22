@@ -327,7 +327,7 @@ export default function BlogPostPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pt-24 sm:pt-28 pb-24 overflow-x-hidden">
       {/* 1. Cinematic Edge-to-Edge Cover */}
-      <section className="relative w-full h-[46vh] sm:h-[54vh] lg:h-[62vh] overflow-hidden bg-slate-950">
+      <section className="relative w-full h-[70vh] sm:h-[78vh] lg:h-[84vh] flex items-end overflow-hidden bg-slate-950">
         <motion.div
           className="absolute inset-0 z-0 origin-top"
           style={{ opacity: heroOpacity, y: heroY, scale: 1.05 }}
@@ -342,42 +342,40 @@ export default function BlogPostPage() {
         </motion.div>
 
         {/* Cinematic Gradients */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/55 to-black/35" />
-        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/65 via-black/20 to-transparent" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
         <div className="absolute inset-0 z-10 bg-black/20" />
 
         {/* Mastermind Hover Elements Overlay */}
-        <div className="absolute inset-0 z-20 flex flex-col justify-end p-6 sm:p-12 lg:p-20 lg:pb-24 max-w-7xl mx-auto w-full">
-          <div className="w-fit max-w-4xl rounded-2xl border border-white/15 bg-gradient-to-r from-black/46 via-black/26 to-black/10 p-4 sm:p-6 lg:p-7 shadow-xl backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.8,
-                ease: [0.16, 1, 0.3, 1],
-                delay: 0.1,
-              }}
-              className="flex flex-wrap items-center justify-between gap-3 mb-6 sm:mb-8"
-            >
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                {displayCategories.map((category, index) => (
-                  <span
-                    key={index}
-                    className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
-                  >
-                    {category}
-                  </span>
-                ))}
-              </div>
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pb-14 sm:pb-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          >
+            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
               <button
                 type="button"
                 onClick={() => setShowCoverViewer(true)}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-white/30 bg-black/30 text-white text-[10px] sm:text-xs font-bold tracking-widest uppercase hover:bg-black/45 transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-white/30 bg-slate-900/45 backdrop-blur-md text-white hover:bg-slate-900/60 transition-colors"
               >
                 <Eye className="w-4 h-4" />
                 {t.viewCover}
               </button>
-            </motion.div>
+              <span className="w-1 h-1 rounded-full bg-slate-500" />
+              <span className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-blue-400" /> {post.date}
+              </span>
+              <span className="w-1 h-1 rounded-full bg-slate-500" />
+              <span className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-purple-400" /> {post.readTime}{" "}
+                {t.minRead}
+              </span>
+              <span className="w-1 h-1 rounded-full bg-slate-500" />
+              <span className="flex items-center gap-2">
+                <Eye className="w-4 h-4 text-emerald-400" /> {post.views}{" "}
+                {t.views}
+              </span>
+            </div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -387,8 +385,8 @@ export default function BlogPostPage() {
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.2,
               }}
-              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white mb-5 leading-[1.08] md:leading-[1.1] max-w-4xl"
-              style={{ textShadow: "0 3px 22px rgba(0, 0, 0, 0.55)" }}
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-8 leading-[1.05] sm:leading-[1.1] max-w-5xl"
+              style={{ textShadow: "0 3px 20px rgba(0, 0, 0, 0.4)" }}
             >
               {post.title}
             </motion.h1>
@@ -401,8 +399,19 @@ export default function BlogPostPage() {
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.3,
               }}
-              className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10"
+              className="flex flex-col gap-6"
             >
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                {displayCategories.map((category, index) => (
+                  <span
+                    key={index}
+                    className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
+                  >
+                    {category}
+                  </span>
+                ))}
+              </div>
+
               {/* Author Chip Inside Hero */}
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white/20">
@@ -423,23 +432,8 @@ export default function BlogPostPage() {
                   </div>
                 </div>
               </div>
-
-              {/* Meta Data */}
-              <div className="hidden sm:flex flex-wrap items-center gap-6 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300 border-l border-white/20 pl-10">
-                <span className="flex items-center gap-2 relative z-20">
-                  <Calendar className="w-4 h-4 text-blue-400" /> {post.date}
-                </span>
-                <span className="flex items-center gap-2 relative z-20">
-                  <Clock className="w-4 h-4 text-purple-400" /> {post.readTime}{" "}
-                  {t.minRead}
-                </span>
-                <span className="flex items-center gap-2 relative z-20">
-                  <Eye className="w-4 h-4 text-emerald-400" /> {post.views}{" "}
-                  {t.views}
-                </span>
-              </div>
             </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
