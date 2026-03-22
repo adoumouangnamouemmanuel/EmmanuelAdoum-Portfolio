@@ -85,6 +85,7 @@ export default function BlogPostPage() {
         notFound: "Contenu introuvable",
         returnBlog: "Retour au blog",
         author: "Auteur",
+        unknownAuthor: "Auteur inconnu",
         minRead: "MIN LECTURE",
         views: "VUES",
         blogShort: "Blog",
@@ -98,11 +99,15 @@ export default function BlogPostPage() {
         defaultBio:
           "Ingénieur principal structurant des produits à fort impact.",
         comments: "Commentaires",
+        tableOfContents: "Table des matières",
+        relatedPosts: "Articles associés",
+        read: "Lire",
       }
     : {
         notFound: "Record Not Found",
         returnBlog: "Return to Blog",
         author: "Author",
+        unknownAuthor: "Unknown Author",
         minRead: "MIN READ",
         views: "VIEWS",
         blogShort: "Blog",
@@ -116,6 +121,9 @@ export default function BlogPostPage() {
         defaultBio:
           "Principal Architect and Engineer structuring high-end layouts.",
         comments: "Comments",
+        tableOfContents: "Table of Contents",
+        relatedPosts: "Related Posts",
+        read: "Read",
       };
 
   const { scrollY } = useScroll();
@@ -273,7 +281,7 @@ export default function BlogPostPage() {
 
   const author = post.author || {
     id: post.authorId || "",
-    name: "Unknown Author",
+    name: t.unknownAuthor,
     image: "/images/posts/profile.jpeg",
     bio: "",
     social: {},
@@ -570,7 +578,7 @@ export default function BlogPostPage() {
               <div className="sticky top-32">
                 <h3 className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-400 mb-8 flex items-center gap-3">
                   <span className="w-4 h-[2px] bg-slate-200 dark:bg-slate-800" />
-                  Table of Contents
+                  {t.tableOfContents}
                 </h3>
                 <div className="pl-6 border-l border-slate-200 dark:border-slate-800/60">
                   <TableOfContents />
@@ -583,7 +591,7 @@ export default function BlogPostPage() {
           {relatedPosts.length > 0 && (
             <div className="pt-24 border-t border-slate-200 dark:border-slate-800/60">
               <h3 className="text-3xl font-bold tracking-tighter text-slate-900 dark:text-white mb-12 text-center sm:text-left">
-                Related Posts
+                {t.relatedPosts}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {relatedPosts.map((relatedPost, index) => (
@@ -593,7 +601,7 @@ export default function BlogPostPage() {
                     className="group relative flex flex-col overflow-hidden rounded-3xl bg-slate-50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 transition-all duration-500 shadow-sm hover:shadow-xl border border-transparent hover:border-slate-200 dark:hover:border-slate-800"
                   >
                     <Link
-                      href={`/blog/${relatedPost.slug}`}
+                      href={`${basePath}/blog/${relatedPost.slug}`}
                       className="absolute inset-0 z-20"
                       aria-label={`Read ${relatedPost.title}`}
                     />
@@ -625,7 +633,7 @@ export default function BlogPostPage() {
                           <span>{relatedPost.date}</span>
                         </div>
                         <span className="flex items-center gap-1 text-[9px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform">
-                          Read <ChevronRight className="h-3 w-3" />
+                          {t.read} <ChevronRight className="h-3 w-3" />
                         </span>
                       </div>
                     </div>
