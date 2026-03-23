@@ -1,17 +1,16 @@
-import BlogLayout from "@/components/layout/BlogLayout";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   alternates: {
-    canonical: "/fr/blog",
+    canonical: "/projects",
     languages: {
-      "en-US": "/blog",
-      "fr-FR": "/fr/blog",
+      "en-US": "/projects",
+      "fr-FR": "/fr/projects",
     },
   },
 };
 
 export default function Layout({ children }: { children: ReactNode }) {
-  return <BlogLayout>{children}</BlogLayout>;
+  return children;
 }
