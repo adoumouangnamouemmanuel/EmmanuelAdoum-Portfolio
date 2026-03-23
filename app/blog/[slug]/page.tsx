@@ -11,7 +11,6 @@ import {
   useTransform,
 } from "framer-motion";
 import {
-  ArrowLeft,
   Calendar,
   Check,
   ChevronRight,
@@ -307,29 +306,12 @@ export default function BlogPostPage() {
     social: {},
   };
 
-  const displayCategories = (() => {
-    const cleaned = (post.categories || [])
-      .filter((category) => typeof category === "string")
-      .map((category) => category.trim())
-      .filter(Boolean);
-
-    const nonFallback = cleaned.filter(
-      (category) => category.toLowerCase() !== "uncategorized",
-    );
-
-    return nonFallback.length > 0
-      ? nonFallback
-      : cleaned.length > 0
-        ? cleaned
-        : ["Uncategorized"];
-  })();
-
   return (
-    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pt-24 sm:pt-28 pb-24 overflow-x-hidden">
+    <main className="min-h-screen bg-white dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pb-24 overflow-x-hidden">
       {/* 1. Cinematic Edge-to-Edge Cover */}
-      <section className="relative w-full h-[62vh] sm:h-[68vh] lg:h-[74vh] flex items-end overflow-hidden bg-slate-950">
+      <section className="relative w-full h-[70vh] sm:h-[76vh] lg:h-[82vh] flex items-end overflow-hidden bg-slate-950">
         <motion.div
-          className="absolute inset-0 z-0 origin-top"
+          className="absolute inset-0 z-0 origin-center"
           style={{ opacity: heroOpacity, y: heroY, scale: 1.01 }}
         >
           <Image
@@ -337,16 +319,15 @@ export default function BlogPostPage() {
             alt={post.title}
             fill
             priority
-            className="object-cover object-center"
+            className="object-cover object-[50%_30%]"
           />
         </motion.div>
 
         {/* Cinematic Gradients */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-black/20" />
+        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
 
         {/* Mastermind Hover Elements Overlay */}
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pb-14 sm:pb-20">
+        <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pb-6 sm:pb-10 lg:pb-12">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -360,7 +341,7 @@ export default function BlogPostPage() {
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.2,
               }}
-              className="text-3xl sm:text-5xl md:text-6xl lg:text-6xl font-bold tracking-tighter text-white mb-7 leading-[1.08] sm:leading-[1.1] max-w-5xl"
+              className="text-xl sm:text-3xl md:text-4xl lg:text-4xl font-bold tracking-tighter text-white mb-7 leading-[1.08] sm:leading-[1.1] max-w-3xl"
               style={{ textShadow: "0 3px 20px rgba(0, 0, 0, 0.4)" }}
             >
               {post.title}
@@ -377,62 +358,24 @@ export default function BlogPostPage() {
               className="flex flex-col gap-5"
             >
               {/* Author Chip Inside Hero */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white/20">
-                    <Image
-                      src={author.image || "/images/posts/profile.jpeg"}
-                      alt={author.name}
-                      width={56}
-                      height={56}
-                      className="w-full h-full object-cover"
-                    />
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-white/20">
+                  <Image
+                    src={author.image || "/images/posts/profile.jpeg"}
+                    alt={author.name}
+                    width={56}
+                    height={56}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <div className="text-white font-medium text-sm sm:text-base">
+                    {author.name}
                   </div>
-                  <div>
-                    <div className="text-white font-medium text-sm sm:text-base">
-                      {author.name}
-                    </div>
-                    <div className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
-                      {t.author}
-                    </div>
+                  <div className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
+                    {t.author}
                   </div>
                 </div>
-
-                <div className="flex flex-wrap gap-2 sm:gap-3 sm:justify-end">
-                  {displayCategories.map((category, index) => (
-                    <span
-                      key={index}
-                      className="px-4 py-1.5 rounded-full bg-gradient-to-r from-violet-500/35 to-indigo-500/35 backdrop-blur-md border border-white/25 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-white shadow-xl"
-                    >
-                      {category}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 pt-1 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
-                <button
-                  type="button"
-                  onClick={() => setShowCoverViewer(true)}
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-white/30 bg-slate-900/45 backdrop-blur-md text-white hover:bg-slate-900/60 transition-colors"
-                >
-                  <Eye className="w-4 h-4" />
-                  {t.viewCover}
-                </button>
-                <span className="w-1 h-1 rounded-full bg-slate-500" />
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-blue-400" /> {post.date}
-                </span>
-                <span className="w-1 h-1 rounded-full bg-slate-500" />
-                <span className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-purple-400" /> {post.readTime}{" "}
-                  {t.minRead}
-                </span>
-                <span className="w-1 h-1 rounded-full bg-slate-500" />
-                <span className="flex items-center gap-2">
-                  <Eye className="w-4 h-4 text-emerald-400" /> {post.views}{" "}
-                  {t.views}
-                </span>
               </div>
             </motion.div>
           </motion.div>
@@ -482,18 +425,30 @@ export default function BlogPostPage() {
         }}
       >
         <motion.div
-          className="absolute inset-x-0 top-0 h-[2px] origin-left bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500"
+          className="absolute inset-x-0 bottom-0 h-[2px] origin-left bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500"
           style={{ scaleX: scrollYProgress }}
         />
-        <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between py-4">
-          <Link
-            href={`${basePath}/blog`}
-            className="inline-flex items-center text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors group"
-          >
-            <ArrowLeft className="mr-3 h-4 w-4 group-hover:-translate-x-2 transition-transform duration-300" />
-            <span className="hidden sm:inline">{t.returnBlog}</span>
-            <span className="inline sm:hidden">{t.blogShort}</span>
-          </Link>
+        <div className="max-w-7xl mx-auto px-6 sm:px-12 flex items-center justify-between py-4 gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-5 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-300">
+            <button
+              type="button"
+              onClick={() => setShowCoverViewer(true)}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-900/60 text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 transition-colors"
+            >
+              <Eye className="w-4 h-4" />
+              {t.viewCover}
+            </button>
+            <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600" />
+            <span className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-purple-500" /> {post.readTime}{" "}
+              {t.minRead}
+            </span>
+            <span className="w-1 h-1 rounded-full bg-slate-400 dark:bg-slate-600" />
+            <span className="flex items-center gap-2">
+              <Eye className="w-4 h-4 text-emerald-500" /> {post.views}{" "}
+              {t.views}
+            </span>
+          </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
             {session?.user &&
