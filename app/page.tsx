@@ -1,14 +1,25 @@
-import Header from "@/components/layout/Header";
+import BackgroundAnimation from "@/components/BackgroundAnimation";
 import Footer from "@/components/layout/Footer";
-import HeroSection from "@/components/sections/HeroSection";
+import Header from "@/components/layout/Header";
 import AboutSection from "@/components/sections/AboutSection";
-import SkillsSection from "@/components/sections/SkillsSection";
-import ProjectsSection from "@/components/sections/ProjectsSection";
-import JourneySection from "@/components/sections/JourneySection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import BlogSection from "@/components/sections/BlogSection";
 import ContactSection from "@/components/sections/ContactSection";
-import BackgroundAnimation from "@/components/BackgroundAnimation";
+import HeroSection from "@/components/sections/HeroSection";
+import JourneySection from "@/components/sections/JourneySection";
+import ProjectsSection from "@/components/sections/ProjectsSection";
+import SkillsSection from "@/components/sections/SkillsSection";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/",
+      "fr-FR": "/fr",
+    },
+  },
+};
 
 export default function Home() {
   return (

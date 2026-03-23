@@ -8,13 +8,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://emmanueladoum.com",
   ),
-  alternates: {
-    canonical: "/",
-    languages: {
-      "en-US": "/",
-      "fr-FR": "/fr",
-    },
-  },
   icons: {
     icon: "/images/emma-head.png",
     shortcut: "/images/emma-head.png",
@@ -99,7 +92,6 @@ export const metadata: Metadata = {
     title: "Emmanuel Adoum | Portfolio",
     description:
       "A professional portfolio showcasing my skills and projects as a web developer.",
-    url: "/",
     siteName: "Emmanuel Adoum | Portfolio",
     locale: "en_US",
     alternateLocale: ["fr_FR"],
