@@ -17,6 +17,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { experiences as enExperiences, experiencesFr as frExperiences } from "@/data/experiences";
 
 type BlogPost = {
   slug: string;
@@ -170,53 +171,12 @@ export default function AboutPage() {
         },
       ];
 
-  const experiences = isFr
-    ? [
-        {
-          title: "Ingénieur Logiciel",
-          company: "Tech Innovators",
-          period: "2022 - Présent",
-          description:
-            "Conception de solutions EdTech haute performance et refonte d'anciens monolithes en applications Next.js modulaires.",
-        },
-        {
-          title: "Développeur Full Stack",
-          company: "Digital Solutions",
-          period: "2020 - 2022",
-          description:
-            "Conception d'applications full-stack robustes avec intégrations profondes de données, axées sur l'analytics et le suivi durable.",
-        },
-        {
-          title: "Assistant de Recherche",
-          company: "Ashesi University",
-          period: "2018 - 2020",
-          description:
-            "Pilotage de recherches pour identifier des solutions techniques répondant aux défis d'infrastructure des communautés africaines.",
-        },
-      ]
-    : [
-        {
-          title: "Software Engineer",
-          company: "Tech Innovators",
-          period: "2022 - Present",
-          description:
-            "Building high-performance educational technology solutions, refactoring legacy monoliths into modular Next.js applications.",
-        },
-        {
-          title: "Full Stack Developer",
-          company: "Digital Solutions",
-          period: "2020 - 2022",
-          description:
-            "Engineered robust full-stack web applications with deep data-layer integrations focused on sustainability tracking and analytics.",
-        },
-        {
-          title: "Research Assistant",
-          company: "Ashesi University",
-          period: "2018 - 2020",
-          description:
-            "Led research identifying core technical solutions addressing fundamental African community infrastructure challenges.",
-        },
-      ];
+  const aboutExperiences = (isFr ? frExperiences : enExperiences).map((exp) => ({
+    title: exp.role,
+    company: exp.company,
+    period: `${exp.startDate} - ${exp.endDate}`,
+    description: exp.description,
+  }));
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50 pb-24">
@@ -354,7 +314,7 @@ export default function AboutPage() {
             </div>
 
             <div className="w-full lg:w-8/12 flex flex-col gap-8">
-              {experiences.map((exp, idx) => (
+              {aboutExperiences.map((exp, idx) => (
                 <div
                   key={idx}
                   className="group relative p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 hover:border-blue-600 dark:hover:border-blue-500 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5"
