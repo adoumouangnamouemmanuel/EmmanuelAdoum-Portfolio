@@ -426,7 +426,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                     className="group relative flex items-center justify-between w-fit px-10 sm:px-14 py-5 sm:py-6 rounded-full bg-slate-900 dark:bg-white overflow-hidden transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl"
                   >
                     {/* Hover Background Expand */}
-                    <div className="absolute inset-0 bg-blue-600 dark:bg-blue-400 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1] z-0" />
+                    <div className="absolute inset-0 bg-blue-600 dark:bg-blue-400 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 transition-timing-function-[0.16,1,0.3,1] z-0" />
 
                     <span className="relative z-10 flex items-center gap-3">
                       {isSubmitting ? (

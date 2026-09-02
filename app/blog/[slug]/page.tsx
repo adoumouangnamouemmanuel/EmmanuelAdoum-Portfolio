@@ -660,7 +660,7 @@ export default function BlogPostPage() {
                         }
                         alt={relatedPost.title}
                         fill
-                        className="object-cover transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:scale-105"
+                        className="object-cover transition-transform duration-700 transition-timing-function-[0.16,1,0.3,1] group-hover:scale-105"
                       />
                     </div>
 

@@ -160,7 +160,7 @@ export default function BlogSection({ locale = "en" }: { locale?: Locale }) {
                     src={posts[0].coverImage || "/images/posts/blog.avif"}
                     alt={posts[0].title}
                     fill
-                    className="object-cover transition-transform duration-1000 ease-[0.16,1,0.3,1] group-hover:scale-105"
+                    className="object-cover transition-transform duration-1000 transition-timing-function-[0.16,1,0.3,1] group-hover:scale-105"
                   />
                 </motion.div>
 
@@ -236,7 +236,7 @@ export default function BlogSection({ locale = "en" }: { locale?: Locale }) {
                       src={post.coverImage || "/images/posts/blog.avif"}
                       alt={post.title}
                       fill
-                      className="object-cover transition-transform duration-1000 ease-[0.16,1,0.3,1] group-hover:scale-110"
+                      className="object-cover transition-transform duration-1000 transition-timing-function-[0.16,1,0.3,1] group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent z-10" />
 

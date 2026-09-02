@@ -137,7 +137,7 @@ export default function BlogHeader() {
   return (
     <>
       <header
-        className={`fixed left-0 right-0 z-50 transition-all duration-500 ease-[0.16,1,0.3,1] ${
+        className={`fixed left-0 right-0 z-50 transition-all duration-500 transition-timing-function-[0.16,1,0.3,1] ${
           isScrolled ? "top-2 sm:top-3 lg:top-4" : "top-3 sm:top-4 lg:top-5"
         }`}
       >

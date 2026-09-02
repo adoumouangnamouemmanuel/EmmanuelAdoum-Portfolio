@@ -437,7 +437,7 @@ export default function AboutPage() {
                       src={post.coverImage || "/images/posts/blog.avif"}
                       alt={post.title}
                       fill
-                      className="object-cover transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:scale-105"
+                      className="object-cover transition-transform duration-700 transition-timing-function-[0.16,1,0.3,1] group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors duration-500" />
                   </div>

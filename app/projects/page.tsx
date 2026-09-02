@@ -321,7 +321,7 @@ export default function ProjectsPage() {
                     <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
                     {/* Hidden Hover Content */}
-                    <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-10 opacity-0 translate-y-12 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 ease-[0.16,1,0.3,1]">
+                    <div className="absolute inset-0 flex flex-col justify-end p-8 sm:p-10 opacity-0 translate-y-12 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 transition-timing-function-[0.16,1,0.3,1]">
                       <div className="flex flex-wrap gap-2 mb-4">
                         {project.technologies
                           .slice(0, 3)

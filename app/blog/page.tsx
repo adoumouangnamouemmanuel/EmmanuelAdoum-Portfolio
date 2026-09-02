@@ -447,7 +447,7 @@ export default function BlogPage() {
                         }
                         alt={featuredPost.title}
                         fill
-                        className="object-cover transition-transform duration-1000 ease-[0.16,1,0.3,1] group-hover:scale-105"
+                        className="object-cover transition-transform duration-1000 transition-timing-function-[0.16,1,0.3,1] group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent z-10 transition-opacity duration-700 group-hover:via-slate-900/40" />
 
@@ -529,7 +529,7 @@ export default function BlogPage() {
                             src={post.coverImage || "/images/posts/blog.avif"}
                             alt={post.title}
                             fill
-                            className="object-cover transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:scale-105"
+                            className="object-cover transition-transform duration-700 transition-timing-function-[0.16,1,0.3,1] group-hover:scale-105"
                           />
                           <div className="absolute inset-0 z-10 flex items-center justify-center bg-blue-900/0 group-hover:bg-blue-900/10 backdrop-blur-none transition-all duration-500">
                             <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all transition-duration-[0.4s] delay-75 transition-timing-function-[0.16,1,0.3,1] shadow-2xl">
