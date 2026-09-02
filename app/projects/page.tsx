@@ -313,7 +313,7 @@ export default function ProjectsPage() {
                       src={project.image || "/images/posts/blog.png"}
                       alt={project.title}
                       fill
-                      className="object-cover transition-transform duration-[1.5s] ease-[0.16,1,0.3,1] group-hover:scale-110"
+                      className="object-cover transition-transform transition-duration-[1.5s] transition-timing-function-[0.16,1,0.3,1] group-hover:scale-110"
                     />
 
                     {/* The Cinematic Glass Overlay */}

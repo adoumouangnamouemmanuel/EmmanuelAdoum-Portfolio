@@ -532,7 +532,7 @@ export default function BlogPage() {
                             className="object-cover transition-transform duration-700 ease-[0.16,1,0.3,1] group-hover:scale-105"
                           />
                           <div className="absolute inset-0 z-10 flex items-center justify-center bg-blue-900/0 group-hover:bg-blue-900/10 backdrop-blur-none transition-all duration-500">
-                            <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-[0.4s] delay-75 ease-[0.16,1,0.3,1] shadow-2xl">
+                            <div className="w-12 h-12 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all transition-duration-[0.4s] delay-75 transition-timing-function-[0.16,1,0.3,1] shadow-2xl">
                               <ArrowUpRight className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                             </div>
                           </div>
