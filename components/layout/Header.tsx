@@ -11,6 +11,7 @@ import {
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 type Locale = "en" | "fr";
@@ -25,8 +26,9 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
           { name: "Compétences", href: "#skills" },
           { name: "Projets", href: "#projects" },
           { name: "Parcours", href: "#journey" },
-          { name: "Témoignages", href: "#testimonials" },
-          { name: "Blog", href: `${basePath}/blog` },
+          { name: "Distinctions", href: "#achievements" },
+          /* { name: "Témoignages", href: "#testimonials" }, */
+          /* { name: "Blog", href: `${basePath}/blog` }, */
           { name: "Contact", href: "#contact" },
         ]
       : [
@@ -35,11 +37,13 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
           { name: "Skills", href: "#skills" },
           { name: "Projects", href: "#projects" },
           { name: "Journey", href: "#journey" },
-          { name: "Testimonials", href: "#testimonials" },
-          { name: "Blog", href: "/blog" },
+          { name: "Awards", href: "#achievements" },
+          /* { name: "Testimonials", href: "#testimonials" }, */
+          /* { name: "Blog", href: "/blog" }, */
           { name: "Contact", href: "#contact" },
         ];
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOverHero, setIsOverHero] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const { theme, setTheme } = useTheme();
@@ -52,6 +56,11 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
   const headerRef = useRef<HTMLElement>(null);
   const isMobile = useIsMobile();
   const { scrollY, scrollYProgress } = useScroll();
+  const pathname = usePathname();
+
+  const togglePath = locale === "en" 
+    ? `/fr${pathname === "/" ? "" : pathname}`
+    : (pathname?.replace(/^\/fr/, "") || "/");
 
   // Progress Bar
   const horizontalProgress = useTransform(scrollYProgress, [0, 1], [0, 100]);
@@ -59,6 +68,11 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
+      const hero = document.getElementById("home");
+      if (hero) {
+        const heroBottom = hero.offsetTop + hero.offsetHeight;
+        setIsOverHero(window.scrollY < heroBottom - 100);
+      }
       const sections = navItems
         .filter((item) => item.href.startsWith("#"))
         .map((item) => item.href.substring(1));
@@ -156,10 +170,14 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
       >
         <div className="flex justify-center w-full px-4 pointer-events-none">
           <div
-            className={`pointer-events-auto flex items-center justify-between transition-all duration-500 rounded-full px-4 sm:px-6 py-2.5 sm:py-3 w-full lg:w-max mx-auto shadow-2xl border ${
-              isScrolled
-                ? "bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-slate-200/50 dark:border-slate-800/50 shadow-slate-900/5 dark:shadow-black/20"
-                : "bg-white/40 dark:bg-slate-900/40 backdrop-blur-xl border-slate-200/30 dark:border-slate-800/30 shadow-black/5"
+            className={`pointer-events-auto flex items-center justify-between transition-all duration-500 rounded-full px-4 sm:px-6 py-2.5 sm:py-3 w-full lg:w-max mx-auto shadow-2xl border backdrop-blur-2xl ${
+              isOverHero
+                ? isScrolled
+                  ? "bg-slate-900/70 border-slate-800/50 shadow-black/20"
+                  : "bg-slate-900/40 border-slate-800/30 shadow-black/5"
+                : isScrolled
+                  ? "bg-white/88 border-white/65 shadow-black/10 dark:bg-slate-900/70 dark:border-slate-800/50 dark:shadow-black/20"
+                  : "bg-white/86 border-white/55 shadow-black/10 dark:bg-slate-900/40 dark:border-slate-800/30 dark:shadow-black/5"
             }`}
           >
             {/* Architectural Logo Node */}
@@ -174,7 +192,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                 animate="animate"
                 whileHover="hover"
               >
-                <span className="text-xl sm:text-2xl font-black tracking-tighter text-slate-900 dark:text-white">
+                <span className={`text-xl sm:text-2xl font-black tracking-tighter ${isOverHero ? "text-white" : "text-slate-900 dark:text-white"}`}>
                   EA.
                 </span>
               </motion.div>
@@ -202,8 +220,12 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                       scroll={item.href.startsWith("#") ? false : true}
                       className={`relative z-20 px-4 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 block ${
                         isActive || isHovered
-                          ? "text-slate-900 dark:text-white"
-                          : "text-slate-500 dark:text-slate-400"
+                          ? isOverHero
+                            ? "text-white"
+                            : "text-slate-900 dark:text-white"
+                          : isOverHero
+                            ? "text-slate-400"
+                            : "text-slate-500 dark:text-slate-400"
                       }`}
                       onClick={(e) => {
                         if (item.href.startsWith("#")) {
@@ -222,7 +244,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                     {isHovered && (
                       <motion.div
                         layoutId="nav-hover-pill"
-                        className="absolute inset-0 z-10 bg-slate-200/50 dark:bg-slate-800/50 rounded-full"
+                        className={`absolute inset-0 z-10 rounded-full ${isOverHero ? "bg-slate-800/50" : "bg-slate-200/50 dark:bg-slate-800/50"}`}
                         transition={{
                           type: "spring",
                           stiffness: 400,
@@ -235,7 +257,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                     {isActive && !isHovered && (
                       <motion.div
                         layoutId="nav-active-dot"
-                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 z-10"
+                        className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full z-10 ${isOverHero ? "bg-blue-400" : "bg-blue-600 dark:bg-blue-400"}`}
                         transition={{
                           type: "spring",
                           stiffness: 400,
@@ -249,7 +271,24 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
             </nav>
 
             {/* Utility End Nodes */}
-            <div className="flex items-center gap-2 lg:gap-3 lg:ml-6 flex-shrink-0 z-10">
+            <div className="flex items-center gap-1 lg:gap-2 lg:ml-6 flex-shrink-0 z-10">
+              {/* Language Toggle */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Link href={togglePath}>
+                  <Button
+                    variant="ghost"
+                    className={`rounded-full px-3 h-9 sm:h-10 text-[10px] font-bold tracking-widest uppercase transition-colors cursor-pointer ${isOverHero ? "hover:bg-slate-800/50 text-slate-300 hover:text-white" : "hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 dark:hover:text-white"}`}
+                    aria-label={locale === "fr" ? "Switch to English" : "Changer vers le français"}
+                  >
+                    {locale === "en" ? "FR" : "EN"}
+                  </Button>
+                </Link>
+              </motion.div>
+
               {/* Theme Injector */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -260,14 +299,14 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                   variant="ghost"
                   size="icon"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-transparent hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer"
+                  className={`rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-transparent transition-colors cursor-pointer ${isOverHero ? "hover:bg-slate-800/50" : "hover:bg-slate-200/50 dark:hover:bg-slate-800/50"}`}
                   aria-label={
                     locale === "fr"
                       ? "Changer le thème"
                       : "Toggle structural theme"
                   }
                 >
-                  <Sun className="h-[18px] w-[18px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-slate-800" />
+                  <Sun className={`h-[18px] w-[18px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 ${isOverHero ? "text-slate-300" : "text-slate-800"}`} />
                   <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-slate-200" />
                 </Button>
               </motion.div>
@@ -361,7 +400,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
       {/* Legacy Right-Side Tracker (Keeping it because it's cool, but adjusting z-index and colors to match new theme) */}
       <div className="fixed top-0 right-8 h-screen z-30 hidden xl:flex items-center pointer-events-none">
         <div className="relative h-[60vh] flex flex-col justify-center items-center pointer-events-auto">
-          <div className="absolute h-full w-[1px] bg-slate-200 dark:bg-slate-800"></div>
+          <div className={`absolute h-full w-[1px] ${isOverHero ? "bg-slate-800" : "bg-slate-200 dark:bg-slate-800"}`}></div>
           <motion.div
             className="absolute top-0 w-[1px] bg-blue-600 dark:bg-blue-400 origin-top"
             style={{ height: scrollYProgress.get() * 100 + "%" }}
