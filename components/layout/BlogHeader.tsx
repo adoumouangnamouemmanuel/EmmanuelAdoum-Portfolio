@@ -38,6 +38,10 @@ export default function BlogHeader() {
   const basePath = isFrenchRoute ? "/fr" : "";
   const homePath = basePath || "/";
 
+  const togglePath = isFrenchRoute 
+    ? (pathname?.replace(/^\/fr/, "") || "/")
+    : `/fr${pathname === "/" ? "" : pathname}`;
+
   const t = isFrenchRoute
     ? {
         home: "Accueil",
@@ -222,7 +226,24 @@ export default function BlogHeader() {
             </nav>
 
             {/* Utility End Nodes */}
-            <div className="flex items-center gap-2 lg:gap-3 lg:ml-6 flex-shrink-0 z-10">
+            <div className="flex items-center gap-1 lg:gap-2 lg:ml-6 flex-shrink-0 z-10">
+              {/* Language Toggle */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <Link href={togglePath}>
+                  <Button
+                    variant="ghost"
+                    className={`hidden sm:flex rounded-full px-3 h-9 sm:h-10 text-[10px] font-bold tracking-widest uppercase transition-colors cursor-pointer hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 dark:hover:text-white`}
+                    aria-label={isFrenchRoute ? "Switch to English" : "Changer vers le français"}
+                  >
+                    {isFrenchRoute ? "EN" : "FR"}
+                  </Button>
+                </Link>
+              </motion.div>
+
               {/* Theme Injector */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
