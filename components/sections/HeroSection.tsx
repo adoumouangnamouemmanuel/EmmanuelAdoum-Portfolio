@@ -105,14 +105,14 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           whileHover={{ scale: 1.05, rotate: 3 }}
-          className="relative h-36 w-36 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-[0_18px_40px_rgba(15,23,42,0.25)] ring-1 ring-blue-900/10 transition-[filter] duration-500 dark:border-slate-100 dark:bg-slate-100 sm:h-44 sm:w-44 lg:h-52 lg:w-52"
+          className="relative h-44 w-44 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-[0_18px_40px_rgba(15,23,42,0.25)] ring-1 ring-blue-900/10 transition-[filter] duration-500 dark:border-slate-100 dark:bg-slate-100 sm:h-52 sm:w-52 lg:h-60 lg:w-60"
         >
           <Image
             src="/images/emma-head.png"
             alt={t.portraitAlt}
             fill
             priority
-            sizes="(max-width: 640px) 144px, (max-width: 1024px) 176px, 208px"
+            sizes="(max-width: 640px) 176px, (max-width: 1024px) 208px, 240px"
             className="object-cover object-center transition duration-500"
           />
         </motion.div>
@@ -121,12 +121,12 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 text-[clamp(2.7rem,8vw,5.6rem)] font-extrabold leading-[0.98] tracking-normal text-white drop-shadow-[0_5px_18px_rgba(0,0,0,0.46)]"
+          className="mt-7 text-[clamp(3rem,9vw,5.6rem)] font-extrabold leading-[0.98] tracking-normal text-white drop-shadow-[0_5px_18px_rgba(0,0,0,0.46)]"
         >
           {t.name}
         </motion.h1>
 
-        <div className="mt-4 flex min-h-[2.4rem] items-center justify-center overflow-hidden sm:min-h-[3rem]">
+        <div className="mt-4 flex min-h-[2.8rem] items-center justify-center overflow-hidden sm:min-h-[3rem]">
           <AnimatePresence mode="wait">
             <motion.p
               key={activeTagline}
@@ -134,7 +134,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -18 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="text-balance text-lg font-semibold text-blue-100 sm:text-2xl"
+              className="text-balance text-xl font-semibold text-blue-100 sm:text-2xl"
             >
               {activeTagline}
             </motion.p>
@@ -145,7 +145,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-3 max-w-2xl text-balance text-sm font-medium leading-relaxed text-slate-100/90 sm:text-base"
+          className="mt-4 max-w-2xl text-balance text-base font-medium leading-relaxed text-slate-100/90 sm:text-lg"
         >
           {t.description}
         </motion.p>
@@ -159,7 +159,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           <Button
             asChild
             size="lg"
-            className="group h-12 rounded-full bg-blue-600 px-7 text-sm font-semibold text-white shadow-xl shadow-blue-950/30 transition-all hover:scale-105 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 sm:h-14 sm:text-base"
+            className="group h-14 rounded-full bg-blue-600 px-8 text-base font-semibold text-white shadow-xl shadow-blue-950/30 transition-all hover:scale-105 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 sm:h-14 sm:text-base"
           >
             <Link href="#contact">
               {t.ctaPrimary}
@@ -171,7 +171,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
             asChild
             size="lg"
             variant="outline"
-            className="group h-12 rounded-full border-white/30 bg-white/16 px-7 text-sm font-semibold text-white shadow-sm backdrop-blur transition-all hover:scale-105 hover:bg-white/24 dark:border-white/20 dark:bg-slate-950/56 dark:text-white dark:hover:bg-slate-900/80 sm:h-14 sm:text-base"
+            className="group h-14 rounded-full border-white/30 bg-white/16 px-8 text-base font-semibold text-white shadow-sm backdrop-blur transition-all hover:scale-105 hover:bg-white/24 dark:border-white/20 dark:bg-slate-950/56 dark:text-white dark:hover:bg-slate-900/80 sm:h-14 sm:text-base"
           >
             <Link
               href={locale === "fr" ? "/resume_fr.pdf" : "/resume.pdf"}
