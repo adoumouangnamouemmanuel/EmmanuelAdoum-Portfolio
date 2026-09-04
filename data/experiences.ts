@@ -115,7 +115,7 @@ export const experiencesFr = [
     location: "Accra, Ghana",
     startDate: "Juin 2025",
     endDate: "Août 2025",
-    logo: "/images/logos/nestle-logo.svg",
+    logo: "/images/logos/nestle-logo.jpg",
     description:
       "Automatisation des tableaux de bord KRI et OLI avec Power BI, Excel, Power Automate et Python, réduisant le temps de reporting mensuel d'environ 99 %.",
     technologies: ["Power BI", "Excel", "Power Automate", "Python", "ETL"],
