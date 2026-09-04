@@ -5,6 +5,7 @@ export const experiences = [
     location: "Accra, Ghana",
     startDate: "Aug 2026",
     endDate: "Sept 2026",
+    logo: "/images/logos/Revna-Logo.svg",
     description:
       "Translated detailed product requirements into a buildable architecture and implementation roadmap covering workflow orchestration, RBAC, approvals, documents, auditability, notifications, dashboards, and external integrations.",
     technologies: ["FastAPI", "PostgreSQL", "Python", "RBAC", "Workflow Orchestration"],
@@ -19,6 +20,7 @@ export const experiences = [
     location: "Accra, Ghana (Hybrid)",
     startDate: "Jul 2026",
     endDate: "Aug 2026",
+    logo: "/images/logos/affinity-logo.svg",
     description:
       "Co-developed the end-to-end backend engine for a loan automation platform using FastAPI and MongoDB, converting multi-stage lending operations into structured, auditable workflows.",
     technologies: ["FastAPI", "MongoDB", "Python", "REST APIs"],
@@ -28,11 +30,12 @@ export const experiences = [
     ],
   },
   {
-    role: "Quantitative & Predictive Risk Modelling Intern | Technical Lead & System Architect",
+    role: "Quantitative Risk Intern & System Architect",
     company: "MTN Ghana",
     location: "Accra, Ghana",
     startDate: "May 2026",
     endDate: "Jul 2026",
+    logo: "/images/logos/mtn-logo.svg",
     description:
       "Led architecture and technical delivery for a four-person team building a real-time risk intelligence platform that replaced manual, subjective assessments with quantitative, traceable analysis.",
     technologies: ["Python", "AI/NLP", "Monte Carlo Simulation", "Data Pipeline", "Forecasting"],
@@ -48,6 +51,7 @@ export const experiences = [
     location: "Accra, Ghana",
     startDate: "Jun 2025",
     endDate: "Aug 2025",
+    logo: "/images/logos/nestle-logo.jpg",
     description:
       "Automated KRI and OLI dashboards with Power BI, Excel, Power Automate, and Python, reducing monthly reporting time by approximately 99%.",
     technologies: ["Power BI", "Excel", "Power Automate", "Python", "ETL"],
@@ -65,6 +69,7 @@ export const experiencesFr = [
     location: "Accra, Ghana",
     startDate: "Août 2026",
     endDate: "Sept 2026",
+    logo: "/images/logos/Revna-Logo.svg",
     description:
       "Traduction des exigences produit détaillées en une architecture construisable et une feuille de route de mise en œuvre couvrant l'orchestration des flux, le RBAC, les approbations, les documents, l'auditabilité, les notifications, les tableaux de bord et les intégrations externes.",
     technologies: ["FastAPI", "PostgreSQL", "Python", "RBAC", "Orchestration de flux"],
@@ -79,6 +84,7 @@ export const experiencesFr = [
     location: "Accra, Ghana (Hybride)",
     startDate: "Juil. 2026",
     endDate: "Août 2026",
+    logo: "/images/logos/affinity-logo.svg",
     description:
       "Co-développement du moteur backend de bout en bout pour une plateforme d'automatisation de prêts, convertissant les opérations de prêt multi-étapes en flux de travail structurés et auditable.",
     technologies: ["FastAPI", "MongoDB", "Python", "APIs REST"],
@@ -88,11 +94,12 @@ export const experiencesFr = [
     ],
   },
   {
-    role: "Chef Technique & Architecte Système",
+    role: "Stagiaire Risque Quantitatif & Architecte Système",
     company: "MTN Ghana",
     location: "Accra, Ghana",
     startDate: "Mai 2026",
     endDate: "Juil. 2026",
+    logo: "/images/logos/mtn-logo.svg",
     description:
       "Direction de l'architecture et de la livraison technique d'une équipe de quatre personnes construisant une plateforme d'intelligence des risques en temps réel remplaçant les évaluations manuelles subjectives par une analyse quantitative traçable.",
     technologies: ["Python", "IA/NLP", "Simulation de Monte Carlo", "Pipeline de données", "Prévision"],
@@ -108,6 +115,7 @@ export const experiencesFr = [
     location: "Accra, Ghana",
     startDate: "Juin 2025",
     endDate: "Août 2025",
+    logo: "/images/logos/nestle-logo.svg",
     description:
       "Automatisation des tableaux de bord KRI et OLI avec Power BI, Excel, Power Automate et Python, réduisant le temps de reporting mensuel d'environ 99 %.",
     technologies: ["Power BI", "Excel", "Power Automate", "Python", "ETL"],

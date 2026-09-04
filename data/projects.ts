@@ -131,7 +131,7 @@ export const projects = [
   {
     title: "Tumor-Immune Dynamics Model",
     description:
-      "An interactive web platform for exploring the Nonlinear Tumor-Immune Unstable Hybrid Dynamical Model (NTIUNHDM) — a mathematical framework investigating the complex interactions between tumor cells, immune response, and dietary factors through differential equations and numerical methods.",
+      "An interactive web platform for exploring the Nonlinear Tumor-Immune Unstable Hybrid Dynamical Model (NTIUNHDM) - a mathematical framework investigating the complex interactions between tumor cells, immune response, and dietary factors through differential equations and numerical methods.",
     image: "/images/projects/tumor-model-cover.png",
     goal: "To make complex cancer research mathematics accessible through interactive visualizations and real-time differential equation simulations.",
     outcome:
@@ -151,7 +151,7 @@ export const projects = [
     demo: "https://github.com/adoumouangnamouemmanuel/tumor_model_differential_equations",
     featured: true,
     category: "Research & Mathematics",
-    client: "MATH221 & CE122 — Ashesi University",
+    client: "MATH221 & CE122 - Ashesi University",
     date: "2024-12-01",
     slug: "tumor-immune-dynamics-model",
     challenges: [
@@ -183,7 +183,7 @@ export const projects = [
   {
     title: "Solar System Simulation",
     description:
-      "A Python-based solar system simulation using Pygame for real-time visualization of planetary orbital mechanics, gravitational interactions, and celestial physics — including accurate Newton's law computations, orbital velocity, escape velocity, and data export to CSV.",
+      "A Python-based solar system simulation using Pygame for real-time visualization of planetary orbital mechanics, gravitational interactions, and celestial physics - including accurate Newton's law computations, orbital velocity, escape velocity, and data export to CSV.",
     image: "/images/projects/solar-system-cover.png",
     goal: "To build an educational tool that provides an interactive and physically accurate simulation of the solar system, enabling exploration of orbital mechanics and gravitational dynamics.",
     outcome:
@@ -233,7 +233,7 @@ export const projects = [
   {
     title: "Ghana Road Transport Network",
     description:
-      "A full-stack solution to the Ghana Road Transport Network Programming Challenge 2026 at Ashesi University. Models Ghana's intercity road network as a graph, implements Dijkstra, Yen's K-Shortest Paths, and cost analysis — exposed via a Java CLI, a Spring Boot REST API, and an interactive Next.js web frontend.",
+      "A full-stack solution to the Ghana Road Transport Network Programming Challenge 2026 at Ashesi University. Models Ghana's intercity road network as a graph, implements Dijkstra, Yen's K-Shortest Paths, and cost analysis - exposed via a Java CLI, a Spring Boot REST API, and an interactive Next.js web frontend.",
     image: "/images/projects/ghana-transport-cover.png",
     goal: "To model Ghana's intercity road network as a graph and provide tools to explore routes, estimate costs, and manage road connectivity through a CLI, REST API, and interactive web interface.",
     outcome:
@@ -256,7 +256,7 @@ export const projects = [
     demo: "https://github.com/adoumouangnamouemmanuel/ghana-transport-network-2026",
     featured: true,
     category: "Algorithms & Data Structures",
-    client: "Ashesi University — CS Programming Challenge 2026",
+    client: "Ashesi University - CS Programming Challenge 2026",
     date: "2026-03-01",
     slug: "ghana-road-transport-network",
     challenges: [
@@ -292,7 +292,7 @@ export const projects = [
     description:
       "An online learning platform designed to help students master discrete mathematics with a focus on sets. Features interactive lessons, quizzes, progress tracking, and interactive Venn diagram visualizations to make learning engaging and effective.",
     image: "/images/projects/discrete-learn-cover.png",
-    goal: "To create an accessible, interactive platform that makes discrete mathematics — specifically set theory — approachable for students through guided lessons and hands-on practice.",
+    goal: "To create an accessible, interactive platform that makes discrete mathematics - specifically set theory - approachable for students through guided lessons and hands-on practice.",
     outcome:
       "A fully functional web learning platform with authentication, progress tracking, interactive Venn diagrams, practice problems, and a focused course environment.",
     technologies: [
@@ -340,7 +340,7 @@ export const projects = [
   {
     title: "Twitter / X Data Scraper",
     description:
-      "A Python-based command-line tool that uses Selenium to scrape tweets from Twitter/X — by user profile, hashtag, or search query. Supports flexible authentication, configurable tweet limits, advanced search queries, and CSV export of scraped data.",
+      "A Python-based command-line tool that uses Selenium to scrape tweets from Twitter/X - by user profile, hashtag, or search query. Supports flexible authentication, configurable tweet limits, advanced search queries, and CSV export of scraped data.",
     image: "/images/projects/twitter-scraper-cover.png",
     goal: "To build a flexible, authenticated CLI tool for scraping and exporting tweet data from Twitter/X for research, social media analysis, and data collection use cases.",
     outcome:
@@ -381,7 +381,7 @@ export const projects = [
     gallery: [],
   },
   {
-    title: "Succès Masra — Incarceration Counter",
+    title: "Succès Masra - Incarceration Counter",
     description:
       "A French-language web interface displaying the number of days Chadian political leader Succès Masra has been imprisoned since May 17, 2025. Features an animated odometer-style day counter, secondary statistics (weeks, months, years), a Chadian flag progress bar, and a premium dark-mode design.",
     image: "/images/projects/masra-counter-cover.png",
@@ -431,7 +431,7 @@ export const projects = [
     gallery: [],
   },
   {
-    title: "Custom Printf — C Implementation",
+    title: "Custom Printf - C Implementation",
     description:
       "A custom implementation of the C standard library printf function, built from scratch in C. Supports a comprehensive set of conversion specifiers (%c, %s, %d, %i, %u, %o, %x, %X, %p, %b, %r, %R, %S) and follows the Betty style guidelines, compiled on Ubuntu 20.04 with gcc.",
     image: "/images/projects/custom-printf-cover.png",
@@ -450,7 +450,7 @@ export const projects = [
     demo: "https://github.com/adoumouangnamouemmanuel/printf",
     featured: false,
     category: "Systems Programming",
-    client: "ALX Africa — Low-Level Programming",
+    client: "ALX Africa - Low-Level Programming",
     date: "2023-09-01",
     slug: "custom-printf-c-implementation",
     challenges: [
@@ -480,7 +480,7 @@ export const projects = [
     gallery: [],
   },
   {
-    title: "Emmanuel Adoum — Developer Portfolio",
+    title: "Emmanuel Adoum - Developer Portfolio",
     description:
       "A cinematic, full-stack personal portfolio website built with Next.js 15 and TypeScript. Features a blog with Firebase-backed comments and replies, Google OAuth authentication, an admin dashboard, dark/light mode, and premium glassmorphism UI with Framer Motion animations.",
     image: "/images/projects/portfolio-cover.png",
