@@ -1,5 +1,6 @@
 import BackgroundAnimation from "@/components/BackgroundAnimation";
 import FloatingLinks from "@/components/FloatingLinks";
+import ScrollToTop from "@/components/ScrollToTop";
 import GreetingLoader from "@/components/GreetingLoader";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
@@ -42,6 +43,7 @@ export default function Home() {
         <ContactSection />
       </main>
       <FloatingLinks />
+      <ScrollToTop />
       <Footer />
     </>
   );
