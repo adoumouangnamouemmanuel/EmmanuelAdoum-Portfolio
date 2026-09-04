@@ -65,7 +65,7 @@ export default function ExperienceSection() {
               {/* Left Column: Dates & Company */}
               <div className="lg:w-1/4 flex-shrink-0">
                 <p className="text-xs sm:text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-2 mt-1 lg:mt-2 lg:sticky lg:top-8">
-                  {experience.startDate} — {experience.endDate}
+                  {experience.startDate} - {experience.endDate}
                 </p>
               </div>
 
