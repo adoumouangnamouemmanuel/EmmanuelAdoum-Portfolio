@@ -32,7 +32,7 @@ export const leaderData = {
       {
         title: "Homeless Outreach & Manual Work Matching",
         description:
-          "Interviewed and mapped the needs of homeless individuals in urban areas to connect them with job opportunities — driven by empathy, not code.",
+          "Interviewed and mapped the needs of homeless individuals in urban areas to connect them with job opportunities - driven by empathy, not code.",
       },
     ],
   },

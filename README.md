@@ -85,7 +85,7 @@
           </a>
         </p>
         <p><strong>Java 17 · Spring Boot · Next.js · Dijkstra · Yen's K-Shortest Paths</strong><br/>
-        Full-stack graph solution to the Ashesi CS Challenge 2026 — models Ghana's intercity road network with shortest path finding, cost analysis, and an interactive force-directed map.</p>
+        Full-stack graph solution to the Ashesi CS Challenge 2026 - models Ghana's intercity road network with shortest path finding, cost analysis, and an interactive force-directed map.</p>
       </div>
     </td>
     <td width="50%">
@@ -103,7 +103,7 @@
           </a>
         </p>
         <p><strong>Next.js 14 · React · MathJax · Canvas API · Framer Motion</strong><br/>
-        Interactive web platform exploring the NTIUNHDM mathematical model — visualizing tumor-immune cell dynamics through differential equations, real-time simulations, and ODE solvers.</p>
+        Interactive web platform exploring the NTIUNHDM mathematical model - visualizing tumor-immune cell dynamics through differential equations, real-time simulations, and ODE solvers.</p>
       </div>
     </td>
   </tr>
@@ -138,7 +138,7 @@
           </a>
         </p>
         <p><strong>Next.js 15 · TypeScript · Firebase · NextAuth.js · Framer Motion</strong><br/>
-        Cinematic full-stack portfolio and blog platform — featuring Google OAuth, nested comments, an admin dashboard, glassmorphism UI, and smooth physics-based animations.</p>
+        Cinematic full-stack portfolio and blog platform - featuring Google OAuth, nested comments, an admin dashboard, glassmorphism UI, and smooth physics-based animations.</p>
       </div>
     </td>
   </tr>
