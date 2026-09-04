@@ -150,7 +150,7 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
       >
         <div
           data-about-panel
-          className="mx-auto w-full max-w-6xl rounded-[20px] border border-slate-200/70 bg-gradient-to-br from-white/82 via-blue-50/48 to-white/68 p-6 shadow-[0_8px_32px_rgba(15,23,42,0.14)] backdrop-blur-[3px] dark:border-white/20 dark:from-white/10 dark:via-white/[0.04] dark:to-white/[0.02] dark:shadow-[0_8px_32px_rgba(0,0,0,0.37)] sm:p-10 lg:p-12"
+          className="mx-auto w-full max-w-6xl rounded-[20px] border border-slate-200/70 bg-gradient-to-br from-white/95 via-blue-50/70 to-white/90 p-6 shadow-[0_8px_32px_rgba(15,23,42,0.14)] dark:border-white/20 dark:from-white/15 dark:via-white/[0.06] dark:to-white/[0.04] dark:shadow-[0_8px_32px_rgba(0,0,0,0.37)] sm:p-10 lg:p-12"
         >
           <h2 className="text-[clamp(1.5rem,3vw,2.5rem)] font-extrabold uppercase leading-tight tracking-normal text-slate-950 dark:text-slate-100">
             {t.title}

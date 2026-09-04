@@ -18,11 +18,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
     offset: ["start start", "end start"],
   });
   const backgroundScale = useTransform(scrollYProgress, [0, 1], [1.02, 1.22]);
-  const backgroundBlur = useTransform(
-    scrollYProgress,
-    [0, 0.55, 1],
-    ["blur(0px)", "blur(5px)", "blur(12px)"],
-  );
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.55, 1], [0, 0.15, 0.45]);
   const t = useMemo(
     () =>
       locale === "fr"
@@ -77,7 +73,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
     >
       <div className="absolute inset-0 z-0 pointer-events-none">
         <motion.div
-          style={{ scale: backgroundScale, filter: backgroundBlur }}
+          style={{ scale: backgroundScale }}
           className="absolute inset-[-7%] will-change-transform"
         >
           <Image
@@ -91,6 +87,10 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
         </motion.div>
         <div className="absolute inset-0 bg-slate-950/42 dark:bg-slate-950/54" />
         <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(2,6,23,0.42),rgba(2,6,23,0.24)_45%,rgba(2,6,23,0.82))] dark:bg-[linear-gradient(to_bottom,rgba(2,6,23,0.48),rgba(2,6,23,0.36)_45%,rgba(2,6,23,0.88))]" />
+        <motion.div
+          style={{ opacity: overlayOpacity }}
+          className="absolute inset-0 bg-slate-950 will-change-[opacity]"
+        />
         <div className="absolute inset-x-0 top-0 h-40 bg-slate-950/34 dark:bg-slate-950/44" />
       </div>
 
