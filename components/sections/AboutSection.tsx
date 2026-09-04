@@ -177,7 +177,7 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
                 className="relative aspect-square w-full overflow-visible rounded-[5%] shadow-[0_20px_40px_rgba(0,0,0,0.2)] transition-shadow duration-300 hover:shadow-[0_30px_60px_rgba(37,99,235,0.25)] sm:max-w-[380px] lg:max-w-[420px]"
               >
                 <Image
-                  src="/images/emma-hero.png"
+                  src="/images/emma-hero.jpg"
                   alt="Emmanuel Adoum"
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 380px, 420px"
