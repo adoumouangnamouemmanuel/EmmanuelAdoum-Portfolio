@@ -174,13 +174,13 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
                 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative aspect-square w-full max-w-[280px] overflow-visible rounded-[5%] shadow-[0_20px_40px_rgba(0,0,0,0.2)] transition-shadow duration-300 hover:shadow-[0_30px_60px_rgba(37,99,235,0.25)] sm:max-w-[320px] lg:max-w-[380px]"
+                className="relative aspect-square w-full overflow-visible rounded-[5%] shadow-[0_20px_40px_rgba(0,0,0,0.2)] transition-shadow duration-300 hover:shadow-[0_30px_60px_rgba(37,99,235,0.25)] sm:max-w-[380px] lg:max-w-[420px]"
               >
                 <Image
                   src="/images/emma-hero.png"
                   alt="Emmanuel Adoum"
                   fill
-                  sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, 380px"
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 380px, 420px"
                   className="rounded-[5%] object-cover object-center brightness-95 saturate-[90%]"
                 />
                 
@@ -203,12 +203,12 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
                 <motion.span 
                   animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                  className="block bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-[length:200%_auto] bg-clip-text text-2xl font-bold leading-tight text-transparent dark:from-blue-400 dark:via-cyan-300 dark:to-blue-400 sm:text-3xl lg:text-4xl"
+                  className="block bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 bg-[length:200%_auto] bg-clip-text text-3xl font-bold leading-tight text-transparent dark:from-blue-400 dark:via-cyan-300 dark:to-blue-400 sm:text-3xl lg:text-4xl"
                 >
                   {t.name}
                 </motion.span>
                 
-                <p className="mt-1 text-sm font-bold text-slate-700 dark:text-slate-500 sm:text-base">
+                <p className="mt-1 text-base font-bold text-slate-700 dark:text-slate-500 sm:text-base">
                   {t.role}
                 </p>
                 
@@ -220,7 +220,7 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
                   }}
                   initial="hidden"
                   animate={isInView ? "visible" : "hidden"}
-                  className="mt-4 flex flex-wrap gap-x-[0.25rem] text-sm font-normal leading-relaxed sm:text-base lg:text-lg"
+                  className="mt-4 flex flex-wrap gap-x-[0.25rem] text-base font-normal leading-relaxed sm:text-base lg:text-lg"
                 >
                   {words.map((word, i) => (
                     <motion.span
