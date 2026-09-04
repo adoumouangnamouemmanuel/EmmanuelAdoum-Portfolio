@@ -1,4 +1,6 @@
 import BackgroundAnimation from "@/components/BackgroundAnimation";
+import FloatingLinks from "@/components/FloatingLinks";
+import GreetingLoader from "@/components/GreetingLoader";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import AboutSection from "@/components/sections/AboutSection";
@@ -8,6 +10,7 @@ import HeroSection from "@/components/sections/HeroSection";
 import JourneySection from "@/components/sections/JourneySection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
 import SkillsSection from "@/components/sections/SkillsSection";
+import AchievementsSection from "@/components/sections/AchievementsSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import type { Metadata } from "next";
 
@@ -24,18 +27,21 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
+      <GreetingLoader />
       <BackgroundAnimation />
       <Header />
-      <main>
+      <main className="relative z-10">
         <HeroSection />
         <AboutSection />
         <SkillsSection />
         <ProjectsSection />
         <JourneySection />
-        <BlogSection />
-        <TestimonialsSection />
+        <AchievementsSection />
+        {/* <BlogSection /> */}
+        {/* <TestimonialsSection /> */}
         <ContactSection />
       </main>
+      <FloatingLinks />
       <Footer />
     </>
   );
