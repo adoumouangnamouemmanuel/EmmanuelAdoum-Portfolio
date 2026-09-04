@@ -201,7 +201,7 @@ export default function FloatingLinks({ locale = "en" }: { locale?: Locale }) {
           animate={{ rotate: isOpen ? 135 : 0 }}
           transition={{ duration: 0.4, type: "spring", stiffness: 200, damping: 15 }}
         >
-          <Plus className="h-6 w-6" aria-hidden="true" />
+          <Link2 className="h-6 w-6" aria-hidden="true" />
         </motion.div>
       </motion.button>
     </div>
