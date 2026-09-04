@@ -24,11 +24,11 @@ export default function ProjectsPage() {
   const t = isFr
     ? {
         backHome: "Retour accueil",
-        titleLead: "Les",
+        titleLead: "Tous les",
         titleAccent: "projets.",
         subtitle:
           "Analyses techniques, études de cas et systèmes conçus à la frontière de l'ingénierie web.",
-        search: "Rechercher dans l'archive...",
+        search: "Rechercher des projets...",
         filterLibrary: "Filtrer la bibliothèque",
         allIndex: "Tout l'index",
         filterByTech: "Filtrer par techno",
@@ -42,11 +42,11 @@ export default function ProjectsPage() {
       }
     : {
         backHome: "Return Home",
-        titleLead: "The",
-        titleAccent: "Archive.",
+        titleLead: "All",
+        titleAccent: "Projects.",
         subtitle:
           "Deep technical dives, architectural patterns, and systemic insights from the frontier of web engineering.",
-        search: "Search the archive...",
+        search: "Search projects...",
         filterLibrary: "Filter Library",
         allIndex: "All Index",
         filterByTech: "Filter by Tech",
@@ -55,7 +55,7 @@ export default function ProjectsPage() {
         exploreProject: "Explore Project",
         noMatchTitle: "No match found.",
         noMatchBody:
-          "The archive couldn't locate any projects matching your parameters.",
+          "We couldn't locate any projects matching your parameters.",
         resetFilters: "Reset Filters",
       };
 
