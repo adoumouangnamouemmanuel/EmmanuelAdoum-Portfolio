@@ -109,6 +109,16 @@ function JourneyCard({
 
           {/* Content */}
           <div className="relative z-10 flex flex-col h-full">
+            {/* Mobile logo + date row — hidden on desktop where timeline shows them */}
+            {logo && (
+              <div className="lg:hidden flex items-center gap-3 mb-4">
+                <div className="relative w-11 h-11 rounded-full border border-white/60 bg-[radial-gradient(circle_at_30%_30%,#ffffff,#f8fafc_60%,#e2e8f0)] shadow-[0_4px_12px_rgba(0,0,0,0.12),inset_4px_4px_8px_rgba(255,255,255,0.9)] dark:bg-[radial-gradient(circle_at_30%_30%,#f8fafc,#cbd5e1_60%,#94a3b8)] flex items-center justify-center p-2 flex-shrink-0">
+                  <div className="relative w-full h-full drop-shadow-sm mix-blend-multiply">
+                    <Image src={logo} alt="Company Logo" fill className="object-contain" />
+                  </div>
+                </div>
+              </div>
+            )}
             {children}
           </div>
         </div>
