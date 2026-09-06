@@ -1,4 +1,5 @@
 import { blogPosts } from "@/data/blog";
+import { experiences } from "@/data/experiences";
 import { projects } from "@/data/projects";
 import type { MetadataRoute } from "next";
 
@@ -120,5 +121,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]);
 
-  return [...staticPages, ...blogPages, ...projectPages];
+  const experienceSlugSet = new Set(
+    experiences
+      .map((exp) => exp.slug)
+      .filter(
+        (slug): slug is string => typeof slug === "string" && slug.length > 0,
+      ),
+  );
+
+  const experiencePages: MetadataRoute.Sitemap = Array.from(
+    experienceSlugSet,
+  ).flatMap((slug) => [
+    {
+      url: `${baseUrl}/experience/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/fr/experience/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    },
+  ]);
+
+  return [...staticPages, ...blogPages, ...projectPages, ...experiencePages];
 }

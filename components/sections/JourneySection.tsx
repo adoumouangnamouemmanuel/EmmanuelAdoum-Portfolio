@@ -128,6 +128,8 @@ function JourneyCard({
 }
 
 export default function JourneySection({ locale = "en" }: { locale?: Locale }) {
+  const basePath = locale === "fr" ? "/fr" : "";
+
   const t =
     locale === "fr"
       ? {
@@ -281,9 +283,19 @@ export default function JourneySection({ locale = "en" }: { locale?: Locale }) {
 
                     return (
                       <JourneyCard key={`exp-${index}`} dateText={dateText} logo={experience.logo}>
-                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
-                          {experience.role}
-                        </h3>
+                        {experience.slug ? (
+                          <Link
+                            href={`${basePath}/experience/${experience.slug}`}
+                            className="inline-block text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2 underline decoration-transparent hover:decoration-blue-500/50 decoration-2 underline-offset-4"
+                          >
+                            {experience.role}
+                            <ArrowUpRight className="inline-block h-4 w-4 sm:h-5 sm:w-5 ml-1.5 text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          </Link>
+                        ) : (
+                          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
+                            {experience.role}
+                          </h3>
+                        )}
 
                         <h4 className="flex flex-wrap items-center gap-3 text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6">
                           <span>{experience.company}</span>
