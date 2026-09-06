@@ -1,14 +1,19 @@
 "use client";
 
+import CN from "country-flag-icons/react/3x2/CN";
+import ES from "country-flag-icons/react/3x2/ES";
+import FR from "country-flag-icons/react/3x2/FR";
+import GB from "country-flag-icons/react/3x2/GB";
+import TD from "country-flag-icons/react/3x2/TD";
 import { AnimatePresence, motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const greetings = [
-  { text: "Emmanuel Adoum", flag: "🇹🇩", lang: "Chad / Ghana" },
-  { text: "Bonjour", flag: "🇫🇷", lang: "Français" },
-  { text: "Hello", flag: "🇬🇧", lang: "English" },
-  { text: "Hola", flag: "🇪🇸", lang: "Español" },
-  { text: "你好", flag: "🇨🇳", lang: "中文" },
+  { text: "Emmanuel Adoum", flag: TD, lang: "Chad / Ghana" },
+  { text: "Bonjour", flag: FR, lang: "Français" },
+  { text: "Hello", flag: GB, lang: "English" },
+  { text: "Hola", flag: ES, lang: "Español" },
+  { text: "你好", flag: CN, lang: "中文" },
 ];
 
 const GREETING_STEP_MS = 850;
@@ -19,6 +24,7 @@ export default function GreetingLoader() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [exiting, setExiting] = useState(false);
+  const ActiveFlag = greetings[activeIndex].flag;
 
   // Progress 0→1 over total duration — GPU-friendly (no layout triggers)
   const progress = useMotionValue(0);
@@ -149,7 +155,9 @@ export default function GreetingLoader() {
                   transition={{ duration: 0.3, delay: 0.15 }}
                   className="flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm"
                 >
-                  <span className="text-xl leading-none">{greetings[activeIndex].flag}</span>
+                  <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-[4px] shadow-md ring-1 ring-white/25 sm:h-6 sm:w-6">
+                    <ActiveFlag className="h-full w-full" />
+                  </span>
                   <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-slate-400">
                     {greetings[activeIndex].lang}
                   </span>

@@ -141,7 +141,7 @@ export default function ExperienceDetailPage() {
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-6 leading-[1.05] sm:leading-[1.1] max-w-5xl">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-6 leading-tight max-w-5xl">
               {experience.role}
             </h1>
 
