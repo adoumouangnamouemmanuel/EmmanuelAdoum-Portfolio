@@ -81,7 +81,18 @@ export const personJsonLd = (baseUrl: string) => ({
   name: "Emmanuel Adoum",
   alternateName: "Adoum Ouang-Namou Emmanuel",
   jobTitle: "Chief Technology Officer",
-  worksFor: { "@type": "Organization", name: "Lumavok" },
+  worksFor: {
+    "@type": "Organization",
+    name: "Lumavok",
+    url: "https://www.lumavok.com",
+  },
+  alumniOf: [
+    {
+      "@type": "CollegeOrUniversity",
+      name: "Ashesi University",
+      url: "https://www.ashesi.edu.gh",
+    },
+  ],
   url: baseUrl,
   image: `${baseUrl}/images/emma.jpg`,
   nationality: "Chad",

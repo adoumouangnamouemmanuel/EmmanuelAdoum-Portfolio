@@ -87,7 +87,19 @@ export default function ExperienceSection() {
                   </h3>
                 )}
                 <h4 className="text-base sm:text-lg font-bold tracking-wide uppercase text-blue-600 dark:text-blue-400 mb-6 lg:mb-8 flex flex-wrap items-center gap-x-3 gap-y-1">
-                  {experience.company}
+                  {experience.website ? (
+                    <Link
+                      href={experience.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 transition-colors hover:text-blue-500 dark:hover:text-blue-300 group/company"
+                    >
+                      {experience.company}
+                      <ArrowUpRight className="h-3.5 w-3.5 opacity-50 group-hover/company:opacity-100 group-hover/company:translate-x-0.5 group-hover/company:-translate-y-0.5 transition-all duration-300" />
+                    </Link>
+                  ) : (
+                    <span>{experience.company}</span>
+                  )}
                   {experience.location && (
                     <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold tracking-wide text-slate-400 dark:text-slate-500">
                       <MapPin className="h-3.5 w-3.5" />
