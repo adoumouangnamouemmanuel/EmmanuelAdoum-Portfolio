@@ -7,7 +7,7 @@ import { type NextRequest, NextResponse } from "next/server";
 // PATCH /api/posts/[slug]/comments/[commentId] - Update comment
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { slug: string; commentId: string } }
+  { params }: { params: Promise<{ slug: string; commentId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -18,7 +18,7 @@ export async function PATCH(
       );
     }
 
-    const { commentId } = params;
+    const { commentId } = await params;
     const { content } = await req.json();
 
     if (!content?.trim()) {
@@ -85,7 +85,7 @@ export async function PATCH(
 // DELETE /api/posts/[slug]/comments/[commentId] - Delete comment
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { slug: string; commentId: string } }
+  { params }: { params: Promise<{ slug: string; commentId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -106,7 +106,7 @@ export async function DELETE(
     }
 
     // Verify the confirmation token matches the comment ID
-    const { commentId } = params;
+    const { commentId } = await params;
     if (confirmationToken !== commentId) {
       return NextResponse.json(
         { error: "Invalid confirmation token" },

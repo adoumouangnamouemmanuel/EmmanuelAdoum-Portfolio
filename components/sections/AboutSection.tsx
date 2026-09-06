@@ -79,9 +79,9 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
       ? {
           title: "À PROPOS DE MOI",
           name: "Emmanuel Adoum",
-          role: "Ingénieur Informatique & Développeur Logiciel",
+          role: "Directeur de la Technologie & Ingénieur Informatique",
           description:
-            "Je conçois des solutions à de vrais problèmes, de l'éducation à la finance, en passant par les systèmes intelligents. Je suis attiré par les idées ambitieuses, en particulier là où la technologie peut rendre les choses plus rapides, plus intelligentes ou tout simplement possibles. Originaire du Tchad, je construis depuis le Ghana.",
+            "Je définis et mène la vision technologique de Lumavok en concevant des solutions innovantes, sécurisées et évolutives — de l'éducation à la finance, en passant par les systèmes intelligents. Je suis attiré par les idées ambitieuses, en particulier là où la technologie peut rendre les choses plus rapides, plus intelligentes ou tout simplement possibles. Originaire du Tchad, je construis depuis le Ghana.",
           learnMore: "En savoir plus sur moi à travers mes :",
           actions: [
             { label: "Projets", href: "#projects", icon: <FolderGit2 className="h-4 w-4 lg:h-5 lg:w-5" /> },
@@ -92,9 +92,9 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
       : {
           title: "ABOUT ME",
           name: "Emmanuel Adoum",
-          role: "Computer Engineer & Software Developer",
+          role: "Chief Technology Officer & Computer Engineer",
           description:
-            "I build things that solve real problems from education and finance to intelligent systems. I’m drawn to ambitious ideas, especially where technology can make something faster, smarter, or simply possible. Originally from Chad, I’m building from Ghana.",
+            "I define and lead Lumavok's technological vision by building innovative, secure, and scalable solutions — from education and finance to intelligent systems. I'm drawn to ambitious ideas, especially where technology can make something faster, smarter, or simply possible. Originally from Chad, I'm building from Ghana.",
           learnMore: "Learn More About Me From My:",
           actions: [
             { label: "Projects", href: "#projects", icon: <FolderGit2 className="h-4 w-4 lg:h-5 lg:w-5" /> },

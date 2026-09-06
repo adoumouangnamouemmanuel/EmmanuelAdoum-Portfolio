@@ -6,7 +6,7 @@ import { type NextRequest, NextResponse } from "next/server";
 // GET /api/users/[userId]/notifications - Get user notification preferences
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,7 +17,7 @@ export async function GET(
       );
     }
 
-    const { userId } = params;
+    const { userId } = await params;
     const userDoc = await adminDb.collection("users").doc(userId).get();
 
     if (!userDoc.exists) {
@@ -44,7 +44,7 @@ export async function GET(
 // PATCH /api/users/[userId]/notifications - Update user notification preferences
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -55,7 +55,7 @@ export async function PATCH(
       );
     }
 
-    const { userId } = params;
+    const { userId } = await params;
     if (session.user.id !== userId) {
       return NextResponse.json(
         { error: "Unauthorized to update this user" },

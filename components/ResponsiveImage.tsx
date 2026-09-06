@@ -7,7 +7,7 @@ const ResponsiveImage = (props: ImageProps) => {
       {...props}
       onLoad={(e) => {
         if (props.onLoadingComplete) {
-          props.onLoadingComplete(e);
+          props.onLoadingComplete(e.currentTarget);
         }
       }}
     />

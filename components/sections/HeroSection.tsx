@@ -25,14 +25,14 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
         ? {
             name: "Emmanuel Adoum",
             taglines: [
-              "Ingenierie informatique & IA",
-              "Developpeur logiciel full stack",
-              "Produits web, mobiles et IA",
+              "Directeur de la Technologie chez Lumavok",
+              "Ingénierie informatique & IA",
+              "Des produits web, mobiles et IA innovants et sécurisés",
             ],
             description:
-              "Je transforme des idees complexes en systemes performants, durables et utiles.",
-            ctaPrimary: "Demarrer une conversation",
-            ctaSecondary: "Telecharger le CV",
+              "Je définis et mène la vision technologique de Lumavok — je transforme des idées complexes en systèmes performants, durables et utiles.",
+            ctaPrimary: "Démarrer une conversation",
+            ctaSecondary: "Télécharger le CV",
             githubAria: "GitHub",
             linkedinAria: "LinkedIn",
             portraitAlt: "Portrait d'Emmanuel Adoum",
@@ -40,12 +40,12 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
         : {
             name: "Emmanuel Adoum",
             taglines: [
+              "Chief Technology Officer at Lumavok",
               "Computer Engineering & AI",
-              "Full Stack Software Developer",
-              "Web, mobile, and AI-driven products",
+              "Building innovative, secure, scalable products",
             ],
             description:
-              "I turn complex ideas into high-performance systems that last.",
+              "I define and lead Lumavok's technological vision — turning complex ideas into high-performance systems that last.",
             ctaPrimary: "Start a Conversation",
             ctaSecondary: "Download Resume",
             githubAria: "GitHub",

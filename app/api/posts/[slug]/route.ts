@@ -15,7 +15,7 @@ import { type NextRequest, NextResponse } from "next/server";
 // GET /api/posts/[slug] - Get a single post
 export async function GET(
   req: NextRequest,
-  context: { params: { slug: string } },
+  context: { params: Promise<{ slug: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -90,7 +90,7 @@ export async function GET(
 // PUT /api/posts/[slug] - Update a post
 export async function PUT(
   req: NextRequest,
-  context: { params: { slug: string } },
+  context: { params: Promise<{ slug: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -186,7 +186,7 @@ export async function PUT(
 // DELETE /api/posts/[slug] - Delete a post
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -196,7 +196,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { slug } = params;
+    const { slug } = await params;
 
     // Find the post by slug
     const post = await postModel.findBySlug(slug);

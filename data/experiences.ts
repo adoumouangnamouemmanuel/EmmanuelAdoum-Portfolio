@@ -1,5 +1,20 @@
 export const experiences = [
   {
+    role: "Chief Technology Officer (CTO)",
+    company: "Lumavok",
+    location: "Chad",
+    startDate: "Aug 2025",
+    endDate: "Present",
+    description:
+      "Define and lead Lumavok's technological vision by developing innovative, secure, and scalable solutions, ensuring the quality, performance, and reliability of products while anticipating technological trends and future needs.",
+    logo: "/images/logos/lumavok-logo.svg",
+    technologies: ["Technology Strategy", "Product Leadership", "Security", "Scalability", "AI"],
+    achievements: [
+      "Lead the company's technological vision and roadmap, focusing on innovative, secure, and scalable solutions.",
+      "Maintain product quality, performance, and reliability while staying ahead of technological trends and future needs.",
+    ],
+  },
+  {
     role: "Project Manager & Backend Engineer",
     company: "Ashesi Innovation Lab × Revna Biosciences",
     location: "Accra, Ghana",
@@ -63,6 +78,21 @@ export const experiences = [
 ];
 
 export const experiencesFr = [
+  {
+    role: "Directeur de la Technologie (CTO)",
+    company: "Lumavok",
+    location: "Tchad",
+    startDate: "Août 2025",
+    endDate: "Present",
+    description:
+      "Définir et mener la vision technologique de Lumavok en développant des solutions innovantes, sécurisées et évolutives, tout en garantissant la qualité, la performance et la fiabilité des produits et en anticipant les tendances technologiques et les besoins futurs.",
+    logo: "/images/logos/lumavok-logo.svg",
+    technologies: ["Stratégie technologique", "Leadership produit", "Sécurité", "Évolutivité", "IA"],
+    achievements: [
+      "Mener la vision et la feuille de route technologique de l'entreprise en privilégiant des solutions innovantes, sécurisées et évolutives.",
+      "Préserver la qualité, la performance et la fiabilité des produits tout en anticipant les tendances technologiques et les besoins futurs.",
+    ],
+  },
   {
     role: "Chef de Projet & Ingénieur Backend",
     company: "Ashesi Innovation Lab × Revna Biosciences",

@@ -11,8 +11,9 @@ const greetings = [
   { text: "你好", flag: "🇨🇳", lang: "中文" },
 ];
 
-const GREETING_STEP_MS = 1100;
+const GREETING_STEP_MS = 850;
 const TOTAL_MS = greetings.length * GREETING_STEP_MS;
+const LOADER_SEEN_KEY = "emmanuel-portfolio-loader-seen";
 
 export default function GreetingLoader() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -31,6 +32,13 @@ export default function GreetingLoader() {
       setIsVisible(false);
       return;
     }
+
+    // Skip the intro for returning visitors
+    if (window.localStorage.getItem(LOADER_SEEN_KEY)) {
+      setIsVisible(false);
+      return;
+    }
+    window.localStorage.setItem(LOADER_SEEN_KEY, "1");
 
     // Animate progress bar
     const controls = animate(progress, 1, {

@@ -9,9 +9,9 @@ const handler = NextAuth(authOptions);
 export { handler as GET };
 
 type NextAuthRouteContext = {
-  params: {
+  params: Promise<{
     nextauth: string[];
-  };
+  }>;
 };
 
 export async function POST(req: Request, context: NextAuthRouteContext) {
@@ -23,5 +23,6 @@ export async function POST(req: Request, context: NextAuthRouteContext) {
   });
   if (limited) return limited;
 
-  return handler(req, context);
+  const params = await context.params;
+  return handler(req, { params });
 }

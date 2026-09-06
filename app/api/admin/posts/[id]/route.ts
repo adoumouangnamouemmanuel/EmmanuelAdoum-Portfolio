@@ -6,7 +6,7 @@ import { type NextRequest, NextResponse } from "next/server";
 // PATCH /api/admin/posts/[id] - Update post fields (admin only)
 export async function PATCH(
   req: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,7 +14,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { id } = context.params;
+    const { id } = await context.params;
     const body = await req.json();
 
     const updateData: { published?: boolean } = {};
@@ -43,14 +43,14 @@ export async function PATCH(
 // DELETE /api/admin/posts/[id] - Delete a post by ID (admin only)
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user || session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { id } = context.params;
+    const { id } = await context.params;
     await postModel.delete(id);
     return NextResponse.json({ success: true });
   } catch (error) {

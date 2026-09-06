@@ -16,12 +16,54 @@ import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
+  title: "Emmanuel Adoum | Portfolio",
+  description:
+    "Portfolio d'Emmanuel Adoum — Directeur de la Technologie (CTO) chez Lumavok. Ingénieur informatique et développeur full-stack, je conçois des solutions technologiques innovantes, sécurisées et évolutives.",
+  keywords: [
+    "Emmanuel Adoum",
+    "Portfolio",
+    "Chief Technology Officer",
+    "CTO",
+    "Directeur de la Technologie",
+    "Lumavok",
+    "Tchad",
+    "Ingénieur informatique",
+    "Développeur full stack",
+    "Next.js",
+    "TypeScript",
+    "React",
+    "Python",
+    "Intelligence artificielle",
+  ],
   alternates: {
     canonical: "/fr",
     languages: {
       "en-US": "/",
       "fr-FR": "/fr",
     },
+  },
+  openGraph: {
+    title: "Emmanuel Adoum | Directeur de la Technologie (CTO)",
+    description:
+      "Directeur de la Technologie (CTO) chez Lumavok. Ingénieur informatique et développeur full-stack, je conçois des solutions technologiques innovantes, sécurisées et évolutives.",
+    siteName: "Emmanuel Adoum | Portfolio",
+    locale: "fr_FR",
+    images: [
+      {
+        url: "/emma.png",
+        width: 1200,
+        height: 630,
+        alt: "Emmanuel Adoum | Portfolio",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Emmanuel Adoum | Directeur de la Technologie (CTO)",
+    description:
+      "Directeur de la Technologie (CTO) chez Lumavok. Ingénieur informatique et développeur full-stack, je conçois des solutions technologiques innovantes, sécurisées et évolutives.",
+    images: ["/emma.png"],
+    creator: "@emmanueladoum",
   },
 };
 

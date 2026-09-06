@@ -5,14 +5,14 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user || session.user.role !== "admin") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const { userId } = params;
+    const { userId } = await params;
     const { blocked } = await req.json();
     const userRef = adminDb.collection("users").doc(userId);
     const userDoc = await userRef.get();

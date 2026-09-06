@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
+import { MapPin } from "lucide-react";
 import { useRef } from "react";
 import { experiences } from "@/data/experiences";
 
@@ -74,8 +75,14 @@ export default function ExperienceSection() {
                 <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1 lg:mb-2 leading-tight">
                   {experience.role}
                 </h3>
-                <h4 className="text-base sm:text-lg font-bold tracking-wide uppercase text-blue-600 dark:text-blue-400 mb-6 lg:mb-8">
+                <h4 className="text-base sm:text-lg font-bold tracking-wide uppercase text-blue-600 dark:text-blue-400 mb-6 lg:mb-8 flex flex-wrap items-center gap-x-3 gap-y-1">
                   {experience.company}
+                  {experience.location && (
+                    <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold tracking-wide text-slate-400 dark:text-slate-500">
+                      <MapPin className="h-3.5 w-3.5" />
+                      {experience.location}
+                    </span>
+                  )}
                 </h4>
 
                 <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-6 lg:mb-8">

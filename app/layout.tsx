@@ -1,5 +1,5 @@
 // import Footer from "@/components/layout/Footer";
-import { metadata as sharedMetadata } from "@/app/metadata";
+import { metadata as sharedMetadata, personJsonLd } from "@/app/metadata";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import type { Metadata } from "next";
@@ -22,6 +22,17 @@ export default function RootLayout({
         className={`${outfit.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              personJsonLd(
+                process.env.NEXT_PUBLIC_SITE_URL ||
+                  "https://emmanueladoum.com",
+              ),
+            ),
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

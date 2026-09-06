@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { education, educationFr } from "@/data/education";
 import { experiences, experiencesFr } from "@/data/experiences";
 import { motion, useInView, useMotionValue, useMotionTemplate } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState, MouseEvent } from "react";
@@ -287,6 +287,12 @@ export default function JourneySection({ locale = "en" }: { locale?: Locale }) {
 
                         <h4 className="flex flex-wrap items-center gap-3 text-sm sm:text-base font-bold tracking-wide text-slate-600 dark:text-slate-300 mb-6">
                           <span>{experience.company}</span>
+                          {experience.location && (
+                            <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500">
+                              <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              {experience.location}
+                            </span>
+                          )}
                           <span className="lg:hidden inline-block px-3 py-1 bg-slate-100/80 dark:bg-slate-800/80 rounded-full text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 border border-slate-200/50 dark:border-slate-700/50">
                             {dateText}
                           </span>
