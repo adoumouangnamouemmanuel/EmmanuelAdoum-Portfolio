@@ -1,5 +1,54 @@
 export const projects = [
   {
+    title: "Enterprise Risk Intelligence Platform",
+    description:
+      "Enterprise risk intelligence platform combining Monte Carlo simulation, VaR/CVaR, copula models, and LSTM/XGBoost forecasting with SHAP-powered explainability.",
+    image: "/images/projects/mtn-quantrisk-cover.jpg",
+    goal: "To build a robust quantitative risk assessment engine capable of forecasting financial exposure and identifying stress scenarios.",
+    outcome:
+      "A high-performance pipeline that replaced manual Excel models, enabling automated daily risk scoring and deep explainability.",
+    technologies: [
+      "Python",
+      "TypeScript",
+      "Monte Carlo Simulation",
+      "LSTM / XGBoost",
+      "SHAP",
+      "VaR / CVaR",
+      "Copula Models",
+    ],
+    github: null,
+    demo: null,
+    featured: true,
+    category: "Data & AI",
+    client: "MTN Ghana (Confidential)",
+    date: "2026-08-22",
+    slug: "mtn-quantrisk",
+    challenges: [
+      "Processing and normalizing large volumes of raw financial market data",
+      "Building statistically sound Monte Carlo simulations that account for tail risks",
+      "Explaining complex machine learning predictions (LSTM/XGBoost) to non-technical stakeholders",
+    ],
+    solutions: [
+      "Developed an automated data ingestion and cleaning pipeline.",
+      "Implemented VaR/CVaR and Copula models to capture dependency structures and extreme market movements.",
+      "Integrated SHAP values to provide transparent, human-readable explanations for every risk score generated.",
+    ],
+    developmentProcess: [
+      "Engineered the core data pipeline and statistical models",
+      "Trained LSTM and XGBoost models for predictive forecasting",
+      "Validated models using historical backtesting",
+      "Built a secure dashboard for stakeholder reporting",
+    ],
+    keyFeatures: [
+      "Monte Carlo Simulation Engine",
+      "VaR (Value at Risk) and CVaR calculations",
+      "LSTM/XGBoost Predictive Forecasting",
+      "SHAP-powered model explainability",
+      "Copula models for dependency mapping",
+    ],
+    gallery: [],
+  },
+  {
     title: "Tchad Education System",
     description:
       "An educational technology initiative aimed at digitizing school management and learning systems across Chad. The platform supports schools, teachers, and students through enrollment, grade tracking, and communication tools.",
@@ -149,7 +198,7 @@ export const projects = [
     github:
       "https://github.com/adoumouangnamouemmanuel/tumor_model_differential_equations",
     demo: "https://github.com/adoumouangnamouemmanuel/tumor_model_differential_equations",
-    featured: true,
+    featured: false,
     category: "Research & Mathematics",
     client: "MATH221 & CE122 - Ashesi University",
     date: "2024-12-01",
@@ -199,7 +248,7 @@ export const projects = [
     github:
       "https://github.com/adoumouangnamouemmanuel/solar-system-simulation",
     demo: "https://github.com/adoumouangnamouemmanuel/solar-system-simulation",
-    featured: true,
+    featured: false,
     category: "Simulation & Physics",
     client: "Academic Project",
     date: "2024-08-03",
@@ -448,7 +497,7 @@ export const projects = [
     ],
     github: "https://github.com/adoumouangnamouemmanuel/printf",
     demo: "https://github.com/adoumouangnamouemmanuel/printf",
-    featured: false,
+    featured: true,
     category: "Systems Programming",
     client: "ALX Africa - Low-Level Programming",
     date: "2023-09-01",
@@ -540,6 +589,39 @@ const projectsFrOverrides: Record<
   string,
   Partial<(typeof projects)[number]>
 > = {
+  "mtn-quantrisk": {
+    title: "Plateforme d'Intelligence des Risques d'Entreprise",
+    description:
+      "Plateforme d'intelligence des risques d'entreprise combinant simulation de Monte Carlo, VaR/CVaR, modèles de copules et prévisions LSTM/XGBoost avec une explicabilité basée sur SHAP.",
+    goal: "Construire un moteur robuste d'évaluation quantitative des risques capable de prévoir l'exposition financière et d'identifier les scénarios de stress.",
+    outcome:
+      "Un pipeline haute performance remplaçant les modèles Excel manuels, permettant une évaluation automatisée des risques et une explicabilité approfondie.",
+    category: "Data & IA",
+    client: "MTN Ghana (Confidentiel)",
+    challenges: [
+      "Traitement et normalisation de grands volumes de données de marché brutes",
+      "Construction de simulations de Monte Carlo statistiquement fiables",
+      "Explication des prédictions d'apprentissage automatique complexes aux parties prenantes non techniques",
+    ],
+    solutions: [
+      "Développement d'un pipeline automatisé d'ingestion et de nettoyage des données.",
+      "Implémentation de modèles VaR/CVaR et de Copules pour capturer les mouvements de marché extrêmes.",
+      "Intégration des valeurs SHAP pour fournir des explications transparentes pour chaque score de risque généré.",
+    ],
+    developmentProcess: [
+      "Conception du pipeline de données principal et des modèles statistiques",
+      "Entraînement des modèles LSTM et XGBoost pour les prévisions",
+      "Validation des modèles par backtesting historique",
+      "Création d'un tableau de bord sécurisé pour le reporting",
+    ],
+    keyFeatures: [
+      "Moteur de simulation de Monte Carlo",
+      "Calculs VaR (Value at Risk) et CVaR",
+      "Prévisions prédictives LSTM/XGBoost",
+      "Explicabilité des modèles via SHAP",
+      "Modèles de copules pour la cartographie des dépendances",
+    ],
+  },
   "tchad-education-system": {
     title: "Tchad Education System",
     description:
