@@ -64,11 +64,12 @@ export default function ExperienceDetailPage() {
         impact: "00. Impact",
         overview: "01. Vue d'ensemble",
         company: "02. L'Entreprise",
-        responsibilities: "03. Responsabilités clés",
-        achievements: "04. Réalisations clés",
-        gallery: "05. Galerie",
-        recommendation: "06. Recommandation",
-        related: "07. Projets associés",
+        caseStudy: "03. Étude de Cas",
+        responsibilities: "04. Responsabilités clés",
+        achievements: "05. Réalisations clés",
+        gallery: "06. Galerie",
+        recommendation: "07. Recommandation",
+        related: "08. Projets associés",
         viewProject: "Voir le projet",
         prev: "Expérience précédente",
         next: "Expérience suivante",
@@ -86,11 +87,12 @@ export default function ExperienceDetailPage() {
         impact: "00. Impact",
         overview: "01. Overview",
         company: "02. The Company",
-        responsibilities: "03. Key Responsibilities",
-        achievements: "04. Key Achievements",
-        gallery: "05. Gallery",
-        recommendation: "06. Recommendation",
-        related: "07. Related Projects",
+        caseStudy: "03. Engineering Case Study",
+        responsibilities: "04. Key Responsibilities",
+        achievements: "05. Key Achievements",
+        gallery: "06. Gallery",
+        recommendation: "07. Recommendation",
+        related: "08. Related Projects",
         viewProject: "View Project",
         prev: "Previous Experience",
         next: "Next Experience",
@@ -99,6 +101,9 @@ export default function ExperienceDetailPage() {
         viewAll: "View Full Journey",
         present: "PRESENT",
       };
+
+  // Safe cast for new properties if typescript complains
+  const experienceWithCaseStudy = experience as any;
 
   useEffect(() => {
     if (slug && !experience) {
@@ -344,6 +349,72 @@ export default function ExperienceDetailPage() {
             </motion.div>
           )}
 
+          {/* Engineering Case Study */}
+          {experienceWithCaseStudy.caseStudy && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+              className="mb-24 sm:mb-32"
+            >
+              <h2 className={sectionLabel}>{(t as any).caseStudy}</h2>
+              <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
+                {/* Problem */}
+                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">The Context</h3>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+                    {experienceWithCaseStudy.caseStudy.problem}
+                  </p>
+                </div>
+
+                {/* Architecture */}
+                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                      <Building2 className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">The Architecture</h3>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+                    {experienceWithCaseStudy.caseStudy.procedures}
+                  </p>
+                </div>
+
+                {/* Challenges */}
+                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Technical Challenges</h3>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+                    {experienceWithCaseStudy.caseStudy.challenges}
+                  </p>
+                </div>
+
+                {/* Solution / Impact */}
+                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Measurable Impact</h3>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
+                    {experienceWithCaseStudy.caseStudy.solution}
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Key Responsibilities */}
           {experience.responsibilities &&
             experience.responsibilities.length > 0 && (
@@ -399,7 +470,8 @@ export default function ExperienceDetailPage() {
             </motion.div>
           )}
 
-          {/* Gallery */}
+          {/* Gallery - Commented out for now as per user request */}
+          {/* 
           {experience.gallery && experience.gallery.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -451,9 +523,11 @@ export default function ExperienceDetailPage() {
                 })}
               </div>
             </motion.div>
-          )}
+          )} 
+          */}
 
-          {/* Recommendation */}
+          {/* Recommendation - Commented out for now as per user request */}
+          {/*
           {experience.recommendation && (
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -485,6 +559,7 @@ export default function ExperienceDetailPage() {
               </figure>
             </motion.div>
           )}
+          */}
 
           {/* Related Projects */}
           {relatedProjects.length > 0 && (
