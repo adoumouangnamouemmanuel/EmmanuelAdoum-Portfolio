@@ -15,9 +15,8 @@ export const metadata: Metadata = {
   keywords: [
     "Emmanuel Adoum",
     "Adoum Ouang-Namou Emmanuel",
-    "Chief Technology Officer",
-    "CTO",
-    "Lumavok",
+    "Software Engineer",
+    "Computer Engineer",
     "Portfolio",
     "Computer Engineering",
     "Artificial Intelligence",
@@ -48,9 +47,9 @@ export const metadata: Metadata = {
   creator: "Emmanuel Adoum",
   publisher: "Emmanuel Adoum",
   openGraph: {
-    title: "Emmanuel Adoum | Chief Technology Officer at Lumavok",
+    title: "Emmanuel Adoum | Software Engineer",
     description:
-      "Chief Technology Officer at Lumavok. Computer engineer and full-stack developer building innovative, secure, and scalable solutions.",
+      "Software Engineer. Architecting scalable, data-intensive backend systems for high-stakes environments.",
     siteName: "Emmanuel Adoum | Portfolio",
     locale: "en_US",
     alternateLocale: ["fr_FR"],
@@ -65,14 +64,14 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Emmanuel Adoum | Chief Technology Officer at Lumavok",
+    title: "Emmanuel Adoum | Software Engineer",
     description:
-      "Chief Technology Officer at Lumavok. Computer engineer and full-stack developer building innovative, secure, and scalable solutions.",
+      "Software Engineer. Architecting scalable, data-intensive backend systems for high-stakes environments.",
     images: ["/emma.png"],
     creator: "@emmanueladoum",
   },
   description:
-    "Emmanuel Adoum — Chief Technology Officer at Lumavok. Computer engineer and full-stack developer building innovative, secure, and scalable technology solutions.",
+    "Emmanuel Adoum — Software Engineer. Architecting scalable, data-intensive backend systems for high-stakes environments.",
 };
 
 export const personJsonLd = (baseUrl: string) => ({
@@ -80,12 +79,7 @@ export const personJsonLd = (baseUrl: string) => ({
   "@type": "Person",
   name: "Emmanuel Adoum",
   alternateName: "Adoum Ouang-Namou Emmanuel",
-  jobTitle: "Chief Technology Officer",
-  worksFor: {
-    "@type": "Organization",
-    name: "Lumavok",
-    url: "https://www.lumavok.com",
-  },
+  jobTitle: "Software Engineer",
   alumniOf: [
     {
       "@type": "CollegeOrUniversity",
@@ -98,7 +92,7 @@ export const personJsonLd = (baseUrl: string) => ({
   nationality: "Chad",
   address: { "@type": "PostalAddress", addressCountry: "TD" },
   description:
-    "Chief Technology Officer at Lumavok. Computer engineer and full-stack developer building innovative, secure, and scalable technology solutions.",
+    "Software Engineer. Architecting scalable, data-intensive backend systems for high-stakes environments.",
   sameAs: [
     "https://github.com/adoumouangnamouemmanuel",
     "https://www.linkedin.com/in/emmanueladoum/",

@@ -18,15 +18,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Emmanuel Adoum | Portfolio",
   description:
-    "Portfolio d'Emmanuel Adoum — Directeur de la Technologie (CTO) chez Lumavok. Ingénieur informatique et développeur full-stack, je conçois des solutions technologiques innovantes, sécurisées et évolutives.",
+    "Portfolio d'Emmanuel Adoum — Ingénieur logiciel. Conception de systèmes évolutifs et orientés données pour des environnements critiques.",
   keywords: [
     "Emmanuel Adoum",
     "Portfolio",
-    "Chief Technology Officer",
-    "CTO",
-    "Directeur de la Technologie",
-    "Lumavok",
-    "Tchad",
+    "Ingénieur logiciel",
+    "Software Engineer",
     "Ingénieur informatique",
     "Développeur full stack",
     "Next.js",
@@ -43,9 +40,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Emmanuel Adoum | Directeur de la Technologie (CTO)",
+    title: "Emmanuel Adoum | Ingénieur Logiciel",
     description:
-      "Directeur de la Technologie (CTO) chez Lumavok. Ingénieur informatique et développeur full-stack, je conçois des solutions technologiques innovantes, sécurisées et évolutives.",
+      "Ingénieur logiciel. Conception de systèmes évolutifs et orientés données pour des environnements critiques.",
     siteName: "Emmanuel Adoum | Portfolio",
     locale: "fr_FR",
     images: [
@@ -59,9 +56,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Emmanuel Adoum | Directeur de la Technologie (CTO)",
+    title: "Emmanuel Adoum | Ingénieur Logiciel",
     description:
-      "Directeur de la Technologie (CTO) chez Lumavok. Ingénieur informatique et développeur full-stack, je conçois des solutions technologiques innovantes, sécurisées et évolutives.",
+      "Ingénieur logiciel. Conception de systèmes évolutifs et orientés données pour des environnements critiques.",
     images: ["/emma.png"],
     creator: "@emmanueladoum",
   },
