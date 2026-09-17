@@ -25,12 +25,12 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
         ? {
             name: "Emmanuel Adoum",
             taglines: [
-              "Directeur de la Technologie chez Lumavok",
-              "Ingénierie informatique & IA",
-              "Des produits web, mobiles et IA innovants et sécurisés",
+              "Ingénieur Logiciel",
+              "Systèmes orientés données",
+              "Architecture Haute Performance",
             ],
             description:
-              "Je définis et mène la vision technologique de Lumavok — je transforme des idées complexes en systèmes performants, durables et utiles.",
+              "Conception de systèmes évolutifs et orientés données pour des environnements critiques.",
             ctaPrimary: "Démarrer une conversation",
             ctaSecondary: "Télécharger le CV",
             githubAria: "GitHub",
@@ -40,12 +40,12 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
         : {
             name: "Emmanuel Adoum",
             taglines: [
-              "Chief Technology Officer at Lumavok",
-              "Computer Engineering & AI",
-              "Building innovative, secure, scalable products",
+              "Software Engineer",
+              "Data-Intensive Systems",
+              "High-Performance Architecture",
             ],
             description:
-              "I define and lead Lumavok's technological vision — turning complex ideas into high-performance systems that last.",
+              "Building scalable, data-intensive systems for high-stakes environments.",
             ctaPrimary: "Start a Conversation",
             ctaSecondary: "Download Resume",
             githubAria: "GitHub",
