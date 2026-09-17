@@ -1,46 +1,5 @@
 export const experiences = [
-  {
-    role: "Chief Technology Officer (CTO)",
-    company: "Lumavok",
-    location: "Chad",
-    slug: "cto-lumavok",
-    website: "https://www.lumavok.com",
-    startDate: "Aug 2025",
-    endDate: "Present",
-    description:
-      "Define and lead Lumavok's technological vision by developing innovative, secure, and scalable solutions, ensuring the quality, performance, and reliability of products while anticipating technological trends and future needs.",
-    logo: "/images/logos/lumavok-logo.svg",
-    technologies: ["Technology Strategy", "Product Leadership", "Security", "Scalability", "AI"],
-    highlights: [
-      { value: "1", label: "Technology strategy owned end-to-end" },
-      { value: "5+", label: "Products and platforms delivered" },
-      { value: "10+", label: "Developers and engineers led" },
-      { value: "2", label: "Markets served — Chad & Ghana" },
-    ],
-    responsibilities: [
-      "Define and lead Lumavok's technological vision and roadmap",
-      "Develop innovative, secure, and scalable solutions",
-      "Ensure the quality, performance, and reliability of products",
-      "Anticipate technological trends and future needs",
-    ],
-    companyContext:
-      "Lumavok is an African technology studio backed by a young team, designing websites, applications, AI systems, and digital products — local solutions with global standards.",
-    gallery: [
-      { image: "/images/emma.jpg", title: "Platform Overview" },
-      { image: "/images/emma.jpg", title: "Product Design" },
-    ],
-    recommendation: {
-      quote:
-        "Emmanuel has been instrumental in defining our technical direction — his leadership and engineering depth make him invaluable to the team.",
-      author: "Dounia",
-      role: "Co-founder, Lumavok",
-    },
-    relatedProjects: ["tchad-education-system"],
-    achievements: [
-      "Lead the company's technological vision and roadmap, focusing on innovative, secure, and scalable solutions.",
-      "Maintain product quality, performance, and reliability while staying ahead of technological trends and future needs.",
-    ],
-  },
+
   {
     role: "Project Manager & Backend Engineer",
     company: "Ashesi Innovation Lab × Revna Biosciences",
@@ -65,6 +24,12 @@ export const experiences = [
       "Designed user workflows and supported frontend delivery",
       "Covered workflow orchestration, RBAC, approvals, documents, auditability, notifications, dashboards, and integrations",
     ],
+    caseStudy: {
+      problem: "RevnaBio needed a structured, auditable platform to onboard partner institutions. The manual process lacked strict review gates (Admin, ClinOps, Finance), corrections round-tripping, revision history, and automated provisioning into their Laboratory Information Management System (LIMS) ecosystem.",
+      procedures: "I co-led the backend architecture for 'ROBIN', a unified onboarding platform. Using FastAPI, PostgreSQL, and Python, I engineered a highly layered backend supporting a 12-step partner wizard and internal reviewer console. The architecture enforced strict RBAC, soft-deletes, revision snapshots before writes, and mocked external services (HR, LIMS).",
+      challenges: "Securing the platform for production go-live under a tight deadline was critical. I successfully navigated a rigorous independent technical audit, rapidly remediating critical vulnerabilities including development-route gating, bounded external uploads, strict fail-closed CORS configurations, and TLS enforcement.",
+      solution: "We successfully delivered a functionally mature platform (85%+ complete) that takes a partner from an invitation link through internal approvals and automated LIMS provisioning. I managed the deployment pipeline and production cutover, readying the system for its pilot launch."
+    },
     companyContext:
       "Revna Biosciences (RevnaBio) is Africa's premier A2LA triple ISO-accredited medical and clinical laboratory in Accra, Ghana, advancing precision medicine, molecular diagnostics, and clinical research across West Africa.",
     gallery: [
@@ -107,6 +72,12 @@ export const experiences = [
       "Converted multi-stage lending operations into structured, auditable workflows",
       "Collaborated with product and frontend contributors on integration and workflow behavior",
     ],
+    caseStudy: {
+      problem: "Affinity Africa needed to digitize their personal and business loan lifecycle. The manual lending process involved multiple complex stages (Application, Analysis, Appraisal, Approval, Contracting, Disbursement) across diverse roles (Customers, Relationship Officers, Analysts, Approvers, Admins), requiring strict workflow integrity, auditability, and data protection.",
+      procedures: "I co-developed the end-to-end Loan Automation Platform backend using Python, FastAPI, and MongoDB. We built REST APIs handling JWT authentication, Role-Based Access Control (RBAC), loan intake, credit-referencing integration, state-transition rules, and secure document management, all deployed via Docker.",
+      challenges: "Translating complex financial compliance rules into software state machines was difficult. We had to balance rapid implementation with financial-grade maintainability, explicitly enforcing authorization boundaries in the backend (not just the UI) and handling concurrent stage transitions securely.",
+      solution: "Within a two-month internship, we delivered a handoff-ready, prototype backend that successfully modeled the entire six-stage loan lifecycle. We achieved 100% workflow structuring, passing 177 automated Pytest backend tests and providing comprehensive OpenAPI documentation for future engineers."
+    },
     companyContext:
       "Affinity Africa is a digital banking platform headquartered in Accra, Ghana, on a mission to bring affordable, accessible financial services to underserved communities across the continent.",
     gallery: [
@@ -150,6 +121,12 @@ export const experiences = [
       "Developed 90-day forecasting and reverse stress testing to identify the exact shock combinations behind financial breaking points",
       "Enabled up to 10,000 Monte Carlo simulations per scenario, giving leadership a distribution of possible outcomes",
     ],
+    caseStudy: {
+      problem: "MTN was relying on manual, subjective assessments for financial risk. Leadership needed a quantitative system capable of forecasting exact financial exposure in Ghana Cedis under various stress scenarios.",
+      procedures: "I led a 4-person team to architect a real-time intelligence platform. I designed the ingestion pipeline to pull 18+ live news feeds every 15 minutes, feeding them into a 9-stage NLP and machine learning (XGBoost/LSTM) pipeline.",
+      challenges: "Providing a single risk number wasn't enough; leadership needed probability distributions. To achieve this, I engineered the backend to execute up to 10,000 Monte Carlo simulations per scenario without timeouts, accurately mapping out exact financial breaking points.",
+      solution: "We successfully stress-tested 87 real-world scenarios and built a 90-day forecasting engine, completely shifting the enterprise from static, manual guesswork to real-time, automated financial forecasting."
+    },
     companyContext:
       "MTN Ghana is the country's largest telecommunications operator, serving tens of millions of subscribers with mobile, data, and fintech services as part of the MTN Group — one of Africa's leading network operators.",
     gallery: [
@@ -165,9 +142,9 @@ export const experiences = [
     },
     relatedProjects: ["tumor-immune-dynamics-model", "twitter-x-data-scraper"],
     achievements: [
-      "Designed ingestion across 18+ news feeds every 15 minutes and a nine-stage AI/NLP pipeline that scored threats and estimated their financial impact in Ghana Cedis.",
-      "Built 90-day forecasting, stress testing across 87 real-world scenarios, and reverse stress testing to identify the exact shock combinations behind a target financial breaking point.",
-      "Enabled up to 10,000 Monte Carlo simulations per scenario, giving leadership a distribution of possible outcomes rather than a single-point estimate; shipped the platform for enterprise decision support.",
+      "Architected a robust data pipeline that ingested and normalized data from 18+ live news feeds every 15 minutes.",
+      "Engineered a high-performance backend capable of running 10,000 Monte Carlo simulations per scenario to generate accurate probability distributions of financial risk.",
+      "Delivered a production-ready system that stress-tested 87 real-world scenarios, fundamentally transforming how MTN Ghana's leadership evaluated enterprise risk.",
     ],
   },
   {
@@ -192,8 +169,13 @@ export const experiences = [
       "Automated KRI and OLI dashboards with Power BI, Excel, Power Automate, and Python",
       "Built reusable ETL scripts and reporting templates for 100+ finance users",
       "Documented workflows and trained colleagues to support adoption and continuity",
-      "Reduced monthly reporting time by approximately 99%",
     ],
+    caseStudy: {
+      problem: "Within Nestlé Business Services (NBS), the Record to Report (R2R) General Ledger team is responsible for massive, complex financial reporting and compliance across the region. They needed a more efficient, automated way to monitor Key Risk Indicators (KRI) and Operational Level Indicators (OLI) to improve transparency and strategic decision-making.",
+      procedures: "I joined the General Ledger team to engineer automated KRI and OLI dashboards. Utilizing Power BI, Excel, and data analytics tools, I designed pipelines to extract raw financial data across various R2R sub-teams (Intercompany, Bank Reconciliation, Fixed Assets) and transform it into dynamic, insightful visual dashboards.",
+      challenges: "As an engineer entering the highly regulated world of corporate finance, my primary challenge was navigating the sheer scale and sophistication of Nestlé’s global financial systems. I had to rapidly bridge the gap between technical data visualization skills and complex, real-world accounting processes under fast-paced corporate pressure.",
+      solution: "The automated KRI and OLI dashboards I developed provided immediate, clear visibility into the department's financial operations, significantly improving the team's ability to monitor risk and efficiency. This experience fundamentally bridged the gap between my technical engineering background and global financial business acumen."
+    },
     companyContext:
       "Nestlé Business Services is the shared-services arm of Nestlé, one of the world's largest food and beverage companies, consolidating finance, HR, and procurement operations across markets.",
     gallery: [
@@ -215,48 +197,7 @@ export const experiences = [
 ];
 
 export const experiencesFr = [
-  {
-    role: "Directeur de la Technologie (CTO)",
-    company: "Lumavok",
-    location: "Tchad",
-    slug: "cto-lumavok",
-    website: "https://www.lumavok.com",
-    startDate: "Août 2025",
-    endDate: "Present",
-    description:
-      "Définir et mener la vision technologique de Lumavok en développant des solutions innovantes, sécurisées et évolutives, tout en garantissant la qualité, la performance et la fiabilité des produits et en anticipant les tendances technologiques et les besoins futurs.",
-    logo: "/images/logos/lumavok-logo.svg",
-    technologies: ["Stratégie technologique", "Leadership produit", "Sécurité", "Évolutivité", "IA"],
-    highlights: [
-      { value: "1", label: "Stratégie technologique pilotée de bout en bout" },
-      { value: "5+", label: "Produits et plateformes livrés" },
-      { value: "10+", label: "Développeurs et ingénieurs accompagnés" },
-      { value: "2", label: "Marchés couverts — Tchad & Ghana" },
-    ],
-    responsibilities: [
-      "Définir et mener la vision et la feuille de route technologique de Lumavok",
-      "Développer des solutions innovantes, sécurisées et évolutives",
-      "Garantir la qualité, la performance et la fiabilité des produits",
-      "Anticiper les tendances technologiques et les besoins futurs",
-    ],
-    companyContext:
-      "Lumavok est un studio technologique africain porté par la jeunesse, concevant des sites web, des applications, des systèmes d'IA et des produits numériques — des solutions locales avec des standards mondiaux.",
-    gallery: [
-      { image: "/images/emma.jpg", title: "Vue d'ensemble de la plateforme" },
-      { image: "/images/emma.jpg", title: "Conception produit" },
-    ],
-    recommendation: {
-      quote:
-        "Emmanuel a été déterminant dans la définition de notre direction technique — son leadership et sa profondeur d'ingénierie le rendent indispensable à l'équipe.",
-      author: "Dounia",
-      role: "Co-fondateur, Lumavok",
-    },
-    relatedProjects: ["tchad-education-system"],
-    achievements: [
-      "Mener la vision et la feuille de route technologique de l'entreprise en privilégiant des solutions innovantes, sécurisées et évolutives.",
-      "Préserver la qualité, la performance et la fiabilité des produits tout en anticipant les tendances technologiques et les besoins futurs.",
-    ],
-  },
+
   {
     role: "Chef de Projet & Ingénieur Backend",
     company: "Ashesi Innovation Lab × Revna Biosciences",
