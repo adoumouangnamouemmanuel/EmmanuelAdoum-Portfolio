@@ -5,6 +5,8 @@ import GreetingLoader from "@/components/GreetingLoader";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import AboutSection from "@/components/sections/AboutSection";
+import AmbassadorSection from "@/components/sections/AmbassadorSection";
+import StatsStrip from "@/components/sections/StatsStrip";
 import BlogSection from "@/components/sections/BlogSection";
 import ContactSection from "@/components/sections/ContactSection";
 import HeroSection from "@/components/sections/HeroSection";
@@ -31,12 +33,14 @@ export default function Home() {
       <GreetingLoader />
       <BackgroundAnimation />
       <Header />
-      <main className="relative z-10">
+      <main className="relative z-10" data-portfolio>
         <HeroSection />
         <AboutSection />
+        <StatsStrip />
         <SkillsSection />
         <ProjectsSection />
         <JourneySection />
+        <AmbassadorSection />
         <AchievementsSection />
         {/* <BlogSection /> */}
         {/* <TestimonialsSection /> */}
