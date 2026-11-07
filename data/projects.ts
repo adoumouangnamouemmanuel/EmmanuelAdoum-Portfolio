@@ -1,5 +1,58 @@
 export const projects = [
   {
+    title: "Hilltop - Ashesi Marketplace",
+    description:
+      "The student marketplace for Ashesi: verified @ashesi.edu.gh accounts buy and sell on campus with listings, chat, offers, reservations and pickup, plus a separate admin portal that runs the whole platform from a published config.",
+    image: "/images/projects/hilltop-cover.jpg",
+    goal: "To give Ashesi students a safe, trusted place to buy and sell on campus, from calculators and phones to braids and chapati, without the chaos of WhatsApp groups.",
+    outcome:
+      "Live at hilltop.lumavok.com: real sign-in, listings, messaging, offers, orders, reviews and an admin portal, shipped by CI to Cloudflare Workers with row-level security on every table.",
+    technologies: [
+      "Next.js 16",
+      "TypeScript",
+      "Supabase",
+      "PostgreSQL",
+      "Cloudflare Workers",
+      "Tailwind CSS v4",
+      "Playwright",
+      "Framer Motion",
+    ],
+    github: "https://github.com/adoumouangnamouemmanuel/hilltop",
+    demo: "https://hilltop.lumavok.com",
+    featured: true,
+    category: "Full Stack · Product",
+    client: "Ashesi University students",
+    date: "2026-10-31",
+    slug: "hilltop-ashesi-marketplace",
+    challenges: [
+      "Keeping the marketplace limited to verified school emails without slowing sign-up",
+      "Making every rule (fees, categories, ranking, payment protection) changeable without a redeploy",
+      "Enforcing permissions in the database itself, not just by hiding buttons in the UI",
+    ],
+    solutions: [
+      "Passwordless 6-digit email codes with a Supabase Auth hook that only lets allowed school domains create accounts.",
+      "A versioned platform config edited as a shared draft in the admin portal, published with a readable diff, release notes and rollback.",
+      "Row-level security and column grants on every table, a has_permission() function driven by admin roles, and an audit log written by the database.",
+    ],
+    developmentProcess: [
+      "Designed an npm workspaces monorepo: marketplace app, admin portal, shared config package and a UI design system",
+      "Built browsing with schema-driven category filters, facet counts, price histogram and saved searches",
+      "Added listings, chat, offers, reservations with pickup windows, orders and reviews",
+      "Built the admin portal: moderation, disputes, team roles, permission matrix and audit log",
+      "Set up CI with lint, typecheck, unit, database security and Playwright tests, deploying to Cloudflare Workers",
+    ],
+    keyFeatures: [
+      "Verified @ashesi.edu.gh accounts with emailed sign-in codes",
+      "Schema-driven search filters, facets and saved searches with alerts",
+      "Listings with photo zoom, offers, chat and sold states",
+      "Reserve and pay at pickup, with hybrid payment protection ready for in-app payments",
+      "Seller dashboard with views, conversion, funnel and payouts",
+      "Admin portal with config publishing, rollback, roles and audit log",
+      "Installable PWA with offline page and WCAG AA contrast",
+    ],
+    gallery: [],
+  },
+  {
     title: "Enterprise Risk Intelligence Platform",
     description:
       "Enterprise risk intelligence platform combining Monte Carlo simulation, VaR/CVaR, copula models, and LSTM/XGBoost forecasting with SHAP-powered explainability.",
@@ -497,7 +550,7 @@ export const projects = [
     ],
     github: "https://github.com/adoumouangnamouemmanuel/printf",
     demo: "https://github.com/adoumouangnamouemmanuel/printf",
-    featured: true,
+    featured: false,
     category: "Systems Programming",
     client: "ALX Africa - Low-Level Programming",
     date: "2023-09-01",
@@ -589,6 +642,16 @@ const projectsFrOverrides: Record<
   string,
   Partial<(typeof projects)[number]>
 > = {
+  "hilltop-ashesi-marketplace": {
+    title: "Hilltop - Marketplace d'Ashesi",
+    description:
+      "La marketplace étudiante d'Ashesi : des comptes vérifiés @ashesi.edu.gh achètent et vendent sur le campus avec annonces, messagerie, offres, réservations et retrait, plus un portail d'administration qui pilote toute la plateforme via une configuration publiée.",
+    goal: "Offrir aux étudiants d'Ashesi un lieu sûr et fiable pour acheter et vendre sur le campus, des calculatrices aux téléphones en passant par les tresses et le chapati.",
+    outcome:
+      "En ligne sur hilltop.lumavok.com : connexion, annonces, messagerie, offres, commandes, avis et portail d'administration, déployés par CI sur Cloudflare Workers avec sécurité au niveau des lignes sur chaque table.",
+    category: "Full Stack · Produit",
+    client: "Étudiants de l'Université Ashesi",
+  },
   "mtn-quantrisk": {
     title: "Plateforme d'Intelligence des Risques d'Entreprise",
     description:
