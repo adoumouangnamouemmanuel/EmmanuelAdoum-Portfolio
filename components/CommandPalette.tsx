@@ -97,9 +97,9 @@ export default function CommandPalette({
         type="button"
         onClick={() => setOpen(true)}
         aria-label={fr ? "Ouvrir la palette de commandes" : "Open command palette"}
-        className={`group inline-flex h-9 items-center gap-2 rounded-full px-2.5 text-xs font-semibold transition-colors sm:h-10 sm:px-3 ${triggerClassName}`}
+        className={`group inline-flex h-11 items-center gap-2 rounded-full px-3 text-xs font-semibold transition-colors lg:h-10 ${triggerClassName}`}
       >
-        <Search className="h-[18px] w-[18px]" />
+        <Search className="h-[22px] w-[22px] lg:h-[18px] lg:w-[18px]" />
         <kbd className="hidden rounded-md border border-current/20 px-1.5 py-0.5 font-sans text-[10px] font-bold tracking-wider opacity-70 2xl:inline-block">
           {isMac ? "⌘K" : "Ctrl K"}
         </kbd>

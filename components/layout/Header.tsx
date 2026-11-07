@@ -296,7 +296,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                 <Link href={togglePath}>
                   <Button
                     variant="ghost"
-                    className={`rounded-full px-3 h-9 sm:h-10 text-[10px] font-bold tracking-widest uppercase transition-colors cursor-pointer ${isOverHero ? "hover:bg-slate-800/50 text-slate-300 hover:text-white" : "hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 dark:hover:text-white"}`}
+                    className={`rounded-full px-3.5 h-11 text-sm lg:px-3 lg:h-10 lg:text-[10px] font-bold tracking-widest uppercase transition-colors cursor-pointer ${isOverHero ? "hover:bg-slate-800/50 text-slate-300 hover:text-white" : "hover:bg-slate-200/50 dark:hover:bg-slate-800/50 text-slate-600 dark:text-slate-300 dark:hover:text-white"}`}
                     aria-label={locale === "fr" ? "Switch to English" : "Changer vers le français"}
                   >
                     {locale === "en" ? "FR" : "EN"}
@@ -314,15 +314,15 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                   variant="ghost"
                   size="icon"
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className={`rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-transparent transition-colors cursor-pointer ${isOverHero ? "hover:bg-slate-800/50" : "hover:bg-slate-200/50 dark:hover:bg-slate-800/50"}`}
+                  className={`rounded-full w-11 h-11 lg:w-10 lg:h-10 bg-transparent transition-colors cursor-pointer ${isOverHero ? "hover:bg-slate-800/50" : "hover:bg-slate-200/50 dark:hover:bg-slate-800/50"}`}
                   aria-label={
                     locale === "fr"
                       ? "Changer le thème"
                       : "Toggle structural theme"
                   }
                 >
-                  <Sun className={`h-[18px] w-[18px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 ${isOverHero ? "text-slate-300" : "text-slate-800"}`} />
-                  <Moon className="absolute h-[18px] w-[18px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-slate-200" />
+                  <Sun className={`h-[22px] w-[22px] lg:h-[18px] lg:w-[18px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 ${isOverHero ? "text-slate-300" : "text-slate-800"}`} />
+                  <Moon className="absolute h-[22px] w-[22px] lg:h-[18px] lg:w-[18px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-slate-200" />
                 </Button>
               </motion.div>
 
@@ -336,7 +336,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 hover:text-white dark:hover:bg-slate-200 dark:hover:text-slate-900 cursor-pointer"
+                  className="rounded-full w-11 h-11 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 hover:text-white dark:hover:bg-slate-200 dark:hover:text-slate-900 cursor-pointer"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   aria-label={
                     locale === "fr"
@@ -344,7 +344,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                       : "Toggle Mobile Menu"
                   }
                 >
-                  {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+                  {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
                 </Button>
               </motion.div>
             </div>
