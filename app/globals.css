@@ -56,6 +56,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Display font (self-hosted via @fontsource-variable/space-grotesk) */
+  :root {
+    --font-display: "Space Grotesk Variable";
+  }
   /* Rotating halo behind the hero portrait */
   .hero-halo {
     background: conic-gradient(from 0deg, #3b82f6, #6366f1, #d97757, #f0a184, #3b82f6);
