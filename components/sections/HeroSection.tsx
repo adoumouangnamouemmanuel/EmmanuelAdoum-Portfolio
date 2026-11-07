@@ -15,10 +15,10 @@ const TAGLINE_INTERVAL_MS = 2600;
 // Rendered as white silhouettes; raster logos with a white background are
 // inverted and screen-blended so the background disappears.
 const companyLogos = [
-  { name: "MTN Ghana", src: "/images/logos/mtn-logo.svg", className: "h-6 sm:h-8" },
-  { name: "Nestlé", src: "/images/logos/nestle-logo.jpg", className: "h-8 sm:h-10", raster: true },
-  { name: "Affinity Africa", src: "/images/logos/affinity-logo.svg", className: "h-5 sm:h-7" },
-  { name: "Revna Biosciences", src: "/images/logos/Revna-Logo.svg", className: "h-6 sm:h-8" },
+  { name: "MTN Ghana", src: "/images/logos/mtn-logo.svg", className: "h-7 sm:h-8" },
+  { name: "Nestlé", src: "/images/logos/nestle-logo.jpg", className: "h-10 sm:h-10", raster: true },
+  { name: "Affinity Africa", src: "/images/logos/affinity-logo.svg", className: "h-6 sm:h-7" },
+  { name: "Revna Biosciences", src: "/images/logos/Revna-Logo.svg", className: "h-7 sm:h-8" },
 ];
 
 export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
@@ -127,14 +127,14 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           />
           <motion.div
             whileHover={{ scale: 1.04, rotate: 3 }}
-            className="relative h-36 w-36 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-[0_18px_40px_rgba(15,23,42,0.35)] dark:border-slate-100 dark:bg-slate-100 sm:h-44 sm:w-44 lg:h-[min(13rem,23vh)] lg:w-[min(13rem,23vh)]"
+            className="relative h-44 w-44 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-[0_18px_40px_rgba(15,23,42,0.35)] dark:border-slate-100 dark:bg-slate-100 sm:h-52 sm:w-52 lg:h-[min(15.5rem,27vh)] lg:w-[min(15.5rem,27vh)]"
           >
             <Image
               src="/images/emma.jpg"
               alt={t.portraitAlt}
               fill
               priority
-              sizes="(max-width: 640px) 160px, (max-width: 1024px) 208px, 224px"
+              sizes="(max-width: 640px) 176px, (max-width: 1024px) 208px, 248px"
               className="object-cover object-center"
             />
           </motion.div>
@@ -145,8 +145,8 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
             aria-label={t.badge}
             className="group absolute -bottom-1 -right-1 flex items-center sm:bottom-1 sm:right-0"
           >
-            <span className="grid h-11 w-11 place-items-center rounded-full border-[3px] border-white bg-[#d97757] text-white shadow-lg shadow-black/30 transition-transform group-hover:rotate-[20deg] group-hover:scale-110 sm:h-12 sm:w-12">
-              <ClaudeLogo className="h-5 w-5 sm:h-6 sm:w-6" />
+            <span className="grid h-12 w-12 place-items-center rounded-full border-[3px] border-white bg-[#d97757] text-white shadow-lg shadow-black/30 transition-transform group-hover:rotate-[20deg] group-hover:scale-110 sm:h-14 sm:w-14">
+              <ClaudeLogo className="h-6 w-6 sm:h-7 sm:w-7" />
             </span>
             <span className="pointer-events-none absolute left-full ml-2 hidden whitespace-nowrap rounded-full bg-slate-950/85 px-3 py-1 text-xs font-semibold text-orange-100 opacity-0 shadow-lg ring-1 ring-white/10 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
               {t.badge}
@@ -171,7 +171,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -18 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="text-balance text-xl font-semibold text-blue-100 sm:text-2xl"
+              className="text-balance text-[1.4rem] font-semibold text-blue-100 sm:text-2xl"
             >
               {activeTagline}
             </motion.p>
@@ -198,11 +198,11 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           <Button
             asChild
             size="lg"
-            className="group h-12 rounded-full bg-blue-600 px-7 text-sm font-semibold text-white shadow-xl shadow-blue-950/30 transition-all hover:scale-105 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 sm:h-12 sm:text-base"
+            className="group h-14 rounded-full bg-blue-600 px-7 text-base font-semibold text-white shadow-xl shadow-blue-950/30 transition-all hover:scale-105 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 sm:h-12 sm:text-base"
           >
             <Link href="#contact">
               {t.ctaPrimary}
-              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1 sm:h-4 sm:w-4" />
             </Link>
           </Button>
 
@@ -210,7 +210,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
             asChild
             size="lg"
             variant="outline"
-            className="group h-12 rounded-full border-white/30 bg-white/16 px-7 text-sm font-semibold text-white shadow-sm backdrop-blur transition-all hover:scale-105 hover:bg-white/24 hover:text-white dark:border-white/20 dark:bg-slate-950/56 dark:text-white dark:hover:bg-slate-900/80 sm:h-12 sm:text-base"
+            className="group h-14 rounded-full border-white/30 bg-white/16 px-7 text-base font-semibold text-white shadow-sm backdrop-blur transition-all hover:scale-105 hover:bg-white/24 hover:text-white dark:border-white/20 dark:bg-slate-950/56 dark:text-white dark:hover:bg-slate-900/80 sm:h-12 sm:text-base"
           >
             <Link
               href={locale === "fr" ? "/resume_fr.pdf" : "/resume.pdf"}
@@ -218,7 +218,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
               rel="noopener noreferrer"
             >
               {t.ctaSecondary}
-              <Download className="ml-2 h-4 w-4 transition-transform group-hover:-translate-y-0.5" />
+              <Download className="ml-2 h-5 w-5 transition-transform group-hover:-translate-y-0.5 sm:h-4 sm:w-4" />
             </Link>
           </Button>
         </motion.div>
@@ -236,7 +236,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
             className="rounded-full p-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
             aria-label={t.githubAria}
           >
-            <Github className="h-5 w-5 sm:h-6 sm:w-6" />
+            <Github className="h-6 w-6" />
           </Link>
           <span className="h-5 w-px bg-slate-100/45" />
           <Link
@@ -246,7 +246,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
             className="rounded-full p-2 transition-colors hover:text-blue-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
             aria-label={t.linkedinAria}
           >
-            <Linkedin className="h-5 w-5 sm:h-6 sm:w-6" />
+            <Linkedin className="h-6 w-6" />
           </Link>
         </motion.div>
 
@@ -256,12 +256,12 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           transition={{ delay: 0.8, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 flex w-full max-w-2xl flex-col items-center gap-3 md:mt-5"
         >
-          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-300/80">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-300/80">
             {t.trustedBy}
           </p>
           <ul className="grid w-full grid-cols-4 items-center gap-x-4 sm:gap-x-10">
             {companyLogos.map((logo) => (
-              <li key={logo.name} className="flex h-8 items-center justify-center sm:h-10">
+              <li key={logo.name} className="flex h-10 items-center justify-center">
                 <Image
                   src={logo.src}
                   alt={logo.name}
