@@ -1,450 +1,590 @@
 "use client";
 
 import { projects, projectsFr } from "@/data/projects";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import {
   ArrowLeft,
-  Award,
-  Briefcase,
+  ArrowRight,
+  ArrowUpRight,
   Calendar,
-  CheckCircle2,
-  Code,
-  ExternalLink,
+  Check,
   Github,
   Layers,
+  Lightbulb,
   Target,
-  Zap,
+  Trophy,
+  Users,
+  Wrench,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
-type Project = {
-  title: string;
-  description: string;
-  image: string;
-  goal: string;
-  outcome: string;
-  technologies: string[];
-  github?: string;
-  demo?: string;
-  featured: boolean;
-  category?: string;
-  client?: string;
-  date?: string;
-  content?: string;
-  gallery?: { image: string; title: string }[];
-  slug: string;
-  challenges?: string[];
-  solutions?: string[];
-  developmentProcess?: string[];
-  keyFeatures?: string[];
+type Project = (typeof projectsFr)[number];
+type Shelf = "product" | "data" | "systems" | "research";
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+// Same shelves and colours as the projects grid, keyed by slug
+const shelfOf = (slug: string): Shelf => {
+  const category = projects.find((p) => p.slug === slug)?.category ?? "";
+  if (/Data|AI/.test(category)) return "data";
+  if (/Algorithms|Systems/.test(category)) return "systems";
+  if (/Research|Simulation/.test(category)) return "research";
+  return "product";
 };
+const brand: Record<Shelf, string> = {
+  product: "59 130 246",
+  data: "16 185 129",
+  systems: "139 92 246",
+  research: "245 158 11",
+};
+
+const isLogoImage = (src: string) => src.endsWith("/logo.png");
+
+function formatDate(date: string | undefined, fr: boolean) {
+  if (!date) return null;
+  const d = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return date;
+  return new Intl.DateTimeFormat(fr ? "fr-FR" : "en-US", { month: "long", year: "numeric" }).format(d);
+}
+
+function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.6, delay, ease }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className="mb-8 sm:mb-10">
+      <p className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
+        <span aria-hidden className="h-2 w-2 rounded-full bg-[rgb(var(--brand))]" />
+        {eyebrow}
+      </p>
+      <h2 className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+        {title}
+      </h2>
+    </div>
+  );
+}
 
 export default function ProjectDetailPage() {
   const params = useParams();
   const pathname = usePathname();
-  const isFr = pathname?.startsWith("/fr");
-  const basePath = pathname?.startsWith("/fr") ? "/fr" : "";
   const router = useRouter();
+  const fr = !!pathname?.startsWith("/fr");
+  const basePath = fr ? "/fr" : "";
   const slug = params?.slug as string | undefined;
-  const projectCollection = isFr ? projectsFr : projects;
 
-  const project = useMemo<Project | undefined>(
-    () =>
-      slug
-        ? (projectCollection.find((p) => p.slug === slug) as Project)
-        : undefined,
-    [slug, projectCollection],
-  );
+  const collection: Project[] = fr ? projectsFr : projects;
+  const project = useMemo(() => (slug ? collection.find((p) => p.slug === slug) : undefined), [slug, collection]);
+  const index = collection.findIndex((p) => p.slug === slug);
+  const prev = index > 0 ? collection[index - 1] : undefined;
+  const next = index >= 0 && index < collection.length - 1 ? collection[index + 1] : undefined;
 
-  const t = isFr
+  const t = fr
     ? {
-        backArchive: "Retour à l'archive",
-        liveDemo: "Démo live",
-        viewGithub: "Voir GitHub",
-        categoryFallback: "Architecture Web",
-        overview: "01. Vue d'ensemble",
-        objective: "Objectif",
-        outcome: "Résultat",
-        stack: "02. Stack technique",
-        keyFeatures: "03. Fonctionnalités clés",
-        pipeline: "04. Pipeline d'ingénierie",
-        challenges: "05. Défis & exécution",
-        constraint: "Contrainte",
-        execution: "Exécution",
-        archiveLead: "Retour à",
-        archiveAccent: "l'archive.",
-        viewAll: "Voir tous les projets",
-        fallbackFeatures: [
-          "Connexion multi-rôle et logique de routage sécurisée",
-          "Expérience responsive optimisée mobile",
-          "Suivi et synchronisation des données en temps réel",
-          "Architecture offline-first progressive",
-        ],
-        fallbackPipeline: [
-          "Conception des schémas et modèles de données",
-          "Développement des API backend sécurisées",
-          "Construction des composants UI front-end",
-          "Déploiement CI/CD à l'échelle production",
-        ],
-        fallbackChallenges: [
-          "Optimiser des charges de rendu frontend lourdes.",
-          "Gérer des contraintes de validation très complexes.",
-        ],
-        fallbackExecution:
-          "Mise en place d'une couche logique d'orchestration assurant stabilité et performance du rendu.",
+        back: "Projets",
+        live: "Voir en ligne",
+        code: "Code",
+        nav: { overview: "Aperçu", features: "Fonctionnalités", process: "Méthode", challenges: "Défis", gallery: "Galerie" },
+        client: "Pour",
+        stackCount: (n: number) => `${n} technologies`,
+        overviewEyebrow: "Aperçu",
+        overviewTitle: "Le projet en bref",
+        objective: "L'objectif",
+        outcome: "Le résultat",
+        stack: "Stack technique",
+        featuresEyebrow: "Fonctionnalités",
+        featuresTitle: "Ce qu'il fait",
+        processEyebrow: "Méthode",
+        processTitle: "Comment je l'ai construit",
+        challengesEyebrow: "Défis",
+        challengesTitle: "Problèmes rencontrés, solutions apportées",
+        challenge: "Défi",
+        solution: "Solution",
+        galleryEyebrow: "Galerie",
+        galleryTitle: "En images",
+        prev: "Précédent",
+        next: "Suivant",
+        all: "Voir tous les projets",
+        close: "Fermer",
       }
     : {
-        backArchive: "Back to Archive",
-        liveDemo: "Live Demo",
-        viewGithub: "View on GitHub",
-        categoryFallback: "Web Architecture",
-        overview: "01. Overview",
-        objective: "The Objective",
-        outcome: "The Outcome",
-        stack: "02. Stack Architecture",
-        keyFeatures: "03. Key Features",
-        pipeline: "04. Engineering Pipeline",
-        challenges: "05. Challenges & Execution",
-        constraint: "The Constraint",
-        execution: "The Execution",
-        archiveLead: "Return to the",
-        archiveAccent: "Archive.",
-        viewAll: "View All Projects",
-        fallbackFeatures: [
-          "Multi-role login and highly secure data routing logic",
-          "Cross-platform responsiveness targeting mobile usability standards",
-          "Real-time database payload tracking and synchronization",
-          "Progressive offline-first execution logic",
-        ],
-        fallbackPipeline: [
-          "Architected the foundational database schema and models",
-          "Developed secure backend API routing arrays",
-          "Constructed sweeping frontend UI arrays and layout components",
-          "Deployed full-scale CI/CD operational pipelines",
-        ],
-        fallbackChallenges: [
-          "Optimizing heavy frontend DOM rendering payload operations.",
-          "Managing extremely complex user validation constraints safely.",
-        ],
-        fallbackExecution:
-          "Engineered an abstract logic wrapper that cleanly parsed the data streams before DOM computation, guaranteeing flawless operation metrics.",
+        back: "Projects",
+        live: "View live",
+        code: "Code",
+        nav: { overview: "Overview", features: "Features", process: "Process", challenges: "Challenges", gallery: "Gallery" },
+        client: "For",
+        stackCount: (n: number) => `${n} technologies`,
+        overviewEyebrow: "Overview",
+        overviewTitle: "The project at a glance",
+        objective: "The objective",
+        outcome: "The outcome",
+        stack: "Tech stack",
+        featuresEyebrow: "Features",
+        featuresTitle: "What it does",
+        processEyebrow: "Process",
+        processTitle: "How I built it",
+        challengesEyebrow: "Challenges",
+        challengesTitle: "Problems faced, and how I solved them",
+        challenge: "Challenge",
+        solution: "Solution",
+        galleryEyebrow: "Gallery",
+        galleryTitle: "In pictures",
+        prev: "Previous",
+        next: "Next",
+        all: "View all projects",
+        close: "Close",
       };
 
-  const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-
   useEffect(() => {
-    // Only redirect once slug is defined and no project is found
-    if (slug && !project) {
-      router.push(`${basePath}/projects`);
-    }
+    if (slug && !project) router.push(`${basePath}/projects`);
   }, [slug, project, router, basePath]);
+
+  const features = project?.keyFeatures ?? [];
+  const steps = project?.developmentProcess ?? [];
+  const challenges = project?.challenges ?? [];
+  const gallery = (project?.gallery ?? []) as { image: string; title: string }[];
+
+  const sections = [
+    { id: "overview", label: t.nav.overview, show: true },
+    { id: "features", label: t.nav.features, show: features.length > 0 },
+    { id: "process", label: t.nav.process, show: steps.length > 0 },
+    { id: "challenges", label: t.nav.challenges, show: challenges.length > 0 },
+    { id: "gallery", label: t.nav.gallery, show: gallery.length > 0 },
+  ].filter((s) => s.show);
+
+  // Scroll spy for the section tabs
+  const [active, setActive] = useState("overview");
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.slug, sections.length]);
+
+  // Progress line for the build process
+  const processRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({ target: processRef, offset: ["start 70%", "end 60%"] });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+
+  // Gallery lightbox
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  useEffect(() => {
+    if (lightbox === null) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setLightbox(null);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [lightbox]);
 
   if (!project) return null;
 
+  const shelf = shelfOf(project.slug);
+  const style = { "--brand": brand[shelf] } as CSSProperties;
+  // A logo makes a weak hero: prefer the first real screenshot when there is one
+  const cover = project.image || "/images/projects/portfolio-cover.png";
+  const image = isLogoImage(cover) && gallery[0] ? gallery[0].image : cover;
+  const logo = isLogoImage(image);
+  const demo = project.demo && project.demo !== project.github ? project.demo : null;
+  const date = formatDate(project.date, fr);
+
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50">
-      {/* Stick Glass Action Bar */}
-      <motion.div
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-12 py-4 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
-      >
-        <Link
-          href={`${basePath}/projects`}
-          className="flex items-center gap-3 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors group"
-        >
-          <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-slate-800 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-          </div>
-          <span className="hidden sm:block">{t.backArchive}</span>
-        </Link>
+    <main style={style} className="relative min-h-screen overflow-x-clip bg-[#f5f5f7] text-slate-900 selection:bg-blue-200 dark:bg-slate-950 dark:text-white dark:selection:bg-blue-900/50">
+      {/* Category-coloured wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[720px]"
+        style={{ background: "radial-gradient(55% 55% at 15% 0%, rgb(var(--brand) / 0.20), transparent 70%), radial-gradient(45% 50% at 90% 10%, rgb(99 102 241 / 0.12), transparent 70%)" }}
+      />
 
-        <div className="flex items-center gap-3 sm:gap-4">
-          {project.github && (
-            <Link
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <button className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all duration-300">
-                <Github className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-            </Link>
-          )}
-          {project.demo && project.demo !== project.github ? (
-            <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-              <button className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[9px] sm:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 shadow-lg shadow-blue-600/20">
-                {t.liveDemo}
-                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
-              </button>
-            </Link>
-          ) : project.github ? (
-            <Link
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <button className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-700 hover:bg-slate-600 text-white text-[9px] sm:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 shadow-lg">
-                {t.viewGithub}
-                <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
-              </button>
-            </Link>
-          ) : null}
-        </div>
-      </motion.div>
-
-      {/* Massive Cinematic Hero */}
-      <section className="relative w-full h-[85vh] sm:h-[90vh] flex items-end overflow-hidden">
-        <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
-          <Image
-            src={project.image || "/images/posts/blog.png"}
-            alt={project.title}
-            fill
-            priority
-            className="object-cover"
-          />
-        </motion.div>
-        {/* Gradients to ensure text readability */}
-        <div className="absolute inset-0 z-10 bg-gradient-to-t from-slate-950 via-slate-900/40 to-transparent" />
-        <div className="absolute inset-0 z-10 bg-black/20" />
-
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pb-16 sm:pb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+      {/* Top bar */}
+      <div className="sticky top-0 z-50 border-b border-slate-200/60 bg-[#f5f5f7]/75 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+          <Link
+            href={`${basePath}/projects`}
+            className="group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
           >
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                {project.date || "2023"}
-              </span>
-              <span className="w-1 h-1 rounded-full bg-slate-600" />
-              <span className="flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-purple-400" />
-                {project.category || t.categoryFallback}
-              </span>
-            </div>
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            {t.back}
+          </Link>
 
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white mb-6 leading-[1.08] max-w-4xl">
+          <nav className="hidden items-center gap-1 rounded-full bg-white/70 p-1 ring-1 ring-slate-200/80 dark:bg-white/5 dark:ring-white/10 md:flex">
+            {sections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className={`relative rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
+                  active === s.id ? "text-white dark:text-slate-900" : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                }`}
+              >
+                {active === s.id && (
+                  <motion.span layoutId="project-tab" className="absolute inset-0 rounded-full bg-slate-900 dark:bg-white" transition={{ type: "spring", stiffness: 420, damping: 34 }} />
+                )}
+                <span className="relative">{s.label}</span>
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                className="grid h-9 w-9 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-200/70 dark:text-slate-300 dark:hover:bg-white/10"
+              >
+                <Github className="h-[18px] w-[18px]" />
+              </a>
+            )}
+            {(demo || project.github) && (
+              <a
+                href={demo ?? project.github ?? "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+              >
+                {demo ? t.live : t.code}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="relative mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
+        {/* ---------- Hero ---------- */}
+        <header className="pb-16 pt-12 sm:pt-16">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }} className="max-w-3xl">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+              <span aria-hidden className="h-2 w-2 rounded-full bg-[rgb(var(--brand))]" />
+              {project.category}
+            </span>
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.4rem]">
               {project.title}
             </h1>
+            <p className="mt-5 text-lg leading-relaxed text-slate-600 dark:text-slate-400">{project.description}</p>
 
-            <div className="flex flex-wrap gap-2 sm:gap-3">
-              {project.technologies.slice(0, 5).map((tech, techIndex) => (
-                <span
-                  key={techIndex}
-                  className="px-4 py-2 rounded-full bg-slate-900/60 backdrop-blur-md border border-slate-700/50 text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-white shadow-xl"
-                >
-                  {tech}
-                </span>
-              ))}
-              {project.technologies.length > 5 && (
-                <span className="px-4 py-2 rounded-full bg-slate-900/30 backdrop-blur-md border border-slate-700/30 text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-slate-300 shadow-xl">
-                  +{project.technologies.length - 5}
-                </span>
+            <ul className="mt-7 flex flex-wrap gap-2 text-sm">
+              {date && (
+                <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-medium text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+                  <Calendar className="h-4 w-4 text-slate-400" />
+                  {date}
+                </li>
               )}
-            </div>
-          </motion.div>
-        </div>
-      </section>
+              {project.client && (
+                <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-medium text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+                  <Users className="h-4 w-4 text-slate-400" />
+                  {t.client} {project.client}
+                </li>
+              )}
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-medium text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+                <Layers className="h-4 w-4 text-slate-400" />
+                {t.stackCount(project.technologies.length)}
+              </li>
+            </ul>
 
-      {/* Unrolled Cinematic Scroll Content */}
-      <section className="relative z-30 bg-white dark:bg-slate-950 rounded-t-[3rem] -mt-10 py-24 sm:py-32">
-        <div className="max-w-4xl mx-auto px-6 sm:px-12">
-          {/* Overview */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-24 sm:mb-32"
-          >
-            <h2 className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-10">
-              {t.overview}
-            </h2>
-            <p className="text-xl sm:text-2xl font-normal text-slate-800 dark:text-slate-200 leading-relaxed mb-14">
-              {project.description}
-            </p>
-
-            {/* Goal vs Outcome Bento Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-              <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
-                <Target className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-6" />
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4">
-                  {t.objective}
-                </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-                  {project.goal}
-                </p>
+            {(demo || project.github) && (
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                {demo && (
+                  <a
+                    href={demo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex h-12 items-center justify-center gap-2 rounded-full bg-blue-600 px-6 text-base font-semibold text-white shadow-lg shadow-blue-600/25 transition-all hover:scale-[1.02] hover:bg-blue-500"
+                  >
+                    {t.live}
+                    <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </a>
+                )}
+                {project.github && (
+                  <a
+                    href={project.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-semibold text-slate-800 ring-1 ring-slate-200 transition-colors hover:bg-slate-100 dark:bg-white/5 dark:text-slate-100 dark:ring-white/15 dark:hover:bg-white/10"
+                  >
+                    <Github className="h-5 w-5" />
+                    GitHub
+                  </a>
+                )}
               </div>
-              <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 shadow-sm border border-slate-100 dark:border-slate-800 transition-colors">
-                <Award className="w-8 h-8 text-purple-600 dark:text-purple-400 mb-6" />
-                <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-4">
-                  {t.outcome}
-                </h3>
-                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-                  {project.outcome}
-                </p>
-              </div>
-            </div>
+            )}
           </motion.div>
 
-          {/* Full Tech Stack */}
+          {/* Framed cover, like a product shot */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-24 sm:mb-32"
+            initial={{ opacity: 0, y: 40, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.9, delay: 0.15, ease }}
+            className="relative mt-12 sm:mt-14"
           >
-            <h2 className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-12">
-              {t.stack}
-            </h2>
-            <div className="flex flex-wrap gap-3 sm:gap-4">
-              {project.technologies.map((tech, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 px-6 py-4 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 shadow-sm hover:border-blue-300 dark:hover:border-blue-800 hover:shadow-md transition-all duration-300"
-                >
-                  <Code className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200">
-                    {tech}
+            <div aria-hidden className="absolute -inset-x-6 -bottom-10 top-10 rounded-[40px] bg-[rgb(var(--brand)/0.18)] blur-3xl" />
+            <div className="relative overflow-hidden rounded-[24px] bg-white p-2 shadow-[0_30px_80px_rgba(15,23,42,0.18)] ring-1 ring-slate-200/80 dark:bg-slate-900 dark:ring-white/10 sm:rounded-[32px] sm:p-3">
+              <div className={`relative aspect-[16/9] overflow-hidden rounded-[18px] sm:rounded-[24px] ${logo ? "bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900" : "bg-slate-100 dark:bg-slate-800"}`}>
+                <Image src={image} alt={project.title} fill priority sizes="(max-width: 1200px) 100vw, 1140px" className={logo ? "object-contain p-16" : "object-cover object-left-top"} />
+              </div>
+            </div>
+          </motion.div>
+        </header>
+
+        {/* ---------- Overview ---------- */}
+        <section id="overview" className="scroll-mt-24 border-t border-slate-200/80 pt-16 dark:border-white/10">
+          <Reveal>
+            <SectionHeading eyebrow={t.overviewEyebrow} title={t.overviewTitle} />
+          </Reveal>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {project.goal && (
+              <Reveal>
+                <div className="relative h-full overflow-hidden rounded-[28px] bg-white p-7 ring-1 ring-slate-200/80 dark:bg-slate-900/80 dark:ring-white/10 sm:p-8">
+                  <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-[rgb(var(--brand))]" />
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                    <Target className="h-5 w-5" />
                   </span>
+                  <p className="mt-5 text-sm font-semibold text-slate-500 dark:text-slate-400">{t.objective}</p>
+                  <p className="mt-2 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 sm:text-base">{project.goal}</p>
                 </div>
+              </Reveal>
+            )}
+            {project.outcome && (
+              <Reveal delay={0.06}>
+                <div className="relative h-full overflow-hidden rounded-[28px] p-7 text-white sm:p-8" style={{ background: "linear-gradient(135deg, rgb(37 99 235), rgb(79 70 229))" }}>
+                  <span aria-hidden className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-[rgb(var(--brand)/0.45)] blur-2xl" />
+                  <span className="relative grid h-10 w-10 place-items-center rounded-xl bg-white/15">
+                    <Trophy className="h-5 w-5" />
+                  </span>
+                  <p className="relative mt-5 text-sm font-semibold text-white/75">{t.outcome}</p>
+                  <p className="relative mt-2 text-[15px] font-medium leading-relaxed sm:text-base">{project.outcome}</p>
+                </div>
+              </Reveal>
+            )}
+            <Reveal delay={0.12}>
+              <div className="h-full rounded-[28px] bg-slate-900 p-7 text-white dark:bg-white/[0.06] dark:ring-1 dark:ring-white/10 sm:p-8">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/10">
+                  <Layers className="h-5 w-5" />
+                </span>
+                <p className="mt-5 text-sm font-semibold text-slate-400">{t.stack}</p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {project.technologies.map((tech) => (
+                    <li key={tech} className="rounded-full bg-white/10 px-3 py-1.5 text-sm font-medium text-white ring-1 ring-white/10">
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ---------- Features ---------- */}
+        {features.length > 0 && (
+          <section id="features" className="scroll-mt-24 pt-24">
+            <Reveal>
+              <SectionHeading eyebrow={t.featuresEyebrow} title={t.featuresTitle} />
+            </Reveal>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {features.map((feature, i) => (
+                <Reveal key={feature} delay={0.04 * (i % 3)}>
+                  <li className="group flex h-full gap-4 rounded-[24px] bg-white p-5 ring-1 ring-slate-200/80 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] dark:bg-slate-900/80 dark:ring-white/10 sm:p-6">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[rgb(var(--brand)/0.12)] text-xs font-bold tabular-nums text-slate-700 transition-colors group-hover:bg-[rgb(var(--brand))] group-hover:text-white dark:text-slate-200">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="pt-1.5 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">{feature}</span>
+                  </li>
+                </Reveal>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* ---------- Process as a story ---------- */}
+        {steps.length > 0 && (
+          <section id="process" className="scroll-mt-24 pt-24">
+            <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-16">
+              <Reveal className="lg:sticky lg:top-28 lg:self-start">
+                <SectionHeading eyebrow={t.processEyebrow} title={t.processTitle} />
+              </Reveal>
+              <div ref={processRef} className="relative">
+                <div aria-hidden className="absolute bottom-4 left-[19px] top-4 w-px bg-slate-200 dark:bg-white/10" />
+                <motion.div
+                  aria-hidden
+                  style={{ scaleY: progress }}
+                  className="absolute bottom-4 left-[19px] top-4 w-px origin-top bg-gradient-to-b from-[rgb(var(--brand))] via-blue-500 to-emerald-500"
+                />
+                <ol className="space-y-5">
+                  {steps.map((step, i) => (
+                    <Reveal key={step} delay={0.04 * i}>
+                      <li className="relative flex gap-5">
+                        <span className="relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-xs font-bold tabular-nums text-slate-700 ring-4 ring-[#f5f5f7] dark:bg-slate-900 dark:text-slate-200 dark:ring-slate-950">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <div className="flex-1 rounded-[22px] bg-white p-5 ring-1 ring-slate-200/80 dark:bg-slate-900/80 dark:ring-white/10 sm:p-6">
+                          <p className="text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 sm:text-base">{step}</p>
+                        </div>
+                      </li>
+                    </Reveal>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---------- Challenges -> solutions ---------- */}
+        {challenges.length > 0 && (
+          <section id="challenges" className="scroll-mt-24 pt-24">
+            <Reveal>
+              <SectionHeading eyebrow={t.challengesEyebrow} title={t.challengesTitle} />
+            </Reveal>
+            <div className="space-y-4">
+              {challenges.map((challenge, i) => {
+                const solution = project.solutions?.[i];
+                return (
+                  <Reveal key={challenge} delay={0.04 * i}>
+                    <div className="grid overflow-hidden rounded-[28px] ring-1 ring-slate-200/80 dark:ring-white/10 md:grid-cols-2">
+                      <div className="bg-white p-6 dark:bg-slate-900/80 sm:p-7">
+                        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-rose-600 dark:text-rose-400">
+                          <Wrench className="h-4 w-4" />
+                          {t.challenge} {String(i + 1).padStart(2, "0")}
+                        </p>
+                        <p className="mt-3 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 sm:text-base">{challenge}</p>
+                      </div>
+                      {solution && (
+                        <div className="relative bg-slate-900 p-6 text-white dark:bg-white/[0.06] sm:p-7">
+                          <span aria-hidden className="absolute left-0 top-1/2 hidden h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-slate-900 shadow ring-4 ring-[#f5f5f7] dark:ring-slate-950 md:grid">
+                            <ArrowRight className="h-4 w-4" />
+                          </span>
+                          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-emerald-400">
+                            <Lightbulb className="h-4 w-4" />
+                            {t.solution}
+                          </p>
+                          <p className="mt-3 text-[15px] leading-relaxed text-slate-200 sm:text-base">{solution}</p>
+                        </div>
+                      )}
+                    </div>
+                  </Reveal>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* ---------- Gallery ---------- */}
+        {gallery.length > 0 && (
+          <section id="gallery" className="scroll-mt-24 pt-24">
+            <Reveal>
+              <SectionHeading eyebrow={t.galleryEyebrow} title={t.galleryTitle} />
+            </Reveal>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {gallery.map((item, i) => (
+                <Reveal key={item.image} delay={0.05 * i} className={gallery.length >= 3 && i === 0 ? "sm:col-span-2 lg:col-span-2 lg:row-span-2" : ""}>
+                  <button
+                    type="button"
+                    onClick={() => setLightbox(i)}
+                    className="group relative block h-full w-full overflow-hidden rounded-[24px] bg-white p-2 text-left ring-1 ring-slate-200/80 transition-shadow hover:shadow-[0_24px_50px_rgba(15,23,42,0.12)] dark:bg-slate-900/80 dark:ring-white/10"
+                  >
+                    <div className={`relative overflow-hidden rounded-[18px] bg-slate-100 dark:bg-slate-800 ${gallery.length >= 3 && i === 0 ? "aspect-[16/10] lg:aspect-auto lg:h-[calc(100%-2.5rem)]" : "aspect-[16/10]"}`}>
+                      <Image src={item.image} alt={item.title} fill sizes="(max-width: 640px) 100vw, 560px" className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]" />
+                    </div>
+                    <p className="px-2 pb-1 pt-3 text-sm font-medium text-slate-700 dark:text-slate-300">{item.title}</p>
+                  </button>
+                </Reveal>
               ))}
             </div>
-          </motion.div>
+          </section>
+        )}
 
-          {/* Key Features */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-24 sm:mb-32"
-          >
-            <h2 className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-12">
-              {t.keyFeatures}
-            </h2>
-            <div className="space-y-4 sm:space-y-6">
-              {(project.keyFeatures || t.fallbackFeatures).map(
-                (feature, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-col sm:flex-row sm:items-center gap-6 p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden group"
-                  >
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shrink-0 group-hover:scale-110 transition-transform duration-500">
-                      <Zap className="w-5 h-5" />
-                    </div>
-                    <div className="pt-1 sm:pt-0">
-                      <p className="text-lg sm:text-xl font-medium text-slate-900 dark:text-slate-100">
-                        {feature}
-                      </p>
-                    </div>
-                  </div>
-                ),
-              )}
-            </div>
-          </motion.div>
-
-          {/* Pipeline */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-24 sm:mb-32"
-          >
-            <h2 className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-12">
-              {t.pipeline}
-            </h2>
-            <div className="relative border-l border-slate-200 dark:border-slate-800 ml-6 sm:ml-8 pl-10 sm:pl-16 space-y-12 sm:space-y-16">
-              {(project.developmentProcess || t.fallbackPipeline).map(
-                (step, index) => (
-                  <div key={index} className="relative group">
-                    <span className="absolute -left-[58px] sm:-left-[82px] top-1 flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 group-hover:border-blue-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
-                      0{index + 1}
-                    </span>
-                    <p className="text-xl sm:text-2xl font-light text-slate-800 dark:text-slate-300 leading-relaxed group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                      {step}
+        {/* ---------- Previous / next ---------- */}
+        <section className="pt-24">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[prev, next].map((item, i) =>
+              item ? (
+                <Link
+                  key={item.slug}
+                  href={`${basePath}/projects/${item.slug}`}
+                  className={`group flex items-center gap-4 rounded-[28px] bg-white p-3 ring-1 ring-slate-200/80 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.10)] dark:bg-slate-900/80 dark:ring-white/10 ${
+                    i === 1 ? "sm:flex-row-reverse sm:text-right" : ""
+                  }`}
+                >
+                  <span className="relative h-20 w-28 shrink-0 overflow-hidden rounded-[18px] bg-slate-100 dark:bg-slate-800">
+                    <Image
+                      src={item.image || "/images/projects/portfolio-cover.png"}
+                      alt=""
+                      fill
+                      sizes="112px"
+                      className={isLogoImage(item.image || "") ? "object-contain p-3" : "object-cover"}
+                    />
+                  </span>
+                  <div className="min-w-0 flex-1 pr-3">
+                    <p className={`flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 ${i === 1 ? "sm:justify-end" : ""}`}>
+                      {i === 0 && <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />}
+                      {i === 0 ? t.prev : t.next}
+                      {i === 1 && <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />}
                     </p>
+                    <p className="mt-1 truncate font-semibold text-slate-900 dark:text-white">{item.title}</p>
+                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">{item.category}</p>
                   </div>
-                ),
-              )}
-            </div>
-          </motion.div>
+                </Link>
+              ) : (
+                <div key={i} className="hidden sm:block" />
+              ),
+            )}
+          </div>
+          <div className="mt-10 text-center">
+            <Link
+              href={`${basePath}/projects`}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            >
+              {t.all}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+      </div>
 
-          {/* Challenges */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+      {/* Lightbox */}
+      {lightbox !== null && gallery[lightbox] && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={gallery[lightbox].title}
+          onClick={() => setLightbox(null)}
+          className="fixed inset-0 z-[60] grid place-items-center bg-slate-950/85 p-4 backdrop-blur-sm"
+        >
+          <button
+            type="button"
+            onClick={() => setLightbox(null)}
+            aria-label={t.close}
+            className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20"
           >
-            <h2 className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-12">
-              {t.challenges}
-            </h2>
-            <div className="space-y-8 sm:space-y-12">
-              {(project.challenges || t.fallbackChallenges).map(
-                (challenge, index) => (
-                  <div
-                    key={index}
-                    className="p-8 sm:p-12 rounded-3xl bg-slate-900 dark:bg-slate-900 border border-slate-800 shadow-xl space-y-8 sm:space-y-10 group"
-                  >
-                    <div>
-                      <div className="flex items-center gap-4 mb-4">
-                        <Layers className="w-5 h-5 sm:w-6 sm:h-6 text-red-500" />
-                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                          {t.constraint}
-                        </h3>
-                      </div>
-                      <p className="text-lg sm:text-xl font-light text-slate-500 dark:text-slate-400 leading-relaxed">
-                        {challenge}
-                      </p>
-                    </div>
-                    <div className="h-px w-full bg-gradient-to-r from-slate-800 to-transparent group-hover:from-blue-900/50 transition-colors duration-500" />
-                    <div>
-                      <div className="flex items-center gap-4 mb-4">
-                        <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
-                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                          {t.execution}
-                        </h3>
-                      </div>
-                      <p className="text-lg sm:text-xl font-light text-slate-300 leading-relaxed">
-                        {project.solutions?.[index] || t.fallbackExecution}
-                      </p>
-                    </div>
-                  </div>
-                ),
-              )}
+            <X className="h-5 w-5" />
+          </button>
+          <figure className="w-full max-w-5xl" onClick={(e) => e.stopPropagation()}>
+            <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-slate-900">
+              <Image src={gallery[lightbox].image} alt={gallery[lightbox].title} fill sizes="100vw" className="object-contain" />
             </div>
-          </motion.div>
+            <figcaption className="mt-3 text-center text-sm font-medium text-white/80">{gallery[lightbox].title}</figcaption>
+          </figure>
         </div>
-      </section>
-
-      {/* Interstitial Action Closure */}
-      <section className="py-24 sm:py-32 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center">
-          <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 dark:text-white mb-8">
-            {t.archiveLead}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-              {t.archiveAccent}
-            </span>
-          </h2>
-          <Link href={`${basePath}/projects`}>
-            <button className="px-10 py-5 sm:px-12 sm:py-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold tracking-widest text-[10px] sm:text-xs uppercase hover:scale-105 hover:shadow-2xl transition-all duration-300">
-              {t.viewAll}
-            </button>
-          </Link>
-        </div>
-      </section>
+      )}
     </main>
   );
 }
