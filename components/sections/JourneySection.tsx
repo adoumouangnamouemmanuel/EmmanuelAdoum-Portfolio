@@ -67,7 +67,7 @@ function JourneyCard({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: true, amount: 0.1 }}
       variants={itemVariants}
       className="group relative flex flex-col lg:flex-row gap-6 lg:gap-0 py-6 lg:py-10"
     >
@@ -84,7 +84,7 @@ function JourneyCard({
           <div className="absolute top-[38px] -right-[7px] w-3.5 h-3.5 rounded-full border-2 border-blue-500 bg-white dark:bg-slate-950 shadow-[0_0_12px_rgba(59,130,246,0.6)] transition-all duration-300 group-hover:scale-125 group-hover:bg-blue-500 z-20" />
         )}
         
-        <p className={`sticky ${logo ? 'top-[42px] mt-10' : 'top-[38px] mt-8'} text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400`}>
+        <p className={`sticky ${logo ? 'top-[42px] mt-10' : 'top-[38px] mt-8'} text-sm font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500 transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400`}>
           {dateText}
         </p>
       </div>
@@ -312,7 +312,7 @@ export default function JourneySection({ locale = "en" }: { locale?: Locale }) {
                             <span>{experience.company}</span>
                           )}
                           {experience.location && (
-                            <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500">
+                            <span className="inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500">
                               <MapPin className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                               {experience.location}
                             </span>
@@ -400,7 +400,7 @@ export default function JourneySection({ locale = "en" }: { locale?: Locale }) {
                               </span>
                             </button>
 
-                            <p className="hidden lg:block text-[10px] font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-4">
+                            <p className="hidden lg:block text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500 mb-4">
                               {t.coursework}
                             </p>
 

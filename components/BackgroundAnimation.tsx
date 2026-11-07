@@ -25,7 +25,7 @@ type BackgroundPalette = {
 const palettes = {
   light: {
     fill: "#f8fafc",
-    baseOpacity: 0.12,
+    baseOpacity: 0.07,
     scanOpacity: 0.05,
     hoverMaxOpacity: 0.54,
     lightRadius: 118,
@@ -38,7 +38,7 @@ const palettes = {
   },
   dark: {
     fill: "#111827",
-    baseOpacity: 0.1,
+    baseOpacity: 0.055,
     scanOpacity: 0.08,
     hoverMaxOpacity: 0.95,
     lightRadius: 130,

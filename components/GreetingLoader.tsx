@@ -16,7 +16,9 @@ const greetings = [
   { text: "你好", flag: CN, lang: "中文" },
 ];
 
-const GREETING_STEP_MS = 850;
+// Whole intro (greetings + curtain) finishes in ~1.5s
+const GREETING_STEP_MS = 240;
+const CURTAIN_MS = 300;
 const TOTAL_MS = greetings.length * GREETING_STEP_MS;
 const LOADER_SEEN_KEY = "emmanuel-portfolio-loader-seen";
 
@@ -58,10 +60,10 @@ export default function GreetingLoader() {
 
     // Trigger curtain exit
     timeouts.push(
-      window.setTimeout(() => setExiting(true), TOTAL_MS + 200)
+      window.setTimeout(() => setExiting(true), TOTAL_MS)
     );
     timeouts.push(
-      window.setTimeout(() => setIsVisible(false), TOTAL_MS + 900)
+      window.setTimeout(() => setIsVisible(false), TOTAL_MS + CURTAIN_MS)
     );
 
     return () => {
@@ -89,7 +91,7 @@ export default function GreetingLoader() {
         <motion.div
           initial={{ y: 0 }}
           animate={{ y: exiting ? "-100%" : 0 }}
-          transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: CURTAIN_MS / 1000, ease: [0.76, 0, 0.24, 1] }}
           className="fixed inset-0 z-[10000] grid place-items-center bg-slate-950 text-white overflow-hidden"
           role="status"
           aria-live="polite"
@@ -112,7 +114,7 @@ export default function GreetingLoader() {
           <motion.span
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+            transition={{ duration: 0.25 }}
             className="absolute top-8 left-8 text-2xl font-black tracking-tighter text-white/90"
           >
             EA.
@@ -122,7 +124,7 @@ export default function GreetingLoader() {
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            transition={{ duration: 0.25 }}
             className="absolute top-9 right-8 text-[10px] font-bold tracking-[0.3em] uppercase text-slate-500"
           >
             {String(activeIndex + 1).padStart(2, "0")} / {String(greetings.length).padStart(2, "0")}
@@ -136,11 +138,11 @@ export default function GreetingLoader() {
                 initial={
                   activeIndex === 0
                     ? { opacity: 1, y: 0, filter: "blur(0px)" }
-                    : { opacity: 0, y: 20, filter: "blur(10px)" }
+                    : { opacity: 0, y: 10, filter: "blur(4px)" }
                 }
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                exit={{ opacity: 0, y: -20, filter: "blur(10px)" }}
-                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+                transition={{ duration: 0.11, ease: [0.16, 1, 0.3, 1] }}
                 className="flex flex-col items-center gap-4"
               >
                 {/* Greeting text with gradient */}
@@ -152,7 +154,7 @@ export default function GreetingLoader() {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: 0.15 }}
+                  transition={{ duration: 0.12 }}
                   className="flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm"
                 >
                   <span className="flex h-5 w-5 items-center justify-center overflow-hidden rounded-[4px] shadow-md ring-1 ring-white/25 sm:h-6 sm:w-6">

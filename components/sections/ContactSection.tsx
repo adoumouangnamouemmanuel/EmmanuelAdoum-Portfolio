@@ -10,13 +10,14 @@ import {
   MapPin, 
   Download, 
   Github, 
-  Linkedin 
+  Linkedin
 } from "lucide-react";
 import Script from "next/script";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import Link from "next/link";
+import { ClaudeLogo } from "@/components/icons/BrandLogos";
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -32,6 +33,36 @@ const contactFormSchema = z.object({
 type ContactFormData = z.infer<typeof contactFormSchema>;
 
 type Locale = "en" | "fr";
+
+// Live local time in Accra, so visitors know when to expect a reply
+function AccraTime({ locale }: { locale: Locale }) {
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+    const id = window.setInterval(() => setNow(new Date()), 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+  if (!now) return null;
+  const time = new Intl.DateTimeFormat(locale === "fr" ? "fr-FR" : "en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Africa/Accra",
+  }).format(now);
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", { hour: "2-digit", hour12: false, timeZone: "Africa/Accra" }).format(now),
+  );
+  const awake = hour >= 7 && hour < 23;
+  const label =
+    locale === "fr"
+      ? awake ? `Il est ${time} à Accra · je réponds généralement sous 24 h` : `Il est ${time} à Accra · je dors, réponse demain matin`
+      : awake ? `It's ${time} in Accra · I usually reply within 24h` : `It's ${time} in Accra · I'm asleep, I'll reply in the morning`;
+  return (
+    <span className="mt-1 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+      <span className={`h-2 w-2 rounded-full ${awake ? "bg-green-500" : "bg-slate-400"}`} />
+      {label}
+    </span>
+  );
+}
 
 export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
   const t =
@@ -56,6 +87,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
           sending: "Envoi en cours...",
           initializing: "Initialisation...",
           status: "Ouvert aux nouvelles opportunités",
+          ambassador: "Ambassadeur Claude",
           directContact: "Contact Direct",
           location: "Accra, Ghana (GMT)",
           downloadResume: "Télécharger le CV",
@@ -81,6 +113,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
           sending: "Sending...",
           initializing: "Initializing...",
           status: "Open to New Opportunities",
+          ambassador: "Claude Ambassador",
           directContact: "Direct Contact",
           location: "Accra, Ghana (GMT)",
           downloadResume: "Download Resume",
@@ -88,7 +121,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
         };
 
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const isInView = useInView(ref, { once: true, amount: 0.08 });
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -267,20 +300,29 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
               variants={containerVariants}
               className="lg:col-span-2 flex flex-col gap-10"
             >
-              {/* Availability Badge */}
-              <motion.div variants={itemVariants} className="inline-flex items-center gap-3 w-fit px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                </span>
-                <span className="text-sm font-bold tracking-wide text-slate-700 dark:text-slate-300">
-                  {t.status}
-                </span>
+              {/* Availability + Ambassador badges */}
+              <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
+                <div className="inline-flex items-center gap-3 w-fit px-4 py-2 rounded-full bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                  </span>
+                  <span className="text-sm font-bold tracking-wide text-slate-700 dark:text-slate-300">
+                    {t.status}
+                  </span>
+                </div>
+                <Link
+                  href="#ambassador"
+                  className="inline-flex items-center gap-2 w-fit px-4 py-2 rounded-full border border-[#d97757]/30 bg-[#d97757]/10 text-sm font-bold tracking-wide text-[#b85c3c] transition-colors hover:bg-[#d97757]/20 dark:text-[#f0a184]"
+                >
+                  <ClaudeLogo className="h-4 w-4" />
+                  {t.ambassador}
+                </Link>
               </motion.div>
 
               {/* Direct Info */}
               <motion.div variants={itemVariants} className="space-y-6">
-                <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-slate-400 dark:text-slate-500 mb-6">
+                <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-slate-500 dark:text-slate-500 mb-6">
                   {t.directContact}
                 </h3>
                 
@@ -302,13 +344,16 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                   <div className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-900">
                     <MapPin className="w-5 h-5" />
                   </div>
-                  <span className="text-lg sm:text-xl font-light">{t.location}</span>
+                  <span className="flex flex-col">
+                    <span className="text-lg sm:text-xl font-light">{t.location}</span>
+                    <AccraTime locale={locale} />
+                  </span>
                 </div>
               </motion.div>
 
               {/* Socials & Resume */}
               <motion.div variants={itemVariants} className="space-y-6 pt-4">
-                <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-slate-400 dark:text-slate-500 mb-6">
+                <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-slate-500 dark:text-slate-500 mb-6">
                   {t.socials}
                 </h3>
                 <div className="flex gap-4">
@@ -344,7 +389,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                     <div className="w-24 h-24 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center mb-8">
                       <CheckCircle2 className="h-12 w-12 text-green-600 dark:text-green-400" />
                     </div>
-                    <h3 className="text-4xl sm:text-6xl font-bold text-slate-900 dark:text-white mb-6 tracking-tighter">
+                    <h3 className="font-display text-3xl sm:text-4xl font-semibold text-slate-900 dark:text-white mb-6 tracking-tighter">
                       {t.successTitle}
                     </h3>
                     <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400 font-light max-w-lg leading-relaxed">
@@ -382,7 +427,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                       <motion.div variants={itemVariants} className="relative group">
                         <label
                           htmlFor="name"
-                          className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "name" || formData.name ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"}`}
+                          className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "name" || formData.name ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-500"}`}
                         >
                           {t.nameLabel}
                         </label>
@@ -416,7 +461,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                       <motion.div variants={itemVariants} className="relative group">
                         <label
                           htmlFor="email"
-                          className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "email" || formData.email ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"}`}
+                          className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "email" || formData.email ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-500"}`}
                         >
                           {t.emailLabel}
                         </label>
@@ -451,7 +496,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                     <motion.div variants={itemVariants} className="relative group">
                       <label
                         htmlFor="subject"
-                        className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "subject" || formData.subject ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"}`}
+                        className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "subject" || formData.subject ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-500"}`}
                       >
                         {t.subjectLabel}
                       </label>
@@ -485,7 +530,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                     <motion.div variants={itemVariants} className="relative group">
                       <label
                         htmlFor="message"
-                        className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "message" || formData.message ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"}`}
+                        className={`text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase transition-colors duration-300 ${activeInput === "message" || formData.message ? "text-blue-600 dark:text-blue-400" : "text-slate-500 dark:text-slate-500"}`}
                       >
                         {t.messageLabel}
                       </label>
@@ -521,7 +566,7 @@ export default function ContactSection({ locale = "en" }: { locale?: Locale }) {
                         disabled={isSubmitting || !emailJSLoaded}
                         className="group relative flex items-center justify-between w-fit px-10 sm:px-14 py-4 sm:py-5 rounded-full bg-slate-900 dark:bg-white overflow-hidden transition-all duration-500 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl"
                       >
-                        <div className="absolute inset-0 bg-blue-600 dark:bg-blue-400 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 transition-timing-function-[0.16,1,0.3,1] z-0" />
+                        <div className="absolute inset-0 bg-blue-600 dark:bg-blue-500 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-500 transition-timing-function-[0.16,1,0.3,1] z-0" />
 
                         <span className="relative z-10 flex items-center gap-3">
                           {isSubmitting ? (

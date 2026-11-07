@@ -232,7 +232,7 @@ export default function ProjectDetailPage() {
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-8 leading-[1.05] sm:leading-[1.1] max-w-5xl">
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-white mb-6 leading-[1.08] max-w-4xl">
               {project.title}
             </h1>
 
@@ -269,7 +269,7 @@ export default function ProjectDetailPage() {
             <h2 className="text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-10">
               {t.overview}
             </h2>
-            <p className="text-2xl sm:text-4xl font-light text-slate-900 dark:text-slate-100 leading-relaxed sm:leading-relaxed mb-16 tracking-tight">
+            <p className="text-xl sm:text-2xl font-normal text-slate-800 dark:text-slate-200 leading-relaxed mb-14">
               {project.description}
             </p>
 
@@ -369,7 +369,7 @@ export default function ProjectDetailPage() {
               {(project.developmentProcess || t.fallbackPipeline).map(
                 (step, index) => (
                   <div key={index} className="relative group">
-                    <span className="absolute -left-[58px] sm:-left-[82px] top-1 flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold text-slate-400 group-hover:border-blue-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                    <span className="absolute -left-[58px] sm:-left-[82px] top-1 flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-slate-950 border-2 border-slate-200 dark:border-slate-800 text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 group-hover:border-blue-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                       0{index + 1}
                     </span>
                     <p className="text-xl sm:text-2xl font-light text-slate-800 dark:text-slate-300 leading-relaxed group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
@@ -405,7 +405,7 @@ export default function ProjectDetailPage() {
                           {t.constraint}
                         </h3>
                       </div>
-                      <p className="text-lg sm:text-xl font-light text-slate-400 leading-relaxed">
+                      <p className="text-lg sm:text-xl font-light text-slate-500 dark:text-slate-400 leading-relaxed">
                         {challenge}
                       </p>
                     </div>
@@ -432,7 +432,7 @@ export default function ProjectDetailPage() {
       {/* Interstitial Action Closure */}
       <section className="py-24 sm:py-32 border-t border-slate-200 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center">
-          <h2 className="text-4xl sm:text-6xl font-bold tracking-tighter text-slate-900 dark:text-white mb-10">
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-slate-900 dark:text-white mb-8">
             {t.archiveLead}{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
               {t.archiveAccent}
