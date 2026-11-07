@@ -3,16 +3,14 @@ import { metadata as sharedMetadata, personJsonLd } from "@/app/metadata";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/ToastProvider";
 import type { Metadata } from "next";
-import { Outfit, Space_Grotesk } from "next/font/google";
+import { Outfit } from "next/font/google";
 import type React from "react";
+// Display font is bundled from npm instead of fetched from Google Fonts at
+// build time: next/font's Space Grotesk download was failing on Vercel.
+import "@fontsource-variable/space-grotesk/wght.css";
 import "./globals.css";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-display",
-});
 
 export const metadata: Metadata = sharedMetadata;
 
@@ -24,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${outfit.variable} ${spaceGrotesk.variable} font-sans antialiased`}
+        className={`${outfit.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         <script
