@@ -47,7 +47,7 @@ function AboutActionButton({ action }: { action: AboutAction }) {
 
 export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.3 });
+  const isInView = useInView(sectionRef, { once: true, amount: 0.12 });
   
   // 3D Tilt Effect Logic
   const x = useMotionValue(0);
@@ -79,7 +79,7 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
       ? {
           title: "À PROPOS DE MOI",
           name: "Emmanuel Adoum",
-          role: "Ingénieur Informatique & Développeur Logiciel",
+          role: "Ingénieur Logiciel · Ambassadeur Claude",
           description:
             "Je conçois des solutions qui répondent à des problèmes réels — de l'éducation à la finance, en passant par les systèmes intelligents. Je suis attiré par les idées ambitieuses, en particulier là où la technologie peut rendre les choses plus rapides, plus intelligentes ou tout simplement possibles. Originaire du Tchad, je construis depuis le Ghana.",
           learnMore: "En savoir plus sur moi à travers mes :",
@@ -92,7 +92,7 @@ export default function AboutSection({ locale = "en" }: { locale?: Locale }) {
       : {
           title: "ABOUT ME",
           name: "Emmanuel Adoum",
-          role: "Computer Engineer & Software Developer",
+          role: "Software Engineer · Claude Ambassador",
           description:
             "I build things that solve real problems from education and finance to intelligent systems. I'm drawn to ambitious ideas, especially where technology can make something faster, smarter, or simply possible. Originally from Chad, I'm building from Ghana.",
           learnMore: "Learn More About Me From My:",

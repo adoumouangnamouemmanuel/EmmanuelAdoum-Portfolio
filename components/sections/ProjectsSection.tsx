@@ -8,7 +8,7 @@ import Link from "next/link";
 import { MouseEvent, useRef, useState } from "react";
 
 type Locale = "en" | "fr";
-type PortfolioProject = (typeof projects)[number];
+type PortfolioProject = (typeof projectsFr)[number];
 
 type ProjectAction = {
   label: string;
@@ -174,7 +174,7 @@ function ProjectCard({
       variants={cardVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, amount: 0.1 }}
       className="w-full"
     >
       <motion.article
@@ -224,6 +224,17 @@ function ProjectCard({
           <p className="relative z-10 mt-4 text-sm font-medium leading-relaxed text-slate-700 dark:text-slate-300 sm:text-base">
             {project.description}
           </p>
+
+          {project.outcome && (
+            <div className="relative z-10 mt-4 rounded-xl border-l-2 border-blue-500 bg-blue-500/[0.06] px-4 py-3 dark:bg-blue-400/[0.07]">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700 dark:text-blue-300">
+                Impact
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                {project.outcome}
+              </p>
+            </div>
+          )}
 
           <div className="relative z-10 mt-5 flex flex-wrap gap-2">
             {project.technologies.slice(0, 5).map((tech) => (

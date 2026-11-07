@@ -89,7 +89,7 @@ export default function Footer({ locale = "en" }: { locale?: Locale }) {
             transition={{ duration: 0.5 }}
             className="col-span-1 flex flex-col gap-4"
           >
-            <h3 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-2">
+            <h3 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500 mb-2">
               {t.quickLinks}
             </h3>
             <ul className="flex flex-col gap-3">
@@ -114,7 +114,7 @@ export default function Footer({ locale = "en" }: { locale?: Locale }) {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="col-span-1 flex flex-col gap-4"
           >
-            <h3 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-2">
+            <h3 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500 mb-2">
               {t.socials}
             </h3>
             <div className="flex flex-col gap-4">
@@ -161,7 +161,7 @@ export default function Footer({ locale = "en" }: { locale?: Locale }) {
             className="col-span-2 md:col-span-1 flex flex-col gap-4 md:items-end mt-8 md:mt-0"
           >
             <div className="flex flex-col gap-2 md:items-end">
-              <h3 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500 mb-2">
+              <h3 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500 mb-2">
                 {t.localTime}
               </h3>
               <LiveClock locale={locale} />
@@ -176,7 +176,7 @@ export default function Footer({ locale = "en" }: { locale?: Locale }) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="w-full flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-slate-200 dark:border-slate-800/60 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-600"
+          className="w-full flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-slate-200 dark:border-slate-800/60 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 dark:text-slate-500"
         >
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
             <span>© {currentYear}</span>

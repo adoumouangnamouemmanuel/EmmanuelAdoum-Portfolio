@@ -229,7 +229,7 @@ export default function AchievementsSection({ locale = "en" }: { locale?: Locale
                 <motion.div 
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true, amount: 0.1 }}
                   className="flex flex-col gap-6"
                 >
                   {leadershipData.map((item, index) => (
@@ -245,7 +245,7 @@ export default function AchievementsSection({ locale = "en" }: { locale?: Locale
                 <motion.div 
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
+                  viewport={{ once: true, amount: 0.1 }}
                   variants={{
                     visible: {
                       transition: {
