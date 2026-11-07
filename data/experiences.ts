@@ -13,10 +13,10 @@ export const experiences = [
       "Translated detailed product requirements into a buildable architecture and implementation roadmap covering workflow orchestration, RBAC, approvals, documents, auditability, notifications, dashboards, and external integrations.",
     technologies: ["FastAPI", "PostgreSQL", "Python", "RBAC", "Workflow Orchestration"],
     highlights: [
-      { value: "1", label: "Platform delivered — ROBIN" },
-      { value: "2", label: "Backend workstreams owned" },
-      { value: "1", label: "Unified lab, research & biobank ecosystem" },
-      { value: "100%", label: "Requirements translated into architecture" },
+      { value: "12-step", label: "Partner onboarding wizard" },
+      { value: "3", label: "Review gates: Admin, ClinOps, Finance" },
+      { value: "85%+", label: "Platform complete at pilot cutover" },
+      { value: "1", label: "Independent security audit passed" },
     ],
     responsibilities: [
       "Translated detailed product requirements into a buildable architecture and implementation roadmap",
@@ -33,9 +33,10 @@ export const experiences = [
     companyContext:
       "Revna Biosciences (RevnaBio) is Africa's premier A2LA triple ISO-accredited medical and clinical laboratory in Accra, Ghana, advancing precision medicine, molecular diagnostics, and clinical research across West Africa.",
     gallery: [
-      { image: "/images/emma.jpg", title: "ROBIN Platform" },
-      { image: "/images/emma.jpg", title: "Frontend Prototype" },
-      { image: "/images/emma.jpg", title: "Workflow Orchestration" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "ROBIN Platform" },
+      // { image: "/images/emma.jpg", title: "Frontend Prototype" },
+      // { image: "/images/emma.jpg", title: "Workflow Orchestration" },
     ],
     recommendation: {
       quote:
@@ -62,9 +63,10 @@ export const experiences = [
       "Co-developed the end-to-end backend engine for a loan automation platform using FastAPI and MongoDB, converting multi-stage lending operations into structured, auditable workflows.",
     technologies: ["FastAPI", "MongoDB", "Python", "REST APIs"],
     highlights: [
-      { value: "1", label: "End-to-end loan automation engine" },
-      { value: "2", label: "Month internship — handoff-ready system" },
-      { value: "100%", label: "Multi-stage lending operations structured" },
+      { value: "6", label: "Loan lifecycle stages modeled" },
+      { value: "5", label: "User roles with backend-enforced RBAC" },
+      { value: "177", label: "Automated backend tests passing" },
+      { value: "2 mo", label: "From kickoff to handoff-ready" },
     ],
     responsibilities: [
       "Co-developed the end-to-end backend engine for the loan automation platform",
@@ -81,8 +83,9 @@ export const experiences = [
     companyContext:
       "Affinity Africa is a digital banking platform headquartered in Accra, Ghana, on a mission to bring affordable, accessible financial services to underserved communities across the continent.",
     gallery: [
-      { image: "/images/emma.jpg", title: "Loan Automation Backend" },
-      { image: "/images/emma.jpg", title: "API Design" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "Loan Automation Backend" },
+      // { image: "/images/emma.jpg", title: "API Design" },
     ],
     recommendation: {
       quote:
@@ -130,9 +133,10 @@ export const experiences = [
     companyContext:
       "MTN Ghana is the country's largest telecommunications operator, serving tens of millions of subscribers with mobile, data, and fintech services as part of the MTN Group — one of Africa's leading network operators.",
     gallery: [
-      { image: "/images/emma.jpg", title: "Risk Intelligence Dashboard" },
-      { image: "/images/emma.jpg", title: "Threat Scoring Pipeline" },
-      { image: "/images/emma.jpg", title: "Monte Carlo Simulation" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "Risk Intelligence Dashboard" },
+      // { image: "/images/emma.jpg", title: "Threat Scoring Pipeline" },
+      // { image: "/images/emma.jpg", title: "Monte Carlo Simulation" },
     ],
     recommendation: {
       quote:
@@ -179,8 +183,9 @@ export const experiences = [
     companyContext:
       "Nestlé Business Services is the shared-services arm of Nestlé, one of the world's largest food and beverage companies, consolidating finance, HR, and procurement operations across markets.",
     gallery: [
-      { image: "/images/emma.jpg", title: "KRI Dashboard" },
-      { image: "/images/emma.jpg", title: "OLI Reporting" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "KRI Dashboard" },
+      // { image: "/images/emma.jpg", title: "OLI Reporting" },
     ],
     recommendation: {
       quote:
@@ -211,10 +216,10 @@ export const experiencesFr = [
       "Traduction des exigences produit détaillées en une architecture construisable et une feuille de route de mise en œuvre couvrant l'orchestration des flux, le RBAC, les approbations, les documents, l'auditabilité, les notifications, les tableaux de bord et les intégrations externes.",
     technologies: ["FastAPI", "PostgreSQL", "Python", "RBAC", "Orchestration de flux"],
     highlights: [
-      { value: "1", label: "Plateforme livrée — ROBIN" },
-      { value: "2", label: "Axes backend gérés" },
-      { value: "1", label: "Écosystème unifié labo, recherche & biobanque" },
-      { value: "100%", label: "Exigences traduites en architecture" },
+      { value: "12 étapes", label: "Assistant d'intégration des partenaires" },
+      { value: "3", label: "Validations : Admin, ClinOps, Finance" },
+      { value: "85 %+", label: "Plateforme complète au lancement pilote" },
+      { value: "1", label: "Audit de sécurité indépendant réussi" },
     ],
     responsibilities: [
       "Traduction des exigences produit détaillées en une architecture construisable et une feuille de route de mise en œuvre",
@@ -222,12 +227,19 @@ export const experiencesFr = [
       "Conception de workflows utilisateur et accompagnement de la livraison frontend",
       "Couverture de l'orchestration des flux, du RBAC, des approbations, des documents, de l'auditabilité, des notifications, des tableaux de bord et des intégrations",
     ],
+    caseStudy: {
+      problem: "RevnaBio avait besoin d'une plateforme structurée et auditable pour intégrer ses institutions partenaires. Le processus manuel manquait de points de validation stricts (Admin, ClinOps, Finance), d'allers-retours de corrections, d'historique des révisions et d'un provisionnement automatisé vers son écosystème LIMS (système de gestion des informations de laboratoire).",
+      procedures: "J'ai codirigé l'architecture backend de « ROBIN », une plateforme d'intégration unifiée. Avec FastAPI, PostgreSQL et Python, j'ai conçu un backend en couches prenant en charge un assistant partenaire en 12 étapes et une console de revue interne. L'architecture imposait un RBAC strict, des suppressions logiques, des instantanés de révision avant chaque écriture et des services externes simulés (RH, LIMS).",
+      challenges: "Sécuriser la plateforme pour sa mise en production dans des délais serrés était essentiel. J'ai mené à bien un audit technique indépendant rigoureux en corrigeant rapidement des vulnérabilités critiques : verrouillage des routes de développement, limitation des téléversements externes, configuration CORS stricte en mode refus par défaut et application du TLS.",
+      solution: "Nous avons livré une plateforme fonctionnellement mature (plus de 85 % achevée) qui accompagne un partenaire depuis le lien d'invitation jusqu'aux validations internes et au provisionnement automatisé dans le LIMS. J'ai géré le pipeline de déploiement et la bascule en production, préparant le système pour son lancement pilote.",
+    },
     companyContext:
       "Revna Biosciences (RevnaBio) est le premier laboratoire médical et clinique d'Afrique accrédité A2LA triple ISO, basé à Accra (Ghana), faisant progresser la médecine de précision, les diagnostics moléculaires et la recherche clinique en Afrique de l'Ouest.",
     gallery: [
-      { image: "/images/emma.jpg", title: "Plateforme ROBIN" },
-      { image: "/images/emma.jpg", title: "Prototype Frontend" },
-      { image: "/images/emma.jpg", title: "Orchestration des flux" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "Plateforme ROBIN" },
+      // { image: "/images/emma.jpg", title: "Prototype Frontend" },
+      // { image: "/images/emma.jpg", title: "Orchestration des flux" },
     ],
     recommendation: {
       quote:
@@ -254,9 +266,10 @@ export const experiencesFr = [
       "Co-développement du moteur backend de bout en bout pour une plateforme d'automatisation de prêts, convertissant les opérations de prêt multi-étapes en flux de travail structurés et auditable.",
     technologies: ["FastAPI", "MongoDB", "Python", "APIs REST"],
     highlights: [
-      { value: "1", label: "Moteur d'automatisation de prêts de bout en bout" },
-      { value: "2", label: "Stage de 2 mois — système prêt à la remise" },
-      { value: "100%", label: "Opérations de prêt multi-étapes structurées" },
+      { value: "6", label: "Étapes du cycle de prêt modélisées" },
+      { value: "5", label: "Rôles avec contrôle d'accès côté backend" },
+      { value: "177", label: "Tests backend automatisés réussis" },
+      { value: "2 mois", label: "Du lancement à la remise" },
     ],
     responsibilities: [
       "Co-développement du moteur backend de bout en bout pour la plateforme d'automatisation de prêts",
@@ -264,11 +277,18 @@ export const experiencesFr = [
       "Conversion des opérations de prêt multi-étapes en flux de travail structurés et auditable",
       "Collaboration avec les contributeurs produit et frontend sur l'intégration et le comportement des flux",
     ],
+    caseStudy: {
+      problem: "Affinity Africa devait numériser le cycle de vie de ses prêts personnels et professionnels. Le processus manuel comportait plusieurs étapes complexes (demande, analyse, évaluation, approbation, contractualisation, décaissement) réparties entre différents rôles (clients, chargés de relation, analystes, approbateurs, administrateurs), ce qui exigeait une intégrité stricte des flux, une traçabilité complète et la protection des données.",
+      procedures: "J'ai codéveloppé le backend de bout en bout de la plateforme d'automatisation des prêts avec Python, FastAPI et MongoDB. Nous avons construit des API REST gérant l'authentification JWT, le contrôle d'accès basé sur les rôles (RBAC), la réception des demandes, l'intégration avec les bureaux de crédit, les règles de transition d'état et la gestion sécurisée des documents, le tout déployé avec Docker.",
+      challenges: "Traduire des règles de conformité financière complexes en machines à états logicielles était difficile. Il fallait concilier une implémentation rapide avec une maintenabilité de niveau bancaire, en appliquant explicitement les contrôles d'autorisation côté backend (et pas seulement dans l'interface) et en gérant de façon sûre les transitions d'étape simultanées.",
+      solution: "En deux mois de stage, nous avons livré un backend prototype prêt à être transmis, qui modélise l'intégralité du cycle de prêt en six étapes. Nous avons structuré 100 % des flux, validé 177 tests backend automatisés avec Pytest et fourni une documentation OpenAPI complète pour les futurs ingénieurs.",
+    },
     companyContext:
       "Affinity Africa est une plateforme bancaire numérique basée à Accra (Ghana), avec pour mission d'apporter des services financiers abordables et accessibles aux communautés mal desservies du continent.",
     gallery: [
-      { image: "/images/emma.jpg", title: "Backend d'automatisation des prêts" },
-      { image: "/images/emma.jpg", title: "Conception d'API" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "Backend d'automatisation des prêts" },
+      // { image: "/images/emma.jpg", title: "Conception d'API" },
     ],
     recommendation: {
       quote:
@@ -307,12 +327,19 @@ export const experiencesFr = [
       "Développement de prévisions sur 90 jours et de tests de résistance inversés pour identifier les combinaisons de chocs derrière les points de rupture financiers",
       "Activation de jusqu'à 10 000 simulations de Monte Carlo par scénario, offrant à la direction une distribution de résultats possibles",
     ],
+    caseStudy: {
+      problem: "MTN s'appuyait sur des évaluations manuelles et subjectives du risque financier. La direction avait besoin d'un système quantitatif capable de prévoir l'exposition financière exacte en cedis ghanéens selon différents scénarios de stress.",
+      procedures: "J'ai dirigé une équipe de 4 personnes pour concevoir une plateforme de renseignement en temps réel. J'ai conçu le pipeline d'ingestion qui collecte plus de 18 flux d'actualités toutes les 15 minutes et les transmet à un pipeline de NLP et d'apprentissage automatique (XGBoost/LSTM) en 9 étapes.",
+      challenges: "Un seul chiffre de risque ne suffisait pas : la direction avait besoin de distributions de probabilité. Pour y parvenir, j'ai conçu le backend afin d'exécuter jusqu'à 10 000 simulations de Monte Carlo par scénario sans dépassement de délai, en identifiant précisément les points de rupture financiers.",
+      solution: "Nous avons soumis 87 scénarios réels à des tests de résistance et construit un moteur de prévision à 90 jours, faisant passer l'entreprise d'estimations manuelles et statiques à des prévisions financières automatisées en temps réel.",
+    },
     companyContext:
       "MTN Ghana est le plus grand opérateur de télécommunications du pays, au service de dizaines de millions d'abonnés avec des services mobiles, data et fintech, au sein du groupe MTN — l'un des principaux opérateurs réseaux d'Afrique.",
     gallery: [
-      { image: "/images/emma.jpg", title: "Dashboard d'intelligence des risques" },
-      { image: "/images/emma.jpg", title: "Pipeline de scoring des menaces" },
-      { image: "/images/emma.jpg", title: "Simulation de Monte Carlo" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "Dashboard d'intelligence des risques" },
+      // { image: "/images/emma.jpg", title: "Pipeline de scoring des menaces" },
+      // { image: "/images/emma.jpg", title: "Simulation de Monte Carlo" },
     ],
     recommendation: {
       quote:
@@ -351,11 +378,18 @@ export const experiencesFr = [
       "Documentation des workflows et formation des collègues pour assurer l'adoption et la continuité",
       "Réduction du temps de reporting mensuel d'environ 99 %",
     ],
+    caseStudy: {
+      problem: "Au sein de Nestlé Business Services (NBS), l'équipe Grand Livre du Record to Report (R2R) assure un reporting financier et une conformité vastes et complexes à l'échelle régionale. Elle avait besoin d'un moyen plus efficace et automatisé de suivre les indicateurs clés de risque (KRI) et les indicateurs de niveau opérationnel (OLI) afin d'améliorer la transparence et la prise de décision stratégique.",
+      procedures: "J'ai rejoint l'équipe Grand Livre pour concevoir des tableaux de bord KRI et OLI automatisés. Avec Power BI, Excel et des outils d'analyse de données, j'ai conçu des pipelines qui extraient les données financières brutes de plusieurs sous-équipes R2R (intersociétés, rapprochements bancaires, immobilisations) et les transforment en tableaux de bord visuels dynamiques et parlants.",
+      challenges: "En tant qu'ingénieur découvrant l'univers très réglementé de la finance d'entreprise, mon principal défi était d'appréhender l'ampleur et la sophistication des systèmes financiers mondiaux de Nestlé. J'ai dû rapidement relier mes compétences techniques en visualisation de données à des processus comptables réels et complexes, sous la pression d'un environnement d'entreprise exigeant.",
+      solution: "Les tableaux de bord KRI et OLI automatisés que j'ai développés ont offert une visibilité immédiate et claire sur les opérations financières du département, améliorant nettement la capacité de l'équipe à suivre les risques et l'efficacité. Cette expérience a fait le lien entre mon parcours d'ingénieur et une solide compréhension du monde financier international.",
+    },
     companyContext:
       "Nestlé Business Services est la direction des services partagés de Nestlé, l'un des plus grands groupes agroalimentaires mondiaux, consolidant les opérations finance, RH et achats dans plusieurs marchés.",
     gallery: [
-      { image: "/images/emma.jpg", title: "Tableau de bord KRI" },
-      { image: "/images/emma.jpg", title: "Reporting OLI" },
+      // Placeholder images hidden until real screenshots are added
+      // { image: "/images/emma.jpg", title: "Tableau de bord KRI" },
+      // { image: "/images/emma.jpg", title: "Reporting OLI" },
     ],
     recommendation: {
       quote:

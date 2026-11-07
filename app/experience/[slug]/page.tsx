@@ -2,298 +2,480 @@
 
 import { experiences, experiencesFr } from "@/data/experiences";
 import { projects, projectsFr } from "@/data/projects";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import {
+  AlertTriangle,
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Briefcase,
-  Building2,
   Calendar,
-  CheckCircle2,
+  Check,
+  Clock,
   Download,
-  FolderGit2,
+  Layers,
   MapPin,
   Quote,
-  Sparkles,
+  Trophy,
+  TrendingUp,
+  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
+
+const ease = [0.16, 1, 0.3, 1] as const;
+
+// Decorative brand colour per company (RGB), used for washes and lines only,
+// never for body text, so contrast stays safe in both themes.
+const brand: Record<string, string> = {
+  "project-manager-revna-biosciences": "59 110 200",
+  "backend-intern-affinity-africa": "249 115 22",
+  "quantitative-risk-mtn-ghana": "234 179 8",
+  "record-to-report-nestle": "168 120 72",
+};
+
+// "Aug 2026" / "Août 2026" / "Present" -> month index
+const MONTHS: Record<string, number> = {
+  jan: 0, janv: 0, feb: 1, fev: 1, févr: 1, fevr: 1, mar: 2, mars: 2, apr: 3, avr: 3, may: 4, mai: 4,
+  jun: 5, juin: 5, jul: 6, juil: 6, aug: 7, aout: 7, août: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11, déc: 11,
+};
+function toMonth(text: string): number | null {
+  if (/present|actuel|présent/i.test(text)) {
+    const now = new Date();
+    return now.getFullYear() * 12 + now.getMonth();
+  }
+  const m = text.toLowerCase().replace(/\./g, "").match(/([a-zéû]+)\s+(\d{4})/);
+  if (!m) return null;
+  const key = Object.keys(MONTHS).find((k) => m[1].startsWith(k) && m[1].length <= k.length + 2);
+  return key === undefined ? null : Number(m[2]) * 12 + MONTHS[key];
+}
+function duration(start: string, end: string, fr: boolean) {
+  const a = toMonth(start);
+  const b = toMonth(end);
+  if (a === null || b === null || b < a) return null;
+  const n = b - a + 1;
+  return fr ? `${n} mois` : `${n} month${n > 1 ? "s" : ""}`;
+}
+
+function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.6, delay, ease }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
+  return (
+    <div className="mb-8 sm:mb-10">
+      <p className="flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
+        <span aria-hidden className="h-2 w-2 rounded-full bg-[rgb(var(--brand))]" />
+        {eyebrow}
+      </p>
+      <h2 className="mt-1.5 font-display text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+        {title}
+      </h2>
+    </div>
+  );
+}
 
 export default function ExperienceDetailPage() {
   const params = useParams();
   const pathname = usePathname();
-  const isFr = pathname?.startsWith("/fr");
-  const basePath = isFr ? "/fr" : "";
   const router = useRouter();
+  const fr = !!pathname?.startsWith("/fr");
+  const basePath = fr ? "/fr" : "";
   const slug = params?.slug as string | undefined;
 
-  const experience = useMemo(
-    () =>
-      slug
-        ? (isFr ? experiencesFr : experiences).find((e) => e.slug === slug)
-        : undefined,
-    [slug, isFr],
-  );
+  const collection = fr ? experiencesFr : experiences;
+  const experience = useMemo(() => (slug ? collection.find((e) => e.slug === slug) : undefined), [slug, collection]);
+  const index = collection.findIndex((e) => e.slug === slug);
+  const prev = index > 0 ? collection[index - 1] : undefined;
+  const next = index >= 0 && index < collection.length - 1 ? collection[index + 1] : undefined;
 
-  const collection = isFr ? experiencesFr : experiences;
-  const currentIndex = collection.findIndex((e) => e.slug === slug);
-  const prevExperience =
-    currentIndex > 0 ? collection[currentIndex - 1] : undefined;
-  const nextExperience =
-    currentIndex >= 0 && currentIndex < collection.length - 1
-      ? collection[currentIndex + 1]
-      : undefined;
-
-  const projectCollection = isFr ? projectsFr : projects;
-  const relatedProjects = (experience?.relatedProjects ?? [])
-    .map((projectSlug) =>
-      projectCollection.find((p) => p.slug === projectSlug),
-    )
+  const projectCollection = fr ? projectsFr : projects;
+  const related = (experience?.relatedProjects ?? [])
+    .map((s) => projectCollection.find((p) => p.slug === s))
     .filter((p): p is (typeof projectCollection)[number] => Boolean(p));
 
-  const t = isFr
+  // English case study is used as a fallback when a translation is missing
+  const caseStudy =
+    (experience as { caseStudy?: Record<string, string> } | undefined)?.caseStudy ??
+    (experiences.find((e) => e.slug === slug) as { caseStudy?: Record<string, string> } | undefined)?.caseStudy;
+
+  const t = fr
     ? {
-        backJourney: "Retour au parcours",
-        downloadResume: "Télécharger le CV",
-        visitWebsite: "Visiter le site",
-        home: "Accueil",
-        journey: "Parcours",
-        impact: "00. Impact",
-        overview: "01. Vue d'ensemble",
-        company: "02. L'Entreprise",
-        caseStudy: "03. Étude de Cas",
-        responsibilities: "04. Responsabilités clés",
-        achievements: "05. Réalisations clés",
-        gallery: "06. Galerie",
-        recommendation: "07. Recommandation",
-        related: "08. Projets associés",
-        viewProject: "Voir le projet",
-        prev: "Expérience précédente",
-        next: "Expérience suivante",
-        journeyLead: "Retour au",
-        journeyAccent: "parcours.",
-        viewAll: "Voir tout le parcours",
-        present: "ACTUEL",
+        back: "Parcours",
+        resume: "CV",
+        website: "Site web",
+        present: "Présent",
+        nav: { overview: "Aperçu", story: "Étude de cas", work: "Contributions", related: "Projets" },
+        overviewEyebrow: "Aperçu",
+        overviewTitle: "Le rôle en bref",
+        company: "L'entreprise",
+        stack: "Stack technique",
+        storyEyebrow: "Étude de cas",
+        storyTitle: "Du problème à l'impact",
+        steps: { problem: "Le contexte", procedures: "L'architecture", challenges: "Les défis", solution: "L'impact" },
+        workEyebrow: "Contributions",
+        workTitle: "Ce que j'ai fait et ce que ça a donné",
+        responsibilities: "Responsabilités",
+        achievements: "Réalisations",
+        relatedEyebrow: "Projets associés",
+        relatedTitle: "Construit en parallèle",
+        prev: "Précédent",
+        next: "Suivant",
+        all: "Voir tout le parcours",
       }
     : {
-        backJourney: "Back to Journey",
-        downloadResume: "Download Resume",
-        visitWebsite: "Visit Website",
-        home: "Home",
-        journey: "Journey",
-        impact: "00. Impact",
-        overview: "01. Overview",
-        company: "02. The Company",
-        caseStudy: "03. Engineering Case Study",
-        responsibilities: "04. Key Responsibilities",
-        achievements: "05. Key Achievements",
-        gallery: "06. Gallery",
-        recommendation: "07. Recommendation",
-        related: "08. Related Projects",
-        viewProject: "View Project",
-        prev: "Previous Experience",
-        next: "Next Experience",
-        journeyLead: "Return to the",
-        journeyAccent: "Journey.",
-        viewAll: "View Full Journey",
-        present: "PRESENT",
+        back: "Journey",
+        resume: "Resume",
+        website: "Website",
+        present: "Present",
+        nav: { overview: "Overview", story: "Case study", work: "Contributions", related: "Projects" },
+        overviewEyebrow: "Overview",
+        overviewTitle: "The role at a glance",
+        company: "The company",
+        stack: "Tech stack",
+        storyEyebrow: "Case study",
+        storyTitle: "From problem to impact",
+        steps: { problem: "The context", procedures: "The architecture", challenges: "The challenges", solution: "The impact" },
+        workEyebrow: "Contributions",
+        workTitle: "What I did, and what came of it",
+        responsibilities: "Responsibilities",
+        achievements: "Achievements",
+        relatedEyebrow: "Related projects",
+        relatedTitle: "Built alongside",
+        prev: "Previous",
+        next: "Next",
+        all: "View the full journey",
       };
 
-  // Safe cast for new properties if typescript complains
-  const experienceWithCaseStudy = experience as any;
-
   useEffect(() => {
-    if (slug && !experience) {
-      router.push(`${basePath}/#journey`);
-    }
+    if (slug && !experience) router.push(`${basePath}/#journey`);
   }, [slug, experience, router, basePath]);
+
+  // In-page navigation with scroll spy
+  const sections = [
+    { id: "overview", label: t.nav.overview, show: true },
+    { id: "story", label: t.nav.story, show: !!caseStudy },
+    { id: "work", label: t.nav.work, show: !!(experience?.responsibilities?.length || experience?.achievements?.length) },
+    { id: "related", label: t.nav.related, show: related.length > 0 },
+  ].filter((s) => s.show);
+  const [active, setActive] = useState("overview");
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    sections.forEach((s) => {
+      const el = document.getElementById(s.id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [experience?.slug, sections.length]);
+
+  // Progress line for the case-study story
+  const storyRef = useRef<HTMLDivElement | null>(null);
+  const { scrollYProgress } = useScroll({ target: storyRef, offset: ["start 70%", "end 60%"] });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
   if (!experience) return null;
 
-  const endText =
-    experience.endDate.toLowerCase() === "present"
-      ? t.present
-      : experience.endDate;
+  const end = /present/i.test(experience.endDate) ? t.present : experience.endDate;
+  const length = duration(experience.startDate, experience.endDate, fr);
+  const style = { "--brand": brand[experience.slug] ?? "59 130 246" } as CSSProperties;
+  const domain = experience.website?.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "");
 
-  const initials = (name: string) =>
-    name
-      .split(" ")
-      .map((part) => part[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase();
-
-  const sectionLabel =
-    "text-[10px] sm:text-xs font-bold tracking-[0.3em] uppercase text-blue-600 dark:text-blue-400 mb-8 sm:mb-12";
+  const steps = caseStudy
+    ? ([
+        { key: "problem", icon: <AlertTriangle className="h-4 w-4" />, tone: "bg-rose-500/10 text-rose-600 dark:text-rose-400" },
+        { key: "procedures", icon: <Layers className="h-4 w-4" />, tone: "bg-blue-500/10 text-blue-600 dark:text-blue-400" },
+        { key: "challenges", icon: <Zap className="h-4 w-4" />, tone: "bg-amber-500/10 text-amber-600 dark:text-amber-400" },
+        { key: "solution", icon: <TrendingUp className="h-4 w-4" />, tone: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" },
+      ] as const).filter((s) => caseStudy[s.key])
+    : [];
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-950 selection:bg-blue-200 dark:selection:bg-blue-900/50">
-      {/* Sticky Glass Action Bar */}
-      <motion.div
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 sm:px-12 py-4 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50"
-      >
-        <Link
-          href={`${basePath}/#journey`}
-          className="flex items-center gap-3 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors group"
-        >
-          <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center group-hover:bg-slate-200 dark:group-hover:bg-slate-800 transition-colors">
-            <ArrowLeft className="w-4 h-4" />
-          </div>
-          <span className="hidden sm:block">{t.backJourney}</span>
-        </Link>
+    <main style={style} className="relative min-h-screen overflow-x-clip bg-[#f5f5f7] text-slate-900 selection:bg-blue-200 dark:bg-slate-950 dark:text-white dark:selection:bg-blue-900/50">
+      {/* Brand-coloured wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-[640px] opacity-80"
+        style={{ background: "radial-gradient(55% 60% at 15% 0%, rgb(var(--brand) / 0.20), transparent 70%), radial-gradient(45% 50% at 90% 5%, rgb(99 102 241 / 0.12), transparent 70%)" }}
+      />
 
-        <div className="flex items-center gap-2 sm:gap-3">
+      {/* Top bar */}
+      <div className="sticky top-0 z-50 border-b border-slate-200/60 bg-[#f5f5f7]/75 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/70">
+        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <Link
-            href={isFr ? "/resume_fr.pdf" : "/resume.pdf"}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={`${basePath}/#journey`}
+            className="group inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-200/70 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/10 dark:hover:text-white"
           >
-            <button className="hidden sm:flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-slate-700 hover:bg-slate-600 text-white text-[9px] sm:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 shadow-lg">
-              <Download className="w-3 h-3 sm:w-4 sm:h-4" />
-              {t.downloadResume}
-            </button>
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            {t.back}
           </Link>
-          {experience.website && (
-            <Link
-              href={experience.website}
+
+          {/* Section tabs (desktop) */}
+          <nav className="hidden items-center gap-1 rounded-full bg-white/70 p-1 ring-1 ring-slate-200/80 dark:bg-white/5 dark:ring-white/10 md:flex">
+            {sections.map((s) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                className={`relative rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-colors ${
+                  active === s.id ? "text-white dark:text-slate-900" : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                }`}
+              >
+                {active === s.id && (
+                  <motion.span layoutId="exp-tab" className="absolute inset-0 rounded-full bg-slate-900 dark:bg-white" transition={{ type: "spring", stiffness: 420, damping: 34 }} />
+                )}
+                <span className="relative">{s.label}</span>
+              </a>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <a
+              href={fr ? "/resume_fr.pdf" : "/resume.pdf"}
               target="_blank"
               rel="noopener noreferrer"
+              className="hidden items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-200/70 dark:text-slate-300 dark:hover:bg-white/10 sm:inline-flex"
             >
-              <button className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-[9px] sm:text-[10px] font-bold tracking-widest uppercase transition-all duration-300 shadow-lg shadow-blue-600/20">
-                {t.visitWebsite}
-                <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
-              </button>
-            </Link>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Cinematic Hero */}
-      <section className="relative flex items-end min-h-[70vh] overflow-hidden bg-slate-950">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-600/10 blur-[120px] rounded-full" />
-        </div>
-
-        <div className="relative z-20 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-16 pb-16 sm:pb-24 pt-32">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {/* Breadcrumb */}
-            <nav
-              aria-label="Breadcrumb"
-              className="flex flex-wrap items-center gap-2 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-400 mb-10"
-            >
-              <Link
-                href={`${basePath}/`}
-                className="transition-colors hover:text-white"
+              <Download className="h-4 w-4" />
+              {t.resume}
+            </a>
+            {experience.website && (
+              <a
+                href={experience.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
               >
-                {t.home}
-              </Link>
-              <span className="text-slate-600">/</span>
-              <Link
-                href={`${basePath}/#journey`}
-                className="transition-colors hover:text-white"
-              >
-                {t.journey}
-              </Link>
-              <span className="text-slate-600">/</span>
-              <span className="text-blue-400 truncate max-w-[45vw] sm:max-w-none">
-                {experience.role}
-              </span>
-            </nav>
-
-            {experience.logo && (
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-white/20 bg-[radial-gradient(circle_at_30%_30%,#f8fafc,#cbd5e1_60%,#94a3b8)] dark:bg-slate-800 flex items-center justify-center p-3 mb-8 shadow-2xl">
-                <div className="relative w-full h-full mix-blend-multiply">
-                  <Image
-                    src={experience.logo}
-                    alt={`${experience.company} logo`}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              </div>
+                {t.website}
+                <ArrowUpRight className="h-4 w-4" />
+              </a>
             )}
+          </div>
+        </div>
+      </div>
 
-            <div className="flex flex-wrap items-center gap-4 sm:gap-6 mb-6 sm:mb-8 text-[10px] sm:text-xs font-bold tracking-widest uppercase text-slate-300">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                {experience.startDate} - {endText}
-              </span>
-              <span className="w-1 h-1 rounded-full bg-slate-600" />
-              <span className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-purple-400" />
-                {experience.location}
-              </span>
+      <div className="relative mx-auto max-w-6xl px-4 pb-24 sm:px-6 lg:px-8">
+        {/* ---------- Hero ---------- */}
+        <header className="grid gap-10 pb-16 pt-12 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:items-end lg:gap-14">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }}>
+            <div className="flex items-center gap-4">
+              {experience.logo && (
+                <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-white p-2.5 shadow-[0_8px_30px_rgb(var(--brand)/0.25)] ring-1 ring-slate-200/80 dark:ring-white/10">
+                  <span className="relative h-full w-full">
+                    <Image src={experience.logo} alt={`${experience.company} logo`} fill sizes="64px" className="object-contain" />
+                  </span>
+                </span>
+              )}
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-white">{experience.company}</p>
+                {domain && experience.website && (
+                  <a href={experience.website} target="_blank" rel="noopener noreferrer" className="text-sm text-slate-500 hover:text-slate-900 hover:underline dark:text-slate-400 dark:hover:text-white">
+                    {domain}
+                  </a>
+                )}
+              </div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white mb-6 leading-tight max-w-5xl">
+            <h1 className="mt-8 font-display text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.4rem]">
               {experience.role}
             </h1>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-slate-600 dark:text-slate-400">{experience.description}</p>
 
-            <p className="flex flex-wrap items-center gap-3 text-lg sm:text-2xl font-bold tracking-wide text-blue-400 mb-8">
-              <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />
-              {experience.company}
-            </p>
-
-            {experience.technologies && experience.technologies.length > 0 && (
-              <div className="flex flex-wrap gap-2 sm:gap-3">
-                {experience.technologies.map((tech, techIndex) => (
-                  <span
-                    key={techIndex}
-                    className="px-4 py-2 rounded-full bg-slate-900/60 backdrop-blur-md border border-slate-700/50 text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-white shadow-xl"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            )}
+            <ul className="mt-7 flex flex-wrap gap-2 text-sm">
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-medium text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+                <Calendar className="h-4 w-4 text-slate-400" />
+                {experience.startDate} – {end}
+              </li>
+              {length && (
+                <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-medium text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+                  <Clock className="h-4 w-4 text-slate-400" />
+                  {length}
+                </li>
+              )}
+              <li className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-medium text-slate-700 ring-1 ring-slate-200/80 dark:bg-white/5 dark:text-slate-300 dark:ring-white/10">
+                <MapPin className="h-4 w-4 text-slate-400" />
+                {experience.location}
+              </li>
+            </ul>
           </motion.div>
-        </div>
-      </section>
 
-      {/* Content */}
-      <section className="relative z-30 bg-white dark:bg-slate-950 rounded-t-[3rem] -mt-10 py-24 sm:py-32">
-        <div className="max-w-4xl mx-auto px-6 sm:px-12">
-          {/* Impact Stats */}
+          {/* Snapshot: impact numbers as a small bento */}
           {experience.highlights && experience.highlights.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.12, ease }}
+              className="grid grid-cols-2 gap-3"
             >
-              <h2 className={sectionLabel}>{t.impact}</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-                {experience.highlights.map((stat, index) => (
-                  <div
-                    key={index}
-                    className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-300/80 hover:shadow-lg hover:shadow-blue-500/10 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-700/60"
-                  >
-                    <span className="pointer-events-none absolute inset-x-4 top-0 h-[3px] rounded-b-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
-                    <p className="mb-4 text-[clamp(1.5rem,3vw,2.25rem)] font-extrabold leading-none tracking-tight text-transparent whitespace-nowrap bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 tabular-nums dark:from-blue-400 dark:to-indigo-400">
-                      {stat.value}
-                    </p>
-                    <p className="text-[10px] font-bold uppercase leading-snug text-slate-500 dark:text-slate-400">
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              {experience.highlights.map((stat, i) => (
+                <div
+                  key={stat.label}
+                  className={`group relative overflow-hidden rounded-3xl bg-white p-5 ring-1 ring-slate-200/80 transition-transform duration-500 hover:-translate-y-0.5 dark:bg-slate-900/80 dark:ring-white/10 sm:p-6 ${
+                    experience.highlights.length === 3 && i === 0 ? "col-span-2" : ""
+                  }`}
+                >
+                  <span aria-hidden className="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-[rgb(var(--brand)/0.14)] blur-xl transition-transform duration-700 group-hover:scale-150" />
+                  <p className="relative font-display text-3xl font-semibold tracking-tight tabular-nums sm:text-[2.1rem]">{stat.value}</p>
+                  <p className="relative mt-2 text-[13px] leading-snug text-slate-600 dark:text-slate-400">{stat.label}</p>
+                </div>
+              ))}
             </motion.div>
           )}
+        </header>
 
-          {/* Overview */}
+        {/* ---------- Overview ---------- */}
+        <section id="overview" className="scroll-mt-24 border-t border-slate-200/80 pt-16 dark:border-white/10">
+          <Reveal>
+            <SectionHeading eyebrow={t.overviewEyebrow} title={t.overviewTitle} />
+          </Reveal>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {experience.companyContext && (
+              <Reveal className="lg:col-span-2">
+                <div className="relative h-full overflow-hidden rounded-[28px] bg-white p-7 ring-1 ring-slate-200/80 dark:bg-slate-900/80 dark:ring-white/10 sm:p-9">
+                  <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-[rgb(var(--brand))]" />
+                  <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t.company}</p>
+                  <p className="mt-3 text-lg leading-relaxed text-slate-800 dark:text-slate-200 sm:text-xl">{experience.companyContext}</p>
+                  {experience.website && (
+                    <a
+                      href={experience.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group mt-6 inline-flex items-center gap-1 text-sm font-semibold text-blue-600 hover:underline hover:underline-offset-4 dark:text-blue-400"
+                    >
+                      {domain}
+                      <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                    </a>
+                  )}
+                </div>
+              </Reveal>
+            )}
+            {experience.technologies && experience.technologies.length > 0 && (
+              <Reveal delay={0.08} className={experience.companyContext ? "" : "lg:col-span-3"}>
+                <div className="h-full rounded-[28px] bg-slate-900 p-7 text-white dark:bg-white/[0.06] dark:ring-1 dark:ring-white/10 sm:p-9">
+                  <p className="text-sm font-semibold text-slate-400">{t.stack}</p>
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {experience.technologies.map((tech) => (
+                      <li key={tech} className="rounded-full bg-white/10 px-3 py-1.5 text-sm font-medium text-white ring-1 ring-white/10">
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </section>
+
+        {/* ---------- Case study as a story ---------- */}
+        {caseStudy && steps.length > 0 && (
+          <section id="story" className="scroll-mt-24 pt-24">
+            <div className="grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-16">
+              <Reveal className="lg:sticky lg:top-28 lg:self-start">
+                <SectionHeading eyebrow={t.storyEyebrow} title={t.storyTitle} />
+                <ol className="hidden space-y-2 lg:block">
+                  {steps.map((s, i) => (
+                    <li key={s.key} className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+                      <span className="grid h-6 w-6 place-items-center rounded-full bg-white text-xs font-semibold text-slate-700 ring-1 ring-slate-200 dark:bg-white/10 dark:text-slate-200 dark:ring-white/10">
+                        {i + 1}
+                      </span>
+                      {t.steps[s.key]}
+                    </li>
+                  ))}
+                </ol>
+              </Reveal>
+
+              <div ref={storyRef} className="relative">
+                {/* Rail + scroll-driven progress */}
+                <div aria-hidden className="absolute bottom-4 left-[19px] top-4 w-px bg-slate-200 dark:bg-white/10" />
+                <motion.div
+                  aria-hidden
+                  style={{ scaleY: progress }}
+                  className="absolute bottom-4 left-[19px] top-4 w-px origin-top bg-gradient-to-b from-[rgb(var(--brand))] via-blue-500 to-emerald-500"
+                />
+                <ol className="space-y-6">
+                  {steps.map((s, i) => (
+                    <Reveal key={s.key} delay={0.05 * i}>
+                      <li className="relative flex gap-5">
+                        <span className={`relative z-10 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white ring-4 ring-[#f5f5f7] dark:bg-slate-900 dark:ring-slate-950 ${s.tone}`}>
+                          {s.icon}
+                        </span>
+                        <div className="flex-1 rounded-[24px] bg-white p-6 ring-1 ring-slate-200/80 transition-shadow duration-500 hover:shadow-[0_20px_50px_rgba(15,23,42,0.08)] dark:bg-slate-900/80 dark:ring-white/10 sm:p-7">
+                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                            {String(i + 1).padStart(2, "0")} · {t.steps[s.key]}
+                          </p>
+                          <p className="mt-3 text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 sm:text-base">{caseStudy[s.key]}</p>
+                        </div>
+                      </li>
+                    </Reveal>
+                  ))}
+                </ol>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ---------- Contributions ---------- */}
+        {Boolean(experience.responsibilities?.length || experience.achievements?.length) && (
+          <section id="work" className="scroll-mt-24 pt-24">
+            <Reveal>
+              <SectionHeading eyebrow={t.workEyebrow} title={t.workTitle} />
+            </Reveal>
+            <div className="grid gap-5 lg:grid-cols-5">
+              {experience.responsibilities && experience.responsibilities.length > 0 && (
+                <Reveal className="lg:col-span-3">
+                  <div className="h-full rounded-[28px] bg-white p-7 ring-1 ring-slate-200/80 dark:bg-slate-900/80 dark:ring-white/10 sm:p-9">
+                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">{t.responsibilities}</p>
+                    <ul className="mt-5 divide-y divide-slate-100 dark:divide-white/5">
+                      {experience.responsibilities.map((item) => (
+                        <li key={item} className="flex gap-3 py-3.5 first:pt-0 last:pb-0">
+                          <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                            <Check className="h-3 w-3" strokeWidth={3} />
+                          </span>
+                          <span className="text-[15px] leading-relaxed text-slate-700 dark:text-slate-300">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </Reveal>
+              )}
+              {experience.achievements && experience.achievements.length > 0 && (
+                <Reveal delay={0.08} className="lg:col-span-2">
+                  <div className="flex h-full flex-col gap-4">
+                    <p className="px-1 text-sm font-semibold text-slate-500 dark:text-slate-400 lg:hidden">{t.achievements}</p>
+                    {experience.achievements.map((item, i) => (
+                      <div
+                        key={item}
+                        className="relative flex-1 overflow-hidden rounded-[28px] p-6 text-white sm:p-7"
+                        style={{ background: i % 2 === 0 ? "linear-gradient(135deg, rgb(15 23 42), rgb(30 41 59))" : "linear-gradient(135deg, rgb(37 99 235), rgb(79 70 229))" }}
+                      >
+                        <span aria-hidden className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-[rgb(var(--brand)/0.35)] blur-2xl" />
+                        <Trophy className="relative h-5 w-5 text-white/70" />
+                        <p className="relative mt-4 text-[15px] font-medium leading-relaxed sm:text-base">{item}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Reveal>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Gallery - Commented out for now as per user request */}
+        {/*
+        {experience.gallery && experience.gallery.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -301,376 +483,164 @@ export default function ExperienceDetailPage() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="mb-24 sm:mb-32"
           >
-            <h2 className={sectionLabel}>{t.overview}</h2>
-            <p className="text-2xl sm:text-4xl font-light text-slate-900 dark:text-slate-100 leading-relaxed tracking-tight">
-              {experience.description}
-            </p>
-          </motion.div>
-
-          {/* The Company */}
-          {experience.companyContext && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
+            <h2 className={sectionLabel}>{t.gallery}</h2>
+            <div
+              className={`grid grid-cols-1 gap-4 sm:gap-6 -mx-6 sm:-mx-12 lg:-mx-24 xl:-mx-32 ${
+                experience.gallery.length === 2
+                  ? "lg:grid-cols-2"
+                  : "lg:grid-cols-3"
+              }`}
             >
-              <h2 className={sectionLabel}>{t.company}</h2>
-              <div className="relative overflow-hidden p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-50 to-blue-50/40 dark:from-slate-900 dark:to-blue-950/20 border border-slate-200 dark:border-slate-800 transition-shadow duration-500 hover:shadow-xl">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full" />
-                <div className="flex items-start gap-5 sm:gap-6">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                    <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3">
-                      {experience.company}
-                    </h3>
-                    <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-                      {experience.companyContext}
-                    </p>
-                    {experience.website && (
-                      <Link
-                        href={experience.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-5 inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900 dark:text-white group/company"
-                      >
-                        <span className="pb-0.5 border-b-2 border-transparent transition-colors group-hover/company:border-blue-500">
-                          {experience.website.replace(/^https?:\/\/(www\.)?/, "")}
-                        </span>
-                        <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4 transition-transform group-hover/company:translate-x-0.5 group-hover/company:-translate-y-0.5 text-blue-600" />
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Engineering Case Study */}
-          {experienceWithCaseStudy.caseStudy && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
-            >
-              <h2 className={sectionLabel}>{(t as any).caseStudy}</h2>
-              <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
-                {/* Problem */}
-                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">The Context</h3>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
-                    {experienceWithCaseStudy.caseStudy.problem}
-                  </p>
-                </div>
-
-                {/* Architecture */}
-                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                      <Building2 className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">The Architecture</h3>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
-                    {experienceWithCaseStudy.caseStudy.procedures}
-                  </p>
-                </div>
-
-                {/* Challenges */}
-                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Technical Challenges</h3>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
-                    {experienceWithCaseStudy.caseStudy.challenges}
-                  </p>
-                </div>
-
-                {/* Solution / Impact */}
-                <div className="p-8 sm:p-10 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                      <Sparkles className="w-5 h-5" />
-                    </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">Measurable Impact</h3>
-                  </div>
-                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed font-light">
-                    {experienceWithCaseStudy.caseStudy.solution}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Key Responsibilities */}
-          {experience.responsibilities &&
-            experience.responsibilities.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                className="mb-24 sm:mb-32"
-              >
-                <h2 className={sectionLabel}>{t.responsibilities}</h2>
-                <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                  {experience.responsibilities.map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-4 p-6 sm:p-7 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 hover:shadow-xl transition-all duration-500 group"
-                    >
-                      <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500 shrink-0 mt-0.5 group-hover:scale-110 transition-transform duration-300" />
-                      <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-300 leading-relaxed">
-                        {item}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-          {/* Key Achievements */}
-          {experience.achievements && experience.achievements.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
-            >
-              <h2 className={sectionLabel}>{t.achievements}</h2>
-              <div className="space-y-6 sm:space-y-8">
-                {experience.achievements.map((achievement, index) => (
+              {experience.gallery.map((item, index) => {
+                const isLead = experience.gallery.length >= 3 && index === 0;
+                const aspect =
+                  experience.gallery.length === 2
+                    ? "aspect-[4/3]"
+                    : isLead
+                      ? "aspect-video lg:aspect-auto"
+                      : "aspect-video lg:aspect-square";
+                const span = isLead
+                  ? "lg:col-span-2 lg:row-span-2"
+                  : "";
+                const sizes = isLead
+                  ? "(max-width: 1024px) 100vw, 66vw"
+                  : "(max-width: 1024px) 100vw, 33vw";
+                return (
                   <div
                     key={index}
-                    className="flex flex-col sm:flex-row sm:items-start gap-6 p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden group"
+                    className={`group relative overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 ${aspect} ${span}`}
                   >
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shrink-0 group-hover:scale-110 transition-transform duration-500">
-                      <Sparkles className="w-5 h-5" />
-                    </div>
-                    <p className="text-lg sm:text-xl font-medium text-slate-900 dark:text-slate-100 leading-relaxed">
-                      {achievement}
-                    </p>
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes={sizes}
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent" />
+                    <span className="absolute bottom-4 left-5 right-5 text-[11px] sm:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">
+                      {item.title}
+                    </span>
                   </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+        */}
 
-          {/* Gallery - Commented out for now as per user request */}
-          {/* 
-          {experience.gallery && experience.gallery.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
-            >
-              <h2 className={sectionLabel}>{t.gallery}</h2>
-              <div
-                className={`grid grid-cols-1 gap-4 sm:gap-6 -mx-6 sm:-mx-12 lg:-mx-24 xl:-mx-32 ${
-                  experience.gallery.length === 2
-                    ? "lg:grid-cols-2"
-                    : "lg:grid-cols-3"
-                }`}
-              >
-                {experience.gallery.map((item, index) => {
-                  const isLead = experience.gallery.length >= 3 && index === 0;
-                  const aspect =
-                    experience.gallery.length === 2
-                      ? "aspect-[4/3]"
-                      : isLead
-                        ? "aspect-video lg:aspect-auto"
-                        : "aspect-video lg:aspect-square";
-                  const span = isLead
-                    ? "lg:col-span-2 lg:row-span-2"
-                    : "";
-                  const sizes = isLead
-                    ? "(max-width: 1024px) 100vw, 66vw"
-                    : "(max-width: 1024px) 100vw, 33vw";
-                  return (
-                    <div
-                      key={index}
-                      className={`group relative overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 ${aspect} ${span}`}
-                    >
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        sizes={sizes}
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent" />
-                      <span className="absolute bottom-4 left-5 right-5 text-[11px] sm:text-sm font-bold tracking-widest uppercase text-white drop-shadow-md">
-                        {item.title}
+        {/* Recommendation - Commented out for now as per user request */}
+        {/*
+        {experience.recommendation && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="mb-24 sm:mb-32"
+          >
+            <h2 className={sectionLabel}>{t.recommendation}</h2>
+            <figure className="relative overflow-hidden p-8 sm:p-12 rounded-[2rem] bg-slate-900 dark:bg-slate-900 border border-slate-800 shadow-xl">
+              <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 blur-3xl rounded-full" />
+              <Quote className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500/60 mb-8" />
+              <blockquote className="text-lg sm:text-2xl font-light text-slate-100 leading-relaxed mb-10">
+                &ldquo;{experience.recommendation.quote}&rdquo;
+              </blockquote>
+              <figcaption className="flex items-center gap-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm sm:text-base shrink-0">
+                  {initials(experience.recommendation.author)}
+                </div>
+                <div>
+                  <p className="text-base sm:text-lg font-bold text-white">
+                    {experience.recommendation.author}
+                  </p>
+                  <p className="text-xs sm:text-sm font-semibold tracking-wide text-slate-400">
+                    {experience.recommendation.role}
+                  </p>
+                </div>
+              </figcaption>
+            </figure>
+          </motion.div>
+        )}
+        */}
+
+        {/* ---------- Related projects ---------- */}
+        {related.length > 0 && (
+          <section id="related" className="scroll-mt-24 pt-24">
+            <Reveal>
+              <SectionHeading eyebrow={t.relatedEyebrow} title={t.relatedTitle} />
+            </Reveal>
+            <div className="grid gap-5 sm:grid-cols-2">
+              {related.map((p, i) => (
+                <Reveal key={p.slug} delay={0.06 * i}>
+                  <Link
+                    href={`${basePath}/projects/${p.slug}`}
+                    className="group flex h-full flex-col overflow-hidden rounded-[28px] bg-white p-3 ring-1 ring-slate-200/80 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_24px_50px_rgba(15,23,42,0.12)] dark:bg-slate-900/80 dark:ring-white/10"
+                  >
+                    <div className="relative aspect-[16/9] overflow-hidden rounded-[20px] bg-slate-100 dark:bg-slate-800">
+                      <Image src={p.image} alt={p.title} fill sizes="(max-width: 640px) 100vw, 540px" className="object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+                    </div>
+                    <div className="flex items-end justify-between gap-4 p-4">
+                      <div>
+                        <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{p.category}</p>
+                        <p className="mt-1 font-display text-lg font-semibold tracking-tight">{p.title}</p>
+                      </div>
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-700 transition-colors group-hover:bg-slate-900 group-hover:text-white dark:bg-white/10 dark:text-slate-200 dark:group-hover:bg-white dark:group-hover:text-slate-900">
+                        <ArrowUpRight className="h-4 w-4" />
                       </span>
                     </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )} 
-          */}
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
 
-          {/* Recommendation - Commented out for now as per user request */}
-          {/*
-          {experience.recommendation && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
-            >
-              <h2 className={sectionLabel}>{t.recommendation}</h2>
-              <figure className="relative overflow-hidden p-8 sm:p-12 rounded-[2rem] bg-slate-900 dark:bg-slate-900 border border-slate-800 shadow-xl">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/20 blur-3xl rounded-full" />
-                <Quote className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500/60 mb-8" />
-                <blockquote className="text-xl sm:text-3xl font-light text-slate-100 leading-relaxed mb-10">
-                  &ldquo;{experience.recommendation.quote}&rdquo;
-                </blockquote>
-                <figcaption className="flex items-center gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm sm:text-base shrink-0">
-                    {initials(experience.recommendation.author)}
-                  </div>
-                  <div>
-                    <p className="text-base sm:text-lg font-bold text-white">
-                      {experience.recommendation.author}
+        {/* ---------- Previous / next ---------- */}
+        <section className="pt-24">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[prev, next].map((item, i) =>
+              item ? (
+                <Link
+                  key={item.slug}
+                  href={`${basePath}/experience/${item.slug}`}
+                  className={`group flex items-center gap-4 rounded-[28px] bg-white p-5 ring-1 ring-slate-200/80 transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_20px_50px_rgba(15,23,42,0.10)] dark:bg-slate-900/80 dark:ring-white/10 sm:p-6 ${
+                    i === 1 ? "sm:flex-row-reverse sm:text-right" : ""
+                  }`}
+                >
+                  {item.logo && (
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white p-2 ring-1 ring-slate-200/80 dark:ring-white/10">
+                      <span className="relative h-full w-full">
+                        <Image src={item.logo} alt="" fill sizes="48px" className="object-contain" />
+                      </span>
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className={`flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 ${i === 1 ? "sm:justify-end" : ""}`}>
+                      {i === 0 && <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />}
+                      {i === 0 ? t.prev : t.next}
+                      {i === 1 && <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />}
                     </p>
-                    <p className="text-xs sm:text-sm font-semibold tracking-wide text-slate-400">
-                      {experience.recommendation.role}
-                    </p>
+                    <p className="mt-1 truncate font-semibold text-slate-900 dark:text-white">{item.role}</p>
+                    <p className="truncate text-sm text-slate-500 dark:text-slate-400">{item.company}</p>
                   </div>
-                </figcaption>
-              </figure>
-            </motion.div>
-          )}
-          */}
-
-          {/* Related Projects */}
-          {relatedProjects.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
+                </Link>
+              ) : (
+                <div key={i} className="hidden sm:block" />
+              ),
+            )}
+          </div>
+          <div className="mt-10 text-center">
+            <Link
+              href={`${basePath}/#journey`}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
             >
-              <h2 className={sectionLabel}>{t.related}</h2>
-              <div className="space-y-4 sm:space-y-6">
-                {relatedProjects.map((project) => (
-                  <Link
-                    key={project.slug}
-                    href={`${basePath}/projects/${project.slug}`}
-                    className="group flex items-center gap-5 sm:gap-8 p-4 sm:p-6 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 hover:shadow-xl hover:border-blue-200 dark:hover:border-blue-900 transition-all duration-500 overflow-hidden"
-                  >
-                    <div className="relative w-24 h-16 sm:w-36 sm:h-24 rounded-2xl overflow-hidden shrink-0 bg-slate-200 dark:bg-slate-800">
-                      <Image
-                        src={project.image}
-                        alt={project.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[9px] sm:text-[10px] font-bold tracking-widest uppercase text-blue-600 dark:text-blue-400 mb-1.5">
-                        {project.category || "Project"}
-                      </p>
-                      <h3 className="text-base sm:text-xl font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {project.title}
-                      </h3>
-                    </div>
-                    <FolderGit2 className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 dark:text-slate-700 shrink-0 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-blue-500 dark:group-hover:text-blue-400" />
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* Prev / Next Navigation */}
-          {(prevExperience || nextExperience) && (
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="mb-24 sm:mb-32"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                {prevExperience ? (
-                  <Link
-                    href={`${basePath}/experience/${prevExperience.slug}`}
-                    className="group flex flex-col gap-2 p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 hover:shadow-xl transition-all duration-500"
-                  >
-                    <span className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase text-slate-400">
-                      <ArrowLeft className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-x-1" />
-                      {t.prev}
-                    </span>
-                    <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">
-                      {prevExperience.role}
-                    </span>
-                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                      {prevExperience.company}
-                    </span>
-                  </Link>
-                ) : (
-                  <div className="hidden sm:block" />
-                )}
-                {nextExperience ? (
-                  <Link
-                    href={`${basePath}/experience/${nextExperience.slug}`}
-                    className="group flex flex-col items-end gap-2 p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:bg-white dark:hover:bg-slate-800/80 hover:shadow-xl transition-all duration-500 text-right"
-                  >
-                    <span className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase text-slate-400">
-                      {t.next}
-                      <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </span>
-                    <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">
-                      {nextExperience.role}
-                    </span>
-                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                      {nextExperience.company}
-                    </span>
-                  </Link>
-                ) : (
-                  <div className="hidden sm:block" />
-                )}
-              </div>
-            </motion.div>
-          )}
-        </div>
-      </section>
-
-      {/* Interstitial Action Closure */}
-      <section className="py-24 sm:py-32 border-t border-slate-200 dark:border-slate-800">
-        <div className="max-w-4xl mx-auto px-6 sm:px-12 text-center">
-          <h2 className="text-4xl sm:text-6xl font-bold tracking-tighter text-slate-900 dark:text-white mb-10">
-            {t.journeyLead}{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
-              {t.journeyAccent}
-            </span>
-          </h2>
-          <Link href={`${basePath}/#journey`}>
-            <button className="px-10 py-5 sm:px-12 sm:py-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold tracking-widest text-[10px] sm:text-xs uppercase hover:scale-105 hover:shadow-2xl transition-all duration-300">
-              {t.viewAll}
-            </button>
-          </Link>
-        </div>
-      </section>
+              {t.all}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </section>
+      </div>
     </main>
   );
 }
