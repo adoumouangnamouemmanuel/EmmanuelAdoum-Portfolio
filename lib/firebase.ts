@@ -12,6 +12,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp()
-const auth = getAuth(app)
+// getAuth throws auth/invalid-api-key at import time when the key is missing
+// (e.g. Vercel preview builds without Firebase env vars), which breaks
+// `next build` while it collects page data. Only create it when configured.
+const auth = firebaseConfig.apiKey ? getAuth(app) : null
 
 export { app, auth }

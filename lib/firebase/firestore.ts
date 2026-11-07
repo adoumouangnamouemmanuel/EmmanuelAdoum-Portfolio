@@ -59,7 +59,14 @@ try {
   }
 
   db = getFirestore(app);
-  auth = getAuth(app);
+  // Auth needs a valid API key; without one (e.g. preview builds missing
+  // Firebase env vars) getAuth throws and would abort `next build`.
+  try {
+    auth = getAuth(app);
+  } catch (authError) {
+    console.warn("Firebase Auth not initialized (missing or invalid API key):", authError);
+    auth = null;
+  }
 } catch (error) {
   console.error("Error initializing Firebase:", error);
 
