@@ -1,5 +1,6 @@
 "use client";
 
+import CommandPalette from "@/components/CommandPalette";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -26,6 +27,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
           { name: "Compétences", href: "#skills" },
           { name: "Projets", href: "#projects" },
           { name: "Parcours", href: "#journey" },
+          { name: "Claude", href: "#ambassador" },
           { name: "Distinctions", href: "#achievements" },
           /* { name: "Témoignages", href: "#testimonials" }, */
           /* { name: "Blog", href: `${basePath}/blog` }, */
@@ -37,6 +39,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
           { name: "Skills", href: "#skills" },
           { name: "Projects", href: "#projects" },
           { name: "Journey", href: "#journey" },
+          { name: "Claude", href: "#ambassador" },
           { name: "Awards", href: "#achievements" },
           /* { name: "Testimonials", href: "#testimonials" }, */
           /* { name: "Blog", href: "/blog" }, */
@@ -199,7 +202,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
             </Link>
 
             {/* Dynamic Magnetic Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-1.5 relative px-2">
+            <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 relative px-1">
               {navItems.map((item, i) => {
                 const isActive =
                   activeSection === item.href.substring(1) &&
@@ -218,7 +221,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                     <Link
                       href={item.href}
                       scroll={item.href.startsWith("#") ? false : true}
-                      className={`relative z-20 px-4 py-2 text-xs font-bold tracking-[0.15em] uppercase transition-colors duration-300 block ${
+                      className={`relative z-20 block whitespace-nowrap px-2.5 py-2 text-[11px] font-bold uppercase tracking-[0.1em] transition-colors duration-300 xl:px-3 xl:text-xs xl:tracking-[0.14em] ${
                         isActive || isHovered
                           ? isOverHero
                             ? "text-white"
@@ -272,6 +275,18 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
 
             {/* Utility End Nodes */}
             <div className="flex items-center gap-1 lg:gap-2 lg:ml-6 flex-shrink-0 z-10">
+              {/* Command palette (Ctrl/Cmd + K) */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.25 }}
+              >
+                <CommandPalette
+                  locale={locale}
+                  triggerClassName={isOverHero ? "text-slate-300 hover:bg-slate-800/50 hover:text-white" : "text-slate-700 hover:bg-slate-200/50 dark:text-slate-300 dark:hover:bg-slate-800/50 dark:hover:text-white"}
+                />
+              </motion.div>
+
               {/* Language Toggle */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -321,7 +336,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 cursor-pointer"
+                  className="rounded-full w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 hover:text-white dark:hover:bg-slate-200 dark:hover:text-slate-900 cursor-pointer"
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   aria-label={
                     locale === "fr"
@@ -369,7 +384,7 @@ export default function Header({ locale = "en" }: { locale?: Locale }) {
                       className={`group flex items-center justify-between text-4xl font-bold tracking-tighter ${
                         isActive
                           ? "text-slate-900 dark:text-white"
-                          : "text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                          : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                       } transition-colors duration-300 block`}
                       onClick={(e) => {
                         if (item.href.startsWith("#")) {
