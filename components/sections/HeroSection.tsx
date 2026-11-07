@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import { ClaudeLogo } from "@/components/icons/BrandLogos";
 import { ArrowRight, Download, Github, Linkedin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +11,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 type Locale = "en" | "fr";
 
 const TAGLINE_INTERVAL_MS = 2600;
+
+// Rendered as white silhouettes; raster logos with a white background are
+// inverted and screen-blended so the background disappears.
+const companyLogos = [
+  { name: "MTN Ghana", src: "/images/logos/mtn-logo.svg", className: "h-6 sm:h-8" },
+  { name: "Nestlé", src: "/images/logos/nestle-logo.jpg", className: "h-8 sm:h-10", raster: true },
+  { name: "Affinity Africa", src: "/images/logos/affinity-logo.svg", className: "h-5 sm:h-7" },
+  { name: "Revna Biosciences", src: "/images/logos/Revna-Logo.svg", className: "h-6 sm:h-8" },
+];
 
 export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -30,7 +40,9 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
               "Architecture Haute Performance",
             ],
             description:
-              "Conception de systèmes évolutifs et orientés données pour des environnements critiques.",
+              "Je conçois des systèmes de risque, de données et d'IA fiables pour des environnements critiques.",
+            badge: "Ambassadeur Claude",
+            trustedBy: "Expérience chez",
             ctaPrimary: "Démarrer une conversation",
             ctaSecondary: "Télécharger le CV",
             githubAria: "GitHub",
@@ -45,7 +57,9 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
               "High-Performance Architecture",
             ],
             description:
-              "Building scalable, data-intensive systems for high-stakes environments.",
+              "I build risk, data and AI systems that hold up in high-stakes environments.",
+            badge: "Claude Ambassador",
+            trustedBy: "Experience at",
             ctaPrimary: "Start a Conversation",
             ctaSecondary: "Download Resume",
             githubAria: "GitHub",
@@ -69,7 +83,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
     <section
       ref={sectionRef}
       id="home"
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-slate-950 px-4 pb-12 pt-24 text-center text-white sm:px-6 md:pb-8 md:pt-20 lg:min-h-screen"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-slate-950 px-4 pb-10 pt-24 text-center text-white sm:px-6 md:pb-6 md:pt-24 lg:min-h-screen"
     >
       <div className="absolute inset-0 z-0 pointer-events-none">
         <motion.div
@@ -104,24 +118,47 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.15, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          whileHover={{ scale: 1.05, rotate: 3 }}
-          className="relative h-44 w-44 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-[0_18px_40px_rgba(15,23,42,0.25)] ring-1 ring-blue-900/10 transition-[filter] duration-500 dark:border-slate-100 dark:bg-slate-100 sm:h-52 sm:w-52 lg:h-60 lg:w-60"
+          className="relative"
         >
-          <Image
-            src="/images/emma.jpg"
-            alt={t.portraitAlt}
-            fill
-            priority
-            sizes="(max-width: 640px) 176px, (max-width: 1024px) 208px, 240px"
-            className="object-cover object-center transition duration-500"
+          {/* Slow rotating blue-to-Claude-orange halo */}
+          <span
+            aria-hidden
+            className="hero-halo pointer-events-none absolute -inset-2 rounded-full opacity-80 blur-[2px]"
           />
+          <motion.div
+            whileHover={{ scale: 1.04, rotate: 3 }}
+            className="relative h-36 w-36 overflow-hidden rounded-full border-[5px] border-white bg-white shadow-[0_18px_40px_rgba(15,23,42,0.35)] dark:border-slate-100 dark:bg-slate-100 sm:h-44 sm:w-44 lg:h-[min(13rem,23vh)] lg:w-[min(13rem,23vh)]"
+          >
+            <Image
+              src="/images/emma.jpg"
+              alt={t.portraitAlt}
+              fill
+              priority
+              sizes="(max-width: 640px) 160px, (max-width: 1024px) 208px, 224px"
+              className="object-cover object-center"
+            />
+          </motion.div>
+
+          {/* Claude Ambassador seal on the portrait */}
+          <Link
+            href="#ambassador"
+            aria-label={t.badge}
+            className="group absolute -bottom-1 -right-1 flex items-center sm:bottom-1 sm:right-0"
+          >
+            <span className="grid h-11 w-11 place-items-center rounded-full border-[3px] border-white bg-[#d97757] text-white shadow-lg shadow-black/30 transition-transform group-hover:rotate-[20deg] group-hover:scale-110 sm:h-12 sm:w-12">
+              <ClaudeLogo className="h-5 w-5 sm:h-6 sm:w-6" />
+            </span>
+            <span className="pointer-events-none absolute left-full ml-2 hidden whitespace-nowrap rounded-full bg-slate-950/85 px-3 py-1 text-xs font-semibold text-orange-100 opacity-0 shadow-lg ring-1 ring-white/10 backdrop-blur transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 sm:block">
+              {t.badge}
+            </span>
+          </Link>
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 text-[clamp(3rem,9vw,5.6rem)] font-extrabold leading-[0.98] tracking-normal text-white drop-shadow-[0_5px_18px_rgba(0,0,0,0.46)] md:mt-3 lg:mt-4"
+          className="mt-5 text-[clamp(2.5rem,min(8vw,9vh),5.25rem)] font-bold leading-[0.95] tracking-tight text-white drop-shadow-[0_5px_18px_rgba(0,0,0,0.46)]"
         >
           {t.name}
         </motion.h1>
@@ -141,20 +178,22 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           </AnimatePresence>
         </div>
 
+        {/* Description hidden for now
         <motion.p
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-2 max-w-2xl text-balance text-sm font-medium leading-relaxed text-slate-100/90 sm:text-base md:mt-1.5 lg:mt-2"
+          className="mt-3 max-w-xl text-balance text-base font-medium leading-relaxed text-slate-100/90 sm:text-lg"
         >
           {t.description}
         </motion.p>
+        */}
 
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.58, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center md:mt-4 lg:mt-5"
+          className="mt-5 flex w-full flex-col items-stretch justify-center gap-3 sm:w-auto sm:flex-row sm:items-center"
         >
           <Button
             asChild
@@ -171,7 +210,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
             asChild
             size="lg"
             variant="outline"
-            className="group h-12 rounded-full border-white/30 bg-white/16 px-7 text-sm font-semibold text-white shadow-sm backdrop-blur transition-all hover:scale-105 hover:bg-white/24 dark:border-white/20 dark:bg-slate-950/56 dark:text-white dark:hover:bg-slate-900/80 sm:h-12 sm:text-base"
+            className="group h-12 rounded-full border-white/30 bg-white/16 px-7 text-sm font-semibold text-white shadow-sm backdrop-blur transition-all hover:scale-105 hover:bg-white/24 hover:text-white dark:border-white/20 dark:bg-slate-950/56 dark:text-white dark:hover:bg-slate-900/80 sm:h-12 sm:text-base"
           >
             <Link
               href={locale === "fr" ? "/resume_fr.pdf" : "/resume.pdf"}
@@ -188,7 +227,7 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 flex items-center gap-5 text-slate-100/85 md:mt-3 lg:mt-4"
+          className="mt-4 flex items-center gap-5 text-slate-100/85 md:mt-3"
         >
           <Link
             href="https://github.com/adoumouangnamouemmanuel"
@@ -209,6 +248,33 @@ export default function HeroSection({ locale = "en" }: { locale?: Locale }) {
           >
             <Linkedin className="h-5 w-5 sm:h-6 sm:w-6" />
           </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-6 flex w-full max-w-2xl flex-col items-center gap-3 md:mt-5"
+        >
+          <p className="text-[11px] font-bold uppercase tracking-[0.25em] text-slate-300/80">
+            {t.trustedBy}
+          </p>
+          <ul className="grid w-full grid-cols-4 items-center gap-x-4 sm:gap-x-10">
+            {companyLogos.map((logo) => (
+              <li key={logo.name} className="flex h-8 items-center justify-center sm:h-10">
+                <Image
+                  src={logo.src}
+                  alt={logo.name}
+                  title={logo.name}
+                  width={120}
+                  height={40}
+                  className={`w-auto max-w-full object-contain opacity-70 transition-opacity duration-300 hover:opacity-100 ${logo.className} ${
+                    logo.raster ? "mix-blend-screen grayscale invert" : "brightness-0 invert"
+                  }`}
+                />
+              </li>
+            ))}
+          </ul>
         </motion.div>
       </motion.div>
     </section>

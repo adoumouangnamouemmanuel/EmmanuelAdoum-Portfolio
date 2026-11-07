@@ -21,6 +21,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-outfit)", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-outfit)", "sans-serif"],
         poppins: ["var(--font-poppins)"],
         raleway: ["var(--font-raleway)"],
       },
